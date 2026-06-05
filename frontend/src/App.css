@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  height: 60px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.layout {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.video-grid {
+  flex: 1;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.video-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+.navbar input {
+  margin-left: 20px;
+  width: 400px;
+  padding: 10px;
+  border-radius: 20px;
+}
+.related-videos {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.related-card {
+  cursor: pointer;
+}
+
+.related-card img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.related-card p {
+  font-size: 14px;
+}
+
+.sidebar {
+  width: 220px;
+  padding: 15px;
+}
+
+.category-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+}
+
+.category-btn:hover {
+  opacity: 0.9;
+}
+.save-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
