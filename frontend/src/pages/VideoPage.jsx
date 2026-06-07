@@ -9,8 +9,7 @@ function VideoPage() {
   const [showNotes, setShowNotes] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/search?q=programming")
-      .then((res) => res.json())
+     fetch("http://localhost:8000/api/videos/search?q=programming")      .then((res) => res.json())
       .then((data) => setRelatedVideos(data))
       .catch((err) => console.error(err));
   }, []);
