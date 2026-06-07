@@ -7,12 +7,44 @@ function VideoPage() {
 
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [showNotes, setShowNotes] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-     fetch("http://localhost:8000/api/videos/search?q=programming")      .then((res) => res.json())
+    fetch("http://localhost:8000/api/videos/search?q=programming")
+      .then((res) => res.json())
       .then((data) => setRelatedVideos(data))
       .catch((err) => console.error(err));
   }, []);
+
+  const generateNotes = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        "http://localhost:8000/api/ai/notes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: "Programming Tutorial",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      setNotes(data.notes);
+      setShowNotes(true);
+    } catch (error) {
+      console.error(error);
+      alert("Failed to generate notes");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -33,14 +65,14 @@ function VideoPage() {
         ></iframe>
 
         <button
-          onClick={() => setShowNotes(!showNotes)}
+          onClick={generateNotes}
           style={{
             marginTop: "20px",
             padding: "10px 20px",
             cursor: "pointer",
           }}
         >
-          📝 Generate Notes
+          {loading ? "Generating..." : "📝 Generate Notes"}
         </button>
 
         {showNotes && (
@@ -50,16 +82,11 @@ function VideoPage() {
               padding: "15px",
               border: "1px solid gray",
               borderRadius: "10px",
+              whiteSpace: "pre-wrap",
             }}
           >
-            <h3>Video Notes</h3>
-
-            <ul>
-              <li>Main concepts explained</li>
-              <li>Important examples discussed</li>
-              <li>Practical implementation tips</li>
-              <li>Summary of the lesson</li>
-            </ul>
+            <h3>📚 AI Generated Notes</h3>
+            {notes}
           </div>
         )}
       </div>
