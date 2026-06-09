@@ -29,9 +29,10 @@ function LoginPage() {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("name", data.name);
+        localStorage.setItem("email", data.email);
 
         alert("Login Successful!");
-
         navigate("/");
       } else {
         alert(data.message);

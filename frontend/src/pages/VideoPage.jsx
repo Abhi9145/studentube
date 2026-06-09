@@ -10,12 +10,51 @@ function VideoPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const addToHistory = async (video) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      await fetch(
+        "http://localhost:8000/api/videos/history",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(video),
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetch("http://localhost:8000/api/videos/search?q=programming")
       .then((res) => res.json())
-      .then((data) => setRelatedVideos(data))
+      .then((data) => {
+        setRelatedVideos(data);
+
+        const currentVideo = data.find(
+          (video) => video.id?.videoId === videoId
+        );
+
+        if (currentVideo) {
+          addToHistory({
+            videoId: currentVideo.id.videoId,
+            title: currentVideo.snippet.title,
+            thumbnail:
+              currentVideo.snippet.thumbnails.high.url,
+            channel:
+              currentVideo.snippet.channelTitle,
+          });
+        }
+      })
       .catch((err) => console.error(err));
-  }, []);
+  }, [videoId]);
 
   const generateNotes = async () => {
     try {

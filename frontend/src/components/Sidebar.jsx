@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Sidebar({ onCategoryClick }) {
   const categories = [
     "Programming",
@@ -10,7 +12,29 @@ function Sidebar({ onCategoryClick }) {
 
   return (
     <div className="sidebar">
-      <h3>Categories</h3>
+      <h3>Navigation</h3>
+
+      <Link to="/">
+        <button className="category-btn">
+          🏠 Home
+        </button>
+      </Link>
+
+      <Link to="/saved">
+        <button className="category-btn">
+          💾 Saved Videos
+        </button>
+      </Link>
+
+      <Link to="/history">
+        <button className="category-btn">
+          🕒 Watch History
+        </button>
+      </Link>
+
+      <h3 style={{ marginTop: "20px" }}>
+        Categories
+      </h3>
 
       {categories.map((category) => (
         <button
