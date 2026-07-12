@@ -5,7 +5,89 @@ const axios = require("axios");
 // Search YouTube Videos
 const searchVideos = async (req, res) => {
   try {
-    const query = req.query.q || "python";
+    const query = req.query.q;
+
+    if (!query || query.trim() === "") {
+      return res.json([]);
+    }
+
+    const lowerQuery = query.toLowerCase();
+
+    const allowedKeywords = [
+      "python",
+      "java",
+      "javascript",
+      "react",
+      "node",
+      "mongodb",
+      "mern",
+      "html",
+      "css",
+      "c",
+      "c++",
+      "programming",
+      "coding",
+      "tutorial",
+      "course",
+      "lecture",
+      "education",
+      "computer",
+      "science",
+      "math",
+      "mathematics",
+      "physics",
+      "chemistry",
+      "biology",
+      "history",
+      "geography",
+      "algorithm",
+      "data structure",
+      "datastructure",
+      "dbms",
+      "operating system",
+      "os",
+      "networking",
+      "cybersecurity",
+      "machine learning",
+      "artificial intelligence",
+      "ai",
+      "data science",
+      "web development",
+      "android development",
+      "backend",
+      "frontend",
+      "exam",
+      "placement",
+      "interview",
+      "aptitude"
+    ];
+
+    const isEducational = allowedKeywords.some(
+      (keyword) => lowerQuery.includes(keyword)
+    );
+
+    if (!isEducational) {
+      const funnyMessages = [
+        "📚 Bro this is Studentube, not YouTube.",
+        "🤓 Go search something educational.",
+        "🚫 Vlogs are banned. GPA is protected.",
+        "🎓 Studentube only serves brain food.",
+        "💀 Nice try. Search Python instead.",
+        "📖 Study first, entertainment later.",
+        "⚡ Educational content only allowed here."
+      ];
+
+      return res.json({
+        educationalOnly: true,
+        message:
+          funnyMessages[
+            Math.floor(
+              Math.random() * funnyMessages.length
+            )
+          ],
+        items: [],
+      });
+    }
 
     const response = await axios.get(
       "https://www.googleapis.com/youtube/v3/search",
@@ -21,6 +103,7 @@ const searchVideos = async (req, res) => {
     );
 
     res.json(response.data.items);
+
   } catch (error) {
     console.error(error);
 
@@ -29,11 +112,15 @@ const searchVideos = async (req, res) => {
     });
   }
 };
-
 // Save Video
 const saveVideo = async (req, res) => {
   try {
-    const { videoId, title, thumbnail, channel } = req.body;
+    const {
+      videoId,
+      title,
+      thumbnail,
+      channel,
+    } = req.body;
 
     const video = await SavedVideo.create({
       user: req.user._id,
@@ -95,15 +182,42 @@ const deleteSavedVideo = async (req, res) => {
 // Add Video To History
 const addToHistory = async (req, res) => {
   try {
-    const { videoId, title, thumbnail, channel } = req.body;
-
-    const history = await History.create({
-      user: req.user._id,
+    const {
       videoId,
       title,
       thumbnail,
       channel,
-    });
+    } = req.body;
+
+    const existingVideo =
+      await History.findOne({
+        user: req.user._id,
+        videoId,
+      });
+
+    if (existingVideo) {
+      existingVideo.title = title;
+      existingVideo.thumbnail =
+        thumbnail;
+      existingVideo.channel =
+        channel;
+
+      existingVideo.updatedAt =
+        new Date();
+
+      await existingVideo.save();
+
+      return res.json(existingVideo);
+    }
+
+    const history =
+      await History.create({
+        user: req.user._id,
+        videoId,
+        title,
+        thumbnail,
+        channel,
+      });
 
     res.status(201).json(history);
   } catch (error) {
@@ -118,9 +232,21 @@ const getHistory = async (req, res) => {
   try {
     const history = await History.find({
       user: req.user._id,
-    }).sort({ createdAt: -1 });
+    }).sort({
+      updatedAt: -1,
+    });
 
-    res.json(history);
+    const uniqueHistory = [];
+    const seen = new Set();
+
+    for (const video of history) {
+      if (!seen.has(video.videoId)) {
+        seen.add(video.videoId);
+        uniqueHistory.push(video);
+      }
+    }
+
+    res.json(uniqueHistory);
   } catch (error) {
     res.status(500).json({
       message: error.message,

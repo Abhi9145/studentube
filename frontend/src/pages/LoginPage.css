@@ -1,0 +1,88 @@
+.auth-container {
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+
+background: linear-gradient(
+135deg,
+#0f0f0f,
+#1f1f1f,
+#0f0f0f
+);
+}
+
+.auth-card {
+width: 400px;
+padding: 40px;
+
+background: rgba(
+255,
+255,
+255,
+0.05
+);
+
+backdrop-filter: blur(15px);
+
+border-radius: 20px;
+
+text-align: center;
+
+box-shadow:
+0 8px 32px rgba(
+0,
+0,
+0,
+0.4
+);
+}
+
+.auth-card h1 {
+margin-bottom: 10px;
+}
+
+.auth-card p {
+color: #aaa;
+}
+
+.auth-card form {
+display: flex;
+flex-direction: column;
+gap: 15px;
+margin-top: 20px;
+}
+
+.auth-card input {
+padding: 14px;
+border-radius: 12px;
+border: none;
+}
+
+.auth-card button {
+padding: 14px;
+border: none;
+border-radius: 12px;
+
+background: #ff0000;
+color: white;
+
+cursor: pointer;
+
+transition: 0.3s;
+}
+
+.auth-card button:hover {
+transform: translateY(-3px);
+}
+
+.google-btn {
+width: 100%;
+background: white;
+color: black;
+}
+
+.divider {
+margin: 20px 0;
+color: #777;
+}

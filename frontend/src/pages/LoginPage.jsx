@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../firebase";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+
+import "./Auth.css";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -24,6 +31,24 @@ function LoginPage() {
           }),
         }
       );
+      const handleGoogleLogin = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+
+    const result = await signInWithPopup(auth, provider);
+
+    const user = result.user;
+
+    console.log(user);
+
+    alert(`Welcome ${user.displayName}`);
+
+    // Backend integration comes next
+  } catch (error) {
+    console.error(error);
+    alert("Google Login Failed");
+  }
+};
 
       const data = await response.json();
 
@@ -32,50 +57,84 @@ function LoginPage() {
         localStorage.setItem("name", data.name);
         localStorage.setItem("email", data.email);
 
-        alert("Login Successful!");
         navigate("/");
       } else {
         alert(data.message);
       }
-    } catch (error) {
-      console.error(error);
-      alert("Login Failed");
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h2>Login</h2>
+    <div className="auth-page">
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-        />
+      <div className="auth-left">
 
-        <br />
-        <br />
+        <h1>🎓 Studentube</h1>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-        />
+        <h2>
+          Learn Smarter.
+          <br />
+          Watch Better.
+        </h2>
 
-        <br />
-        <br />
+        <p>
+          Your study companion for coding,
+          engineering, placements and college.
+        </p>
 
-        <button type="submit">
-          Login
-        </button>
-      </form>
+      </div>
+
+      <div className="auth-right">
+
+        <div className="auth-card">
+
+          <h2>Welcome Back 👋</h2>
+
+          <form onSubmit={handleLogin}>
+
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+            />
+
+            <button type="submit">
+  Login
+</button>
+
+
+          </form>
+
+          <div className="divider">
+            OR
+          </div>
+
+          <button className="google-btn">
+            🌐 Continue with Google
+          </button>
+
+          <p>
+            Don't have an account?
+          </p>
+
+          <Link to="/register">
+            Register Now
+          </Link>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

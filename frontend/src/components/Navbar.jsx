@@ -9,86 +9,61 @@ function Navbar({
 
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.href = "/";
   };
 
   return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "15px 20px",
-        borderBottom: "1px solid #ddd",
-      }}
-    >
+    <nav className="navbar">
+
       <Link
         to="/"
         style={{
           textDecoration: "none",
-          color: "black",
+          flexShrink: 0,
         }}
       >
-        <h2>🎓 StudenTube</h2>
+        <div className="logo">
+          ▶ Studentube
+        </div>
       </Link>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-        }}
-      >
+      <div className="search-box">
         <input
           type="text"
-          placeholder="Search videos..."
+          placeholder="Search educational videos..."
           value={searchTerm}
           onChange={(e) =>
             setSearchTerm(e.target.value)
           }
-          style={{
-            padding: "8px",
-            width: "300px",
-          }}
         />
 
         <button onClick={handleSearch}>
-          Search
+          🔍
         </button>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "15px",
-          alignItems: "center",
-        }}
-      >
-        <Link to="/">Home</Link>
+      <div className="nav-links">
 
-        <Link to="/saved">
-          Saved Videos
-        </Link>
+        <Link to="/saved">Saved</Link>
 
-        <Link to="/history">
-          History
-        </Link>
+        <Link to="/history">History</Link>
+
+        <Link to="/profile">Profile</Link>
 
         {!token ? (
           <>
-            <Link to="/login">
-              Login
-            </Link>
-
-            <Link to="/register">
-              Register
-            </Link>
+            <Link to="/login">Login</Link>
+            <Link to="/register">Register</Link>
           </>
         ) : (
           <button onClick={logout}>
             Logout
           </button>
         )}
+
       </div>
+
     </nav>
   );
 }

@@ -20,6 +20,14 @@ function Sidebar({ onCategoryClick }) {
         </button>
       </Link>
 
+
+      <Link to="/playlists">
+       <button className="category-btn">
+         📁 Playlists
+       </button>
+      </Link>
+
+
       <Link to="/saved">
         <button className="category-btn">
           💾 Saved Videos

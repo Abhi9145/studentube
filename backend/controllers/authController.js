@@ -5,9 +5,11 @@ const jwt = require("jsonwebtoken");
 // Register User
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password } =
+      req.body;
 
-    const userExists = await User.findOne({ email });
+    const userExists =
+      await User.findOne({ email });
 
     if (userExists) {
       return res.status(400).json({
@@ -17,10 +19,11 @@ const registerUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
 
-    const hashedPassword = await bcrypt.hash(
-      password,
-      salt
-    );
+    const hashedPassword =
+      await bcrypt.hash(
+        password,
+        salt
+      );
 
     const user = await User.create({
       name,
@@ -32,7 +35,8 @@ const registerUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      message: "User registered successfully",
+      message:
+        "User registered successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -44,16 +48,24 @@ const registerUser = async (req, res) => {
 // Login User
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } =
+      req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      email,
+    });
 
     if (
       user &&
-      (await bcrypt.compare(password, user.password))
+      (await bcrypt.compare(
+        password,
+        user.password
+      ))
     ) {
       const token = jwt.sign(
-        { id: user._id },
+        {
+          id: user._id,
+        },
         process.env.JWT_SECRET,
         {
           expiresIn: "30d",
@@ -68,9 +80,36 @@ const loginUser = async (req, res) => {
       });
     } else {
       res.status(401).json({
-        message: "Invalid email or password",
+        message:
+          "Invalid email or password",
       });
     }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// Get Profile
+const getProfile = async (
+  req,
+  res
+) => {
+  try {
+    const user =
+      await User.findById(
+        req.user._id
+      ).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message:
+          "User not found",
+      });
+    }
+
+    res.json(user);
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -81,4 +120,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  getProfile,
 };
