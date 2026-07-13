@@ -27,6 +27,11 @@ const historySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+    watchedSeconds: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

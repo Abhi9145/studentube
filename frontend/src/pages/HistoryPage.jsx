@@ -1,59 +1,83 @@
+import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function HistoryPage() {
   const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token =
-      localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+    if (!token) { setLoading(false); return; }
 
-    fetch(
-      "http://localhost:8000/api/videos/history",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    fetch(`${API_URL}/api/videos/history`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => res.json())
-      .then((data) => setVideos(data))
-      .catch(console.error);
+      .then((data) => setVideos(Array.isArray(data) ? data : []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString(undefined, {
+      month: "short", day: "numeric", year: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div style={{ padding: "40px", color: "#555", textAlign: "center" }}>
+        Loading your history…
+      </div>
+    );
+  }
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Watch History</h2>
+    <div style={{ padding: "24px 20px" }}>
+      {/* Header */}
+      <div className="page-header">
+        <h2>🕒 Watch History</h2>
+        <span className="page-count">{videos.length} watched</span>
+      </div>
 
-      {videos.map((video) => (
-        <Link
-          key={video._id}
-          to={`/video/${video.videoId}`}
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "15px",
-              marginBottom: "20px",
-            }}
-          >
-            <img
-              src={video.thumbnail}
-              alt={video.title}
-              width="200"
-            />
-
-            <div>
-              <h3>{video.title}</h3>
-              <p>{video.channel}</p>
-            </div>
-          </div>
-        </Link>
-      ))}
+      {/* Empty state */}
+      {videos.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">🕒</div>
+          <h3>No watch history yet</h3>
+          <p>Videos you watch will automatically appear here so you can pick up right where you left off.</p>
+          <Link to="/" className="empty-state-btn">Start Watching</Link>
+        </div>
+      ) : (
+        <div className="history-list">
+          {videos.map((video) => (
+            <Link
+              key={video._id}
+              to={`/video/${video.videoId}`}
+              className="history-item"
+            >
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                className="history-thumb"
+              />
+              <div className="history-info">
+                <div className="history-title">{video.title}</div>
+                <div className="history-channel">{video.channel}</div>
+                {video.updatedAt && (
+                  <div className="history-date">
+                    Watched {formatDate(video.updatedAt)}
+                  </div>
+                )}
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

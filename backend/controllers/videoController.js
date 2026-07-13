@@ -187,37 +187,34 @@ const addToHistory = async (req, res) => {
       title,
       thumbnail,
       channel,
+      watchedSeconds,
     } = req.body;
 
-    const existingVideo =
-      await History.findOne({
-        user: req.user._id,
-        videoId,
-      });
+    const existingVideo = await History.findOne({
+      user: req.user._id,
+      videoId,
+    });
 
     if (existingVideo) {
       existingVideo.title = title;
-      existingVideo.thumbnail =
-        thumbnail;
-      existingVideo.channel =
-        channel;
-
-      existingVideo.updatedAt =
-        new Date();
-
+      existingVideo.thumbnail = thumbnail;
+      existingVideo.channel = channel;
+      if (watchedSeconds !== undefined) {
+        existingVideo.watchedSeconds = watchedSeconds;
+      }
+      existingVideo.updatedAt = new Date();
       await existingVideo.save();
-
       return res.json(existingVideo);
     }
 
-    const history =
-      await History.create({
-        user: req.user._id,
-        videoId,
-        title,
-        thumbnail,
-        channel,
-      });
+    const history = await History.create({
+      user: req.user._id,
+      videoId,
+      title,
+      thumbnail,
+      channel,
+      watchedSeconds: watchedSeconds || 0,
+    });
 
     res.status(201).json(history);
   } catch (error) {

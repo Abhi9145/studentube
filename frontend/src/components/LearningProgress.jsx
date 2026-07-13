@@ -1,3 +1,4 @@
+import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 
 function LearningProgress() {
@@ -9,7 +10,7 @@ function LearningProgress() {
 
     if (!token) return;
 
-    fetch("http://localhost:8000/api/videos/history", {
+    fetch(`${API_URL}/api/videos/history`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

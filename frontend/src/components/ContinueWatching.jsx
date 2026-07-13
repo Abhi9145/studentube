@@ -1,188 +1,120 @@
-
+import { API_URL } from "../config";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+
+const STORAGE_KEY = (id) => `yt_progress_${id}`;
 
 function ContinueWatching() {
   const [history, setHistory] = useState([]);
-  const [playlists, setPlaylists] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchHistory();
-    fetchPlaylists();
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    fetch(`${API_URL}/api/videos/history`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const items = Array.isArray(data) ? data.slice(0, 6) : [];
+        setHistory(items);
+      })
+      .catch(console.error);
   }, []);
-
-  const fetchHistory = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) return;
-
-      const res = await fetch(
-        "http://localhost:8000/api/videos/history",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      setHistory(data.slice(0, 8));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchPlaylists = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(
-        "http://localhost:8000/api/playlists",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      setPlaylists(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const saveToPlaylist = async (playlistId, video) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      await fetch(
-        `http://localhost:8000/api/playlists/${playlistId}/video`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(video),
-        }
-      );
-
-      toast.success("Added to Playlist");
-    } catch {
-      toast.error("Failed");
-    }
-  };
 
   if (history.length === 0) return null;
 
+  // Best timestamp: backend watchedSeconds OR localStorage (whichever is larger)
+  const getResumeSeconds = (v) => {
+    const backend = v.watchedSeconds || 0;
+    const local = parseInt(localStorage.getItem(STORAGE_KEY(v.videoId)) || "0", 10);
+    return Math.max(backend, local);
+  };
+
+  // Build URL with ?t= so VideoPage auto-resumes
+  const resumeUrl = (v) => {
+    const secs = getResumeSeconds(v);
+    return `/video/${v.videoId}${secs > 5 ? `?t=${secs}` : ""}`;
+  };
+
+  const formatTime = (secs) => {
+    if (!secs || secs < 1) return null;
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
+
+  // Progress bar width (treat 20 min as 100%)
+  const progressPct = (v) => {
+    const secs = getResumeSeconds(v);
+    return Math.min(Math.round((secs / 1200) * 100), 96);
+  };
+
   return (
-    <div className="resume-section">
-
-      <div className="resume-header">
-
-        <div>
-          <h2>📚 Resume Learning</h2>
-          <p>Pick up where you left off.</p>
+    <section className="cw-section">
+      {/* Header */}
+      <div className="cw-header">
+        <div className="cw-header-left">
+          <span className="cw-dot" />
+          <h3 className="cw-title">Continue Watching</h3>
+          <span className="cw-count">{history.length}</span>
         </div>
-
-        <Link to="/history" className="view-all">
-          View All →
+        <Link to="/history" className="cw-view-all">
+          View all →
         </Link>
-
       </div>
 
-      <div className="resume-slider">
+      {/* Horizontal strip */}
+      <div className="cw-strip">
+        {history.map((video) => {
+          const resumeSecs = getResumeSeconds(video);
+          const pct = progressPct(video);
+          const timeLabel = formatTime(resumeSecs);
 
-        {history.map((video) => (
-
-          <div
-            className="resume-card"
-            key={video.videoId}
-          >
-
-            <Link
-              to={`/video/${video.videoId}`}
+          return (
+            <div
+              key={video.videoId}
+              className="cw-card"
+              onClick={() => navigate(resumeUrl(video))}
+              title={timeLabel ? `Resume at ${timeLabel}` : "Watch"}
             >
-
-              <div className="thumbnail-wrapper">
-
+              {/* Thumbnail */}
+              <div className="cw-thumb-wrap">
                 <img
                   src={video.thumbnail}
                   alt={video.title}
+                  className="cw-thumb"
                 />
 
-                <div className="play-overlay">
-                  ▶ Resume
+                {/* Hover overlay */}
+                <div className="cw-overlay">
+                  <span className="cw-play-icon">▶</span>
+                  {timeLabel && (
+                    <span className="cw-time-badge">{timeLabel}</span>
+                  )}
                 </div>
 
+                {/* Progress bar — always shown; 0% if no timestamp yet */}
+                <div className="cw-progress-bar">
+                  <div
+                    className="cw-progress-fill"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
               </div>
 
-            </Link>
-
-            <div className="resume-info">
-
-              <h4>{video.title}</h4>
-
-              <p>{video.channel}</p>
-
-              <div className="progress-bar">
-                <div
-                  className="progress-fill"
-                  style={{
-                    width: `${30 + Math.random() * 60}%`,
-                  }}
-                />
+              {/* Info */}
+              <div className="cw-info">
+                <p className="cw-video-title">{video.title}</p>
+                <p className="cw-video-channel">{video.channel}</p>
               </div>
-
-              <small>Continue Learning</small>
-
-              {playlists.length > 0 && (
-
-                <select
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      saveToPlaylist(
-                        e.target.value,
-                        video
-                      );
-                    }
-                  }}
-                >
-
-                  <option>
-                    ➕ Playlist
-                  </option>
-
-                  {playlists.map((playlist) => (
-
-                    <option
-                      key={playlist._id}
-                      value={playlist._id}
-                    >
-                      {playlist.name}
-                    </option>
-
-                  ))}
-
-                </select>
-
-              )}
-
             </div>
-
-          </div>
-
-        ))}
-
+          );
+        })}
       </div>
-
-    </div>
+    </section>
   );
 }
-export default ContinueWatching;
 
+export default ContinueWatching;

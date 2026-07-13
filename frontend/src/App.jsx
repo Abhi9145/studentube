@@ -1,81 +1,286 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import toast from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import TopicChips from "./components/TopicChips";
 import VideoCard from "./components/VideoCard";
 import ContinueWatching from "./components/ContinueWatching";
+import { API_URL } from "./config";
+
+// Status constants
+const STATUS = {
+  LOADING: "loading",
+  SUCCESS: "success",
+  ERROR: "error",
+  BLOCKED: "blocked",
+};
+
+// A rich list of educational topics to pull recommendations from
+const RECOMMENDATION_QUERIES = [
+  "computer science tutorial",
+  "programming tutorial",
+  "python tutorial",
+  "web development tutorial",
+  "javascript crash course",
+  "data structures algorithms",
+  "machine learning beginners",
+  "database sql course",
+  "cybersecurity crash course",
+  "react js tutorial",
+  "artificial intelligence basics",
+  "git github tutorial",
+  "docker container tutorial",
+  "linux terminal guide"
+];
 
 function App() {
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState(STATUS.LOADING);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [lastQuery, setLastQuery] = useState(() => {
+    return RECOMMENDATION_QUERIES[Math.floor(Math.random() * RECOMMENDATION_QUERIES.length)];
+  });
 
-  const handleSearch = () => {
-    fetch(
-      `http://localhost:8000/api/videos/search?q=${searchTerm}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Search Data:", data);
+  // ── Theme initialization ───────────────────────────────────────────────────
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }, []);
 
-        if (data.educationalOnly) {
-          alert(data.message);
-          setVideos([]);
-          return;
+  // ── Shared fetch helper ─────────────────────────────────────────────────────
+  const doSearch = useCallback(async (query) => {
+    setStatus(STATUS.LOADING);
+    setLastQuery(query);
+
+    try {
+      const res = await fetch(
+        `${API_URL}/api/videos/search?q=${encodeURIComponent(query)}`
+      );
+
+      if (!res.ok) {
+        throw new Error(`Server error ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // Non-educational rejection from backend
+      if (data.educationalOnly) {
+        toast(data.message, { icon: "📚", duration: 4000 });
+        setStatus(STATUS.BLOCKED);
+        setVideos([]);
+        return;
+      }
+
+      // Backend sent an error message object
+      if (data.message && !Array.isArray(data) && !data.items) {
+        throw new Error(data.message);
+      }
+
+      const rawItems = Array.isArray(data)
+        ? data
+        : Array.isArray(data.items)
+        ? data.items
+        : [];
+
+      // Filter out malformed entries (missing videoId or thumbnail)
+      const validItems = rawItems.filter(
+        (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+      );
+
+      setVideos(validItems);
+      setStatus(STATUS.SUCCESS);
+    } catch (err) {
+      console.error("Search error:", err);
+      setErrorMsg(err.message || "Could not load videos.");
+      setStatus(STATUS.ERROR);
+      setVideos([]);
+    }
+  }, []);
+
+  // ── Load recommendations helper ──────────────────────────────────────────
+  const loadRecommendations = useCallback(async () => {
+    setStatus(STATUS.LOADING);
+    const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
+
+    for (const q of shuffled) {
+      try {
+        const res = await fetch(
+          `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
+        );
+        if (!res.ok) continue;
+
+        const data = await res.json();
+        if (data.educationalOnly) continue;
+
+        const rawItems = Array.isArray(data)
+          ? data
+          : Array.isArray(data.items)
+          ? data.items
+          : [];
+
+        const validItems = rawItems.filter(
+          (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+        );
+
+        if (validItems.length > 0) {
+          setVideos(validItems);
+          setStatus(STATUS.SUCCESS);
+          return; // done
         }
+      } catch {
+        // try next
+      }
+    }
 
-        if (Array.isArray(data)) {
-          setVideos(data);
-        } else if (data.items) {
-          setVideos(data.items);
-        } else {
-          setVideos([]);
-        }
-      })
-      .catch((err) => console.error(err));
+    setErrorMsg(
+      "YouTube API may be temporarily unavailable or the daily quota has been reached."
+    );
+    setStatus(STATUS.ERROR);
+  }, []);
+
+  useEffect(() => {
+    loadRecommendations();
+  }, [loadRecommendations]);
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
+  const handleSearch = (customQuery) => {
+    const query = typeof customQuery === "string" ? customQuery : searchTerm;
+    if (!query.trim()) return;
+    doSearch(query);
   };
 
   const handleCategoryClick = (category) => {
     setSearchTerm(category);
-
-    fetch(
-      `http://localhost:8000/api/videos/search?q=${category}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Category Data:", data);
-
-        if (data.educationalOnly) {
-          alert(data.message);
-          setVideos([]);
-          return;
-        }
-
-        if (Array.isArray(data)) {
-          setVideos(data);
-        } else if (data.items) {
-          setVideos(data.items);
-        } else {
-          setVideos([]);
-        }
-      })
-      .catch((err) => console.error(err));
+    doSearch(category);
   };
 
-  useEffect(() => {
-    fetch(
-      "http://localhost:8000/api/videos/search?q=computer science tutorial"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setVideos(data);
-        } else if (data.items) {
-          setVideos(data.items);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, []);
+  const handleHomeClick = () => {
+    setSearchTerm("");
+    loadRecommendations();
+  };
+
+  // ── Render helpers ─────────────────────────────────────────────────────────
+  const renderContent = () => {
+    if (status === STATUS.LOADING) {
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "80px 20px",
+            gap: "16px",
+            color: "#555",
+          }}
+        >
+          <style>{`
+            @keyframes spin { to { transform: rotate(360deg); } }
+          `}</style>
+          <div
+            style={{
+              width: "38px",
+              height: "38px",
+              border: "3px solid #222",
+              borderTop: "3px solid #ff0000",
+              borderRadius: "50%",
+              animation: "spin 0.75s linear infinite",
+            }}
+          />
+          <p style={{ fontSize: "14px" }}>Loading recommended videos…</p>
+        </div>
+      );
+    }
+
+    if (status === STATUS.ERROR) {
+      return (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "70px 20px",
+            background: "#111",
+            borderRadius: "16px",
+            border: "1px dashed #2a2a2a",
+          }}
+        >
+          <div style={{ fontSize: "42px", marginBottom: "16px" }}>😵</div>
+          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#ddd" }}>
+            Couldn&apos;t load videos
+          </h3>
+          <p
+            style={{
+              color: "#555",
+              fontSize: "14px",
+              maxWidth: "400px",
+              margin: "0 auto 24px",
+              lineHeight: "1.6",
+            }}
+          >
+            {errorMsg}
+          </p>
+          <button
+            onClick={() => doSearch(lastQuery)}
+            style={{
+              background: "#ff0000",
+              color: "#fff",
+              border: "none",
+              borderRadius: "20px",
+              padding: "10px 24px",
+              fontSize: "14px",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 4px 14px rgba(255,0,0,.3)",
+              transition: ".2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "none")}
+          >
+            🔄 Try Again
+          </button>
+        </div>
+      );
+    }
+
+    if (status === STATUS.BLOCKED || videos.length === 0) {
+      return (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "70px 20px",
+            background: "#111",
+            borderRadius: "16px",
+            border: "1px dashed #2a2a2a",
+          }}
+        >
+          <div style={{ fontSize: "42px", marginBottom: "16px" }}>📚</div>
+          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#ddd" }}>
+            Educational content only
+          </h3>
+          <p style={{ color: "#555", fontSize: "14px" }}>
+            Try searching for Python, React, DSA, Math, Physics, or any study topic.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="video-grid">
+        {videos.map((video) => (
+          <VideoCard
+            key={video.id?.videoId}
+            video={{
+              title: video.snippet?.title,
+              channel: video.snippet?.channelTitle,
+              thumbnail: video.snippet?.thumbnails?.high?.url,
+              videoId: video.id?.videoId,
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <>
@@ -86,62 +291,16 @@ function App() {
       />
 
       <div className="layout">
-        <Sidebar
-          onCategoryClick={handleCategoryClick}
-        />
+        <Sidebar onCategoryClick={handleCategoryClick} onHomeClick={handleHomeClick} />
 
         <div className="main-content">
-     
-<TopicChips onTopicClick={handleCategoryClick} />
+          <TopicChips onTopicClick={handleCategoryClick} />
 
-<ContinueWatching />
+          <ContinueWatching />
 
-          <h2
-            style={{
-              marginBottom: "20px",
-            }}
-          >
-            🔥 Recommended Videos
-          </h2>
+          <h2 style={{ marginBottom: "20px" }}>🔥 Recommended Videos</h2>
 
-          {videos.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "50px",
-              }}
-            >
-              <h2>
-                📚 Studentube says:
-              </h2>
-
-              <p>
-                Search for educational
-                content only 😎
-              </p>
-            </div>
-          ) : (
-            <div className="video-grid">
-              {videos.map((video) => (
-                <VideoCard
-                  key={video.id?.videoId}
-                  video={{
-                    title:
-                      video.snippet?.title,
-                    channel:
-                      video.snippet
-                        ?.channelTitle,
-                    thumbnail:
-                      video.snippet
-                        ?.thumbnails?.high
-                        ?.url,
-                    videoId:
-                      video.id?.videoId,
-                  }}
-                />
-              ))}
-            </div>
-          )}
+          {renderContent()}
         </div>
       </div>
     </>

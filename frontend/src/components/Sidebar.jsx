@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-function Sidebar({ onCategoryClick }) {
+function Sidebar({ onCategoryClick, onHomeClick }) {
+  const navigate = useNavigate();
+
   const categories = [
     "Programming",
     "Mathematics",
@@ -10,23 +12,24 @@ function Sidebar({ onCategoryClick }) {
     "Artificial Intelligence",
   ];
 
+  const handleHome = () => {
+    navigate("/");
+    if (onHomeClick) onHomeClick();
+  };
+
   return (
     <div className="sidebar">
       <h3>Navigation</h3>
 
-      <Link to="/">
-        <button className="category-btn">
-          🏠 Home
-        </button>
-      </Link>
-
+      <button className="category-btn" onClick={handleHome}>
+        🏠 Home
+      </button>
 
       <Link to="/playlists">
-       <button className="category-btn">
-         📁 Playlists
-       </button>
+        <button className="category-btn">
+          📁 Playlists
+        </button>
       </Link>
-
 
       <Link to="/saved">
         <button className="category-btn">
@@ -40,9 +43,7 @@ function Sidebar({ onCategoryClick }) {
         </button>
       </Link>
 
-      <h3 style={{ marginTop: "20px" }}>
-        Categories
-      </h3>
+      <h3 style={{ marginTop: "20px" }}>Categories</h3>
 
       {categories.map((category) => (
         <button

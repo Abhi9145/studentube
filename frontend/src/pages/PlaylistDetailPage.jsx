@@ -1,93 +1,266 @@
-import { useParams, Link } from "react-router-dom";
+import { API_URL } from "../config";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function PlaylistDetailPage() {
   const { playlistId } = useParams();
+  const navigate = useNavigate();
 
   const [playlist, setPlaylist] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPlaylist();
-  }, []);
+  const token = localStorage.getItem("token");
 
   const fetchPlaylist = async () => {
     try {
-      const token =
-        localStorage.getItem("token");
-
-      const response = await fetch(
-        "http://localhost:8000/api/playlists",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const response = await fetch(`${API_URL}/api/playlists`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await response.json();
-
-      const currentPlaylist = data.find(
-        (p) => p._id === playlistId
-      );
-
-      setPlaylist(currentPlaylist);
+      const found = data.find((p) => p._id === playlistId);
+      setPlaylist(found || null);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to load playlist");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (!playlist) {
-    return <h2>Loading...</h2>;
+  const removeVideo = async (videoId) => {
+    try {
+      await fetch(`${API_URL}/api/playlists/${playlistId}/video/${videoId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await fetchPlaylist();
+      toast.success("Video removed");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to remove video");
+    }
+  };
+
+  const deletePlaylist = async () => {
+    if (!window.confirm("Delete this playlist? This cannot be undone.")) return;
+    try {
+      await fetch(`${API_URL}/api/playlists/${playlistId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("Playlist deleted");
+      navigate("/playlists");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete playlist");
+    }
+  };
+
+  useEffect(() => { fetchPlaylist(); }, [playlistId]);
+
+  if (loading) {
+    return (
+      <div style={{ padding: "40px", textAlign: "center", color: "#555" }}>
+        Loading playlist…
+      </div>
+    );
   }
 
+  if (!playlist) {
+    return (
+      <div className="empty-state" style={{ margin: "40px 20px" }}>
+        <div className="empty-state-icon">🔍</div>
+        <h3>Playlist not found</h3>
+        <p>This playlist may have been deleted.</p>
+        <Link to="/playlists" className="empty-state-btn">← Back to Playlists</Link>
+      </div>
+    );
+  }
+
+  const cover = playlist.videos?.[0]?.thumbnail;
+
   return (
-    <div
-      style={{
-        padding: "20px",
-      }}
-    >
-      <h1>📁 {playlist.name}</h1>
+    <div style={{ padding: "24px 20px", maxWidth: "860px" }}>
 
-      <p>
-        Total Videos:
-        {" "}
-        {playlist.videos.length}
-      </p>
+      {/* ── Back link ── */}
+      <Link
+        to="/playlists"
+        style={{ fontSize: "13px", color: "#888", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "24px" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+      >
+        ← All Playlists
+      </Link>
 
-      <hr />
-
-      {playlist.videos.map((video) => (
-        <Link
-          key={video.videoId}
-          to={`/video/${video.videoId}`}
+      {/* ── Hero header ── */}
+      <div
+        style={{
+          display: "flex",
+          gap: "24px",
+          alignItems: "flex-start",
+          background: "#111",
+          border: "1px solid #1e1e1e",
+          borderRadius: "18px",
+          padding: "24px",
+          marginBottom: "28px",
+        }}
+      >
+        {/* Cover image / placeholder */}
+        <div
           style={{
-            textDecoration: "none",
-            color: "inherit",
+            width: "160px",
+            height: "108px",
+            borderRadius: "12px",
+            overflow: "hidden",
+            flexShrink: 0,
+            background: "#1a1a1a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "44px",
           }}
         >
-          <div
+          {cover ? (
+            <img src={cover} alt={playlist.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            "📁"
+          )}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: "12px", color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
+            Playlist
+          </p>
+          <h1 style={{ fontSize: "26px", fontWeight: "800", marginBottom: "8px", lineHeight: 1.3 }}>
+            {playlist.name}
+          </h1>
+          <p style={{ color: "#666", fontSize: "14px", marginBottom: "20px" }}>
+            {playlist.videos?.length || 0} {playlist.videos?.length === 1 ? "video" : "videos"}
+          </p>
+          <button
+            onClick={deletePlaylist}
             style={{
-              display: "flex",
-              gap: "15px",
-              marginBottom: "20px",
-              border: "1px solid #333",
-              padding: "10px",
-              borderRadius: "10px",
+              padding: "8px 16px",
+              borderRadius: "8px",
+              border: "1px solid rgba(255,60,60,.25)",
+              background: "rgba(255,60,60,.07)",
+              color: "#ff5555",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: ".2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,60,60,.18)";
+              e.currentTarget.style.borderColor = "rgba(255,60,60,.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,60,60,.07)";
+              e.currentTarget.style.borderColor = "rgba(255,60,60,.25)";
             }}
           >
-            <img
-              src={video.thumbnail}
-              alt={video.title}
-              width="220"
-            />
+            🗑 Delete Playlist
+          </button>
+        </div>
+      </div>
 
-            <div>
-              <h3>{video.title}</h3>
-              <p>{video.channel}</p>
+      {/* ── Video list ── */}
+      {!playlist.videos || playlist.videos.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-icon">🎬</div>
+          <h3>No videos yet</h3>
+          <p>Add videos from the homepage or while watching any educational video.</p>
+          <Link to="/" className="empty-state-btn">Browse Videos</Link>
+        </div>
+      ) : (
+        <div className="history-list">
+          {playlist.videos.map((video, idx) => (
+            <div
+              key={video.videoId}
+              style={{
+                display: "flex",
+                gap: "16px",
+                background: "#111",
+                border: "1px solid #1e1e1e",
+                borderRadius: "14px",
+                overflow: "hidden",
+                alignItems: "center",
+                transition: ".2s",
+                padding: "0 16px 0 0",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#2e2e2e";
+                e.currentTarget.style.background = "#161616";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#1e1e1e";
+                e.currentTarget.style.background = "#111";
+              }}
+            >
+              {/* Index */}
+              <span
+                style={{
+                  minWidth: "36px",
+                  textAlign: "center",
+                  fontSize: "13px",
+                  color: "#444",
+                  fontWeight: "600",
+                  paddingLeft: "16px",
+                }}
+              >
+                {idx + 1}
+              </span>
+
+              {/* Thumbnail */}
+              <Link to={`/video/${video.videoId}`} style={{ flexShrink: 0 }}>
+                <img
+                  src={video.thumbnail}
+                  alt={video.title}
+                  className="history-thumb"
+                  style={{ width: "180px", height: "101px" }}
+                />
+              </Link>
+
+              {/* Info */}
+              <div className="history-info" style={{ flex: 1 }}>
+                <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
+                  <div className="history-title">{video.title}</div>
+                </Link>
+                <div className="history-channel">{video.channel}</div>
+              </div>
+
+              {/* Remove button */}
+              <button
+                onClick={() => removeVideo(video.videoId)}
+                title="Remove from playlist"
+                style={{
+                  flexShrink: 0,
+                  background: "transparent",
+                  border: "none",
+                  color: "#444",
+                  fontSize: "18px",
+                  cursor: "pointer",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  transition: ".2s",
+                  lineHeight: 1,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = "#ff5555";
+                  e.currentTarget.style.background = "rgba(255,60,60,.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = "#444";
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                ✕
+              </button>
             </div>
-          </div>
-        </Link>
-      ))}
+          ))}
+        </div>
+      )}
     </div>
   );
 }
