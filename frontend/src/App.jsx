@@ -87,7 +87,7 @@ function App() {
 
       // Filter out malformed entries (missing videoId or thumbnail)
       const validItems = rawItems.filter(
-        (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+        (v) => v?.id?.videoId && (v?.snippet?.thumbnails?.high?.url || v?.snippet?.thumbnails?.medium?.url || v?.snippet?.thumbnails?.default?.url)
       );
 
       setVideos(validItems);
@@ -122,7 +122,7 @@ function App() {
           : [];
 
         const validItems = rawItems.filter(
-          (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+          (v) => v?.id?.videoId && (v?.snippet?.thumbnails?.high?.url || v?.snippet?.thumbnails?.medium?.url || v?.snippet?.thumbnails?.default?.url)
         );
 
         if (validItems.length > 0) {
@@ -277,7 +277,7 @@ function App() {
             video={{
               title: video.snippet?.title,
               channel: video.snippet?.channelTitle,
-              thumbnail: video.snippet?.thumbnails?.high?.url,
+              thumbnail: video.snippet?.thumbnails?.high?.url || video.snippet?.thumbnails?.medium?.url || video.snippet?.thumbnails?.default?.url,
               videoId: video.id?.videoId,
             }}
           />

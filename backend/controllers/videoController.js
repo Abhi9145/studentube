@@ -420,7 +420,7 @@ const getVideoDetails = async (req, res) => {
       channel: snippet.channelTitle,
       channelId: snippet.channelId,
       publishedAt: snippet.publishedAt,
-      thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url,
+      thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url || "",
     });
   } catch (error) {
     console.error("Get video details error:", error);

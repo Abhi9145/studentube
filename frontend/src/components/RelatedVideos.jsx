@@ -16,11 +16,11 @@ function RelatedVideos({ videos }) {
         >
           <div className="related-card">
             <img
-              src={video.snippet.thumbnails.medium.url}
-              alt={video.snippet.title}
+              src={video.snippet?.thumbnails?.medium?.url || video.snippet?.thumbnails?.high?.url || video.snippet?.thumbnails?.default?.url || ""}
+              alt={video.snippet?.title || ""}
             />
 
-            <p>{video.snippet.title}</p>
+            <p>{video.snippet?.title || ""}</p>
           </div>
         </Link>
       ))}
