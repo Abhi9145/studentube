@@ -5,6 +5,10 @@ import { Toaster } from "react-hot-toast";
 
 import "./index.css";
 
+// Initialize theme from localStorage immediately on script load
+const savedTheme = localStorage.getItem("theme") || "dark";
+document.documentElement.setAttribute("data-theme", savedTheme);
+
 import App from "./App.jsx";
 import VideoPage from "./pages/VideoPage.jsx";
 import SavedVideosPage from "./pages/SavedVideosPage.jsx";

@@ -30,7 +30,7 @@ function HistoryPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: "40px", color: "#555", textAlign: "center" }}>
+      <div style={{ padding: "40px", color: "var(--faint-text)", textAlign: "center" }}>
         Loading your history…
       </div>
     );

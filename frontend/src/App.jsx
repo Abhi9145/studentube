@@ -37,6 +37,7 @@ const RECOMMENDATION_QUERIES = [
 function App() {
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isHome, setIsHome] = useState(true);
   const [status, setStatus] = useState(STATUS.LOADING);
   const [errorMsg, setErrorMsg] = useState("");
   const [lastQuery, setLastQuery] = useState(() => {
@@ -148,16 +149,19 @@ function App() {
   const handleSearch = (customQuery) => {
     const query = typeof customQuery === "string" ? customQuery : searchTerm;
     if (!query.trim()) return;
+    setIsHome(false);
     doSearch(query);
   };
 
   const handleCategoryClick = (category) => {
     setSearchTerm(category);
+    setIsHome(false);
     doSearch(category);
   };
 
   const handleHomeClick = () => {
     setSearchTerm("");
+    setIsHome(true);
     loadRecommendations();
   };
 
@@ -173,7 +177,7 @@ function App() {
             justifyContent: "center",
             padding: "80px 20px",
             gap: "16px",
-            color: "#555",
+            color: "var(--faint-text)",
           }}
         >
           <style>{`
@@ -183,7 +187,7 @@ function App() {
             style={{
               width: "38px",
               height: "38px",
-              border: "3px solid #222",
+              border: "3px solid var(--border-color)",
               borderTop: "3px solid #ff0000",
               borderRadius: "50%",
               animation: "spin 0.75s linear infinite",
@@ -200,18 +204,18 @@ function App() {
           style={{
             textAlign: "center",
             padding: "70px 20px",
-            background: "#111",
+            background: "var(--card-bg)",
             borderRadius: "16px",
-            border: "1px dashed #2a2a2a",
+            border: "1px dashed var(--card-border)",
           }}
         >
           <div style={{ fontSize: "42px", marginBottom: "16px" }}>😵</div>
-          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#ddd" }}>
+          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
             Couldn&apos;t load videos
           </h3>
           <p
             style={{
-              color: "#555",
+              color: "var(--faint-text)",
               fontSize: "14px",
               maxWidth: "400px",
               margin: "0 auto 24px",
@@ -249,16 +253,16 @@ function App() {
           style={{
             textAlign: "center",
             padding: "70px 20px",
-            background: "#111",
+            background: "var(--card-bg)",
             borderRadius: "16px",
-            border: "1px dashed #2a2a2a",
+            border: "1px dashed var(--card-border)",
           }}
         >
           <div style={{ fontSize: "42px", marginBottom: "16px" }}>📚</div>
-          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "#ddd" }}>
+          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
             Educational content only
           </h3>
-          <p style={{ color: "#555", fontSize: "14px" }}>
+          <p style={{ color: "var(--faint-text)", fontSize: "14px" }}>
             Try searching for Python, React, DSA, Math, Physics, or any study topic.
           </p>
         </div>
@@ -288,6 +292,7 @@ function App() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         handleSearch={handleSearch}
+        onLogoClick={handleHomeClick}
       />
 
       <div className="layout">
@@ -296,7 +301,7 @@ function App() {
         <div className="main-content">
           <TopicChips onTopicClick={handleCategoryClick} />
 
-          <ContinueWatching />
+          {isHome && <ContinueWatching />}
 
           <h2 style={{ marginBottom: "20px" }}>🔥 Recommended Videos</h2>
 

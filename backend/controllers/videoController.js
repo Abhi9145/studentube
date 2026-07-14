@@ -251,6 +251,50 @@ const getHistory = async (req, res) => {
   }
 };
 
+// Get Video Details (including description and channel information)
+const getVideoDetails = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+
+    if (!videoId) {
+      return res.status(400).json({ message: "Video ID is required" });
+    }
+
+    const response = await axios.get(
+      "https://www.googleapis.com/youtube/v3/videos",
+      {
+        params: {
+          part: "snippet,contentDetails,statistics",
+          id: videoId,
+          key: process.env.YOUTUBE_API_KEY,
+        },
+      }
+    );
+
+    if (!response.data.items || response.data.items.length === 0) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    const item = response.data.items[0];
+    const snippet = item.snippet;
+
+    res.json({
+      videoId: item.id,
+      title: snippet.title,
+      description: snippet.description,
+      channel: snippet.channelTitle,
+      channelId: snippet.channelId,
+      publishedAt: snippet.publishedAt,
+      thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url,
+    });
+  } catch (error) {
+    console.error("Get video details error:", error);
+    res.status(500).json({
+      message: "Failed to fetch video details",
+    });
+  }
+};
+
 module.exports = {
   searchVideos,
   saveVideo,
@@ -258,4 +302,5 @@ module.exports = {
   deleteSavedVideo,
   addToHistory,
   getHistory,
+  getVideoDetails,
 };

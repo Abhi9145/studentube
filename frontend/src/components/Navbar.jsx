@@ -1,8 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
+function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
   const token = localStorage.getItem("token");
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
   const userName = localStorage.getItem("name") || "Student";
   const userEmail = localStorage.getItem("email") || "";
 
@@ -96,7 +106,7 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
   return (
     <nav className="navbar">
       {/* Logo */}
-      <Link to="/" style={{ textDecoration: "none", flexShrink: 0 }}>
+      <Link to="/" onClick={onLogoClick} style={{ textDecoration: "none", flexShrink: 0 }}>
         <div className="logo">▶ Studentube</div>
       </Link>
 
@@ -139,6 +149,15 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
       <div className="nav-links">
         <Link to="/saved" className="nav-link">💾 Saved</Link>
         <Link to="/history" className="nav-link">🕒 History</Link>
+
+        {/* Theme Toggle */}
+        <button 
+          className="theme-toggle-btn" 
+          onClick={toggleTheme}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+        >
+          {theme === "dark" ? "☀️" : "🌙"}
+        </button>
 
         {!token ? (
           <>

@@ -61,7 +61,7 @@ function PlaylistDetailPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: "40px", textAlign: "center", color: "#555" }}>
+      <div style={{ padding: "40px", textAlign: "center", color: "var(--faint-text)" }}>
         Loading playlist…
       </div>
     );
@@ -86,9 +86,9 @@ function PlaylistDetailPage() {
       {/* ── Back link ── */}
       <Link
         to="/playlists"
-        style={{ fontSize: "13px", color: "#888", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "24px" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "#888")}
+        style={{ fontSize: "13px", color: "var(--muted-text)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px", marginBottom: "24px" }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text-color)")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--muted-text)")}
       >
         ← All Playlists
       </Link>
@@ -99,8 +99,8 @@ function PlaylistDetailPage() {
           display: "flex",
           gap: "24px",
           alignItems: "flex-start",
-          background: "#111",
-          border: "1px solid #1e1e1e",
+          background: "var(--card-bg)",
+          border: "1px solid var(--faint-border)",
           borderRadius: "18px",
           padding: "24px",
           marginBottom: "28px",
@@ -114,7 +114,7 @@ function PlaylistDetailPage() {
             borderRadius: "12px",
             overflow: "hidden",
             flexShrink: 0,
-            background: "#1a1a1a",
+            background: "var(--secondary-bg)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -129,13 +129,13 @@ function PlaylistDetailPage() {
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: "12px", color: "#555", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
+          <p style={{ fontSize: "12px", color: "var(--faint-text)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "8px" }}>
             Playlist
           </p>
           <h1 style={{ fontSize: "26px", fontWeight: "800", marginBottom: "8px", lineHeight: 1.3 }}>
             {playlist.name}
           </h1>
-          <p style={{ color: "#666", fontSize: "14px", marginBottom: "20px" }}>
+          <p style={{ color: "var(--muted-text)", fontSize: "14px", marginBottom: "20px" }}>
             {playlist.videos?.length || 0} {playlist.videos?.length === 1 ? "video" : "videos"}
           </p>
           <button
@@ -181,8 +181,8 @@ function PlaylistDetailPage() {
               style={{
                 display: "flex",
                 gap: "16px",
-                background: "#111",
-                border: "1px solid #1e1e1e",
+                background: "var(--card-bg)",
+                border: "1px solid var(--faint-border)",
                 borderRadius: "14px",
                 overflow: "hidden",
                 alignItems: "center",
@@ -190,12 +190,12 @@ function PlaylistDetailPage() {
                 padding: "0 16px 0 0",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#2e2e2e";
-                e.currentTarget.style.background = "#161616";
+                e.currentTarget.style.borderColor = "var(--card-border)";
+                e.currentTarget.style.background = "var(--secondary-bg)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#1e1e1e";
-                e.currentTarget.style.background = "#111";
+                e.currentTarget.style.borderColor = "var(--faint-border)";
+                e.currentTarget.style.background = "var(--card-bg)";
               }}
             >
               {/* Index */}
@@ -204,7 +204,7 @@ function PlaylistDetailPage() {
                   minWidth: "36px",
                   textAlign: "center",
                   fontSize: "13px",
-                  color: "#444",
+                  color: "var(--faint-text)",
                   fontWeight: "600",
                   paddingLeft: "16px",
                 }}
@@ -238,7 +238,7 @@ function PlaylistDetailPage() {
                   flexShrink: 0,
                   background: "transparent",
                   border: "none",
-                  color: "#444",
+                  color: "var(--faint-text)",
                   fontSize: "18px",
                   cursor: "pointer",
                   padding: "8px",
@@ -251,7 +251,7 @@ function PlaylistDetailPage() {
                   e.currentTarget.style.background = "rgba(255,60,60,.1)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "#444";
+                  e.currentTarget.style.color = "var(--faint-text)";
                   e.currentTarget.style.background = "transparent";
                 }}
               >

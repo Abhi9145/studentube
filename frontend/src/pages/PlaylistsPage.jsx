@@ -274,7 +274,7 @@ function PlaylistsPage() {
                 )}
 
                 {isExpanded && (!playlist.videos || playlist.videos.length === 0) && (
-                  <div className="playlist-video-list" style={{ textAlign: "center", color: "#555", padding: "20px" }}>
+                  <div className="playlist-video-list" style={{ textAlign: "center", color: "var(--faint-text)", padding: "20px" }}>
                     No videos in this playlist yet.
                   </div>
                 )}

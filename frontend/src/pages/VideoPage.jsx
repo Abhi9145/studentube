@@ -22,7 +22,8 @@ function VideoPage() {
   const storedTime = parseInt(localStorage.getItem(STORAGE_KEY(videoId)) || "0", 10);
   const resumeAt = urlTime > 0 ? urlTime : storedTime;
 
-  const [videoMeta, setVideoMeta] = useState({ title: "", channel: "", thumbnail: "" });
+  const [videoMeta, setVideoMeta] = useState({ title: "", channel: "", description: "", thumbnail: "" });
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [iframeStarted, setIframeStarted] = useState(false);
 
@@ -114,26 +115,46 @@ function VideoPage() {
       })
       .catch(console.error);
 
-    // Fetch video title/channel from YouTube oEmbed (no API key needed)
-    fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
-      .then((r) => r.json())
-      .then((d) => {
+    // Fetch video title/channel/description from backend
+    fetch(`${API_URL}/api/videos/details/${videoId}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP error! status: ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
         setVideoMeta({
-          title: d.title || "",
-          channel: d.author_name || "YouTube",
-          thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          title: data.title || "",
+          channel: data.channel || "YouTube",
+          description: data.description || "",
+          thumbnail: data.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
         });
       })
-      .catch(() => {
-        setVideoMeta({
-          title: "",
-          channel: "YouTube",
-          thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-        });
+      .catch((err) => {
+        console.error("Failed to fetch video details from backend:", err);
+        // Fallback to oEmbed if backend fails
+        fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
+          .then((r) => r.json())
+          .then((d) => {
+            setVideoMeta({
+              title: d.title || "",
+              channel: d.author_name || "YouTube",
+              description: "",
+              thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            });
+          })
+          .catch(() => {
+            setVideoMeta({
+              title: "",
+              channel: "YouTube",
+              description: "",
+              thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            });
+          });
       });
 
     // Reset per-video
     watchedSecondsRef.current = resumeAt;
+    setDescriptionExpanded(false);
 
     return () => {
       clearInterval(saveTimerRef.current);
@@ -145,11 +166,17 @@ function VideoPage() {
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
+  const descriptionText = videoMeta.description || "";
+  const isLongDescription = descriptionText.length > 200;
+  const displayDescription = descriptionExpanded || !isLongDescription 
+    ? descriptionText 
+    : `${descriptionText.slice(0, 200)}...`;
+
   return (
     <div style={{ display: "flex", gap: "24px", padding: "20px", alignItems: "flex-start" }}>
 
       {/* ── Main player column ── */}
-      <div style={{ flex: 3, minWidth: 0 }}>
+      <div style={{ flex: 3, minWidth: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
 
         {/* iframe — always rendered immediately, auto-starts at resumeAt */}
         <div
@@ -158,6 +185,7 @@ function VideoPage() {
             overflow: "hidden",
             boxShadow: "0 8px 32px rgba(0,0,0,.6)",
             aspectRatio: "16/9",
+            background: "#000",
           }}
         >
           <iframe
@@ -172,6 +200,105 @@ function VideoPage() {
             onLoad={handleIframeLoad}
             style={{ display: "block" }}
           />
+        </div>
+
+        {/* Video Title & Meta Card */}
+        <div className="video-details-card" style={{
+          background: "var(--card-bg, #181818)",
+          borderRadius: "16px",
+          padding: "24px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+          border: "1px solid var(--border-color, #222)",
+        }}>
+          <h1 style={{
+            fontSize: "22px",
+            fontWeight: "700",
+            color: "var(--text-color, #fff)",
+            margin: "0 0 16px 0",
+            lineHeight: "1.4"
+          }}>
+            {videoMeta.title || "Loading video title..."}
+          </h1>
+
+          {/* Channel Row */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "20px",
+            paddingBottom: "16px",
+            borderBottom: "1px solid var(--border-color, #222)"
+          }}>
+            <div style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #ff0000 0%, #b30000 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+              color: "#fff",
+              fontSize: "18px",
+              textTransform: "uppercase"
+            }}>
+              {videoMeta.channel ? videoMeta.channel.charAt(0) : "Y"}
+            </div>
+            <div>
+              <div style={{
+                fontWeight: "600",
+                fontSize: "16px",
+                color: "var(--text-color, #fff)"
+              }}>
+                {videoMeta.channel || "YouTube Channel"}
+              </div>
+              <div style={{
+                fontSize: "12px",
+                color: "var(--muted-text, #888)",
+                marginTop: "2px"
+              }}>
+                Verified Creator
+              </div>
+            </div>
+          </div>
+
+          {/* Description Container */}
+          <div style={{
+            background: "var(--secondary-bg, #161616)",
+            borderRadius: "12px",
+            padding: "16px",
+            fontSize: "14px",
+            lineHeight: "1.6",
+            color: "var(--text-color, #ccc)",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+            border: "1px solid var(--border-color, #222)"
+          }}>
+            <strong style={{ display: "block", marginBottom: "8px", color: "var(--text-color, #fff)" }}>
+              Description
+            </strong>
+            <p style={{ margin: 0, color: "var(--muted-text, #888)" }}>
+              {displayDescription || "No description available for this video."}
+            </p>
+            {isLongDescription && (
+              <button
+                onClick={() => setDescriptionExpanded(!descriptionExpanded)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#ff0000",
+                  fontWeight: "600",
+                  padding: "4px 0 0 0",
+                  cursor: "pointer",
+                  fontSize: "13px",
+                  display: "inline-block",
+                  marginTop: "8px"
+                }}
+              >
+                {descriptionExpanded ? "Show Less ──" : "Show More ──"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
