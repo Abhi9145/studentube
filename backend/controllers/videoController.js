@@ -1,6 +1,109 @@
 const SavedVideo = require("../models/SavedVideo");
 const History = require("../models/History");
+const SearchCache = require("../models/SearchCache");
 const axios = require("axios");
+
+// High-quality fallback educational videos to serve when YouTube API quota is exceeded or offline
+const FALLBACK_VIDEOS = [
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "8mAITcNt70k" },
+    snippet: {
+      title: "Harvard CS50 – Full Computer Science University Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/8mAITcNt70k/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "_uQrJ0TkZlc" },
+    snippet: {
+      title: "Python for Beginners - Full Course [Programming Tutorial]",
+      channelTitle: "Programming with Mosh",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/_uQrJ0TkZlc/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "jS4aFq5y8yw" },
+    snippet: {
+      title: "JavaScript Full Course for Beginners",
+      channelTitle: "Bro Code",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/jS4aFq5y8yw/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "G3e-cpL7ofc" },
+    snippet: {
+      title: "HTML & CSS Full Course - Beginner to Pro",
+      channelTitle: "SuperSimpleDev",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/G3e-cpL7ofc/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "Ke90Tje7VS0" },
+    snippet: {
+      title: "React JS Full Course for Beginners",
+      channelTitle: "Bro Code",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/Ke90Tje7VS0/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "RGOj5yH7evk" },
+    snippet: {
+      title: "Git and GitHub for Beginners - Crash Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "BB3uO7Vd_S4" },
+    snippet: {
+      title: "Data Structures and Algorithms for Beginners",
+      channelTitle: "Programming with Mosh",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/BB3uO7Vd_S4/hqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "vB3a4t3S_64" },
+    snippet: {
+      title: "Introduction to Artificial Intelligence (AI) for Beginners",
+      channelTitle: "Simplilearn",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/vB3a4t3S_64/hqdefault.jpg" }
+      }
+    }
+  }
+];
+
+const getFallbackVideos = (query) => {
+  const lowerQuery = query.toLowerCase();
+  const matched = FALLBACK_VIDEOS.filter(video => {
+    const title = video.snippet.title.toLowerCase();
+    const channel = video.snippet.channelTitle.toLowerCase();
+    return title.includes(lowerQuery) || channel.includes(lowerQuery);
+  });
+  return matched.length > 0 ? matched : FALLBACK_VIDEOS;
+};
 
 // Search YouTube Videos
 const searchVideos = async (req, res) => {
@@ -89,24 +192,56 @@ const searchVideos = async (req, res) => {
       });
     }
 
-    const response = await axios.get(
-      "https://www.googleapis.com/youtube/v3/search",
-      {
-        params: {
-          part: "snippet",
-          maxResults: 20,
-          q: query,
-          type: "video",
-          key: process.env.YOUTUBE_API_KEY,
-        },
+    // 1. Check MongoDB Cache first
+    try {
+      const cached = await SearchCache.findOne({ query: lowerQuery });
+      if (cached && Array.isArray(cached.results) && cached.results.length > 0) {
+        console.log(`[Cache Hit] Serving search results for: "${query}"`);
+        return res.json(cached.results);
       }
-    );
+    } catch (cacheErr) {
+      console.error("Cache read error:", cacheErr);
+    }
 
-    res.json(response.data.items);
+    // 2. Fetch from YouTube API if not cached
+    try {
+      console.log(`[API Request] Querying YouTube API for: "${query}"`);
+      const response = await axios.get(
+        "https://www.googleapis.com/youtube/v3/search",
+        {
+          params: {
+            part: "snippet",
+            maxResults: 20,
+            q: query,
+            type: "video",
+            key: process.env.YOUTUBE_API_KEY,
+          },
+        }
+      );
+
+      const items = response.data.items || [];
+
+      // Save to cache asynchronously (do not block client response)
+      if (items.length > 0) {
+        SearchCache.create({
+          query: lowerQuery,
+          results: items
+        }).catch(cacheErr => console.error("Cache write error:", cacheErr));
+      }
+
+      return res.json(items);
+
+    } catch (apiError) {
+      console.error(`YouTube API error for query "${query}":`, apiError.message);
+      
+      // Serve fallback videos structured exactly like YouTube API results
+      const fallbacks = getFallbackVideos(query);
+      console.log(`[Fallback] Serving static educational fallback videos for: "${query}"`);
+      return res.json(fallbacks);
+    }
 
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       message: "Failed to fetch videos",
     });
