@@ -2,55 +2,9 @@ import { API_URL } from "../config";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
 import RelatedVideos from "../components/RelatedVideos";
-import toast from "react-hot-toast";
 
 /* ── Helpers ── */
 const STORAGE_KEY = (id) => `yt_progress_${id}`;
-
-/* ── Render AI notes with basic markdown formatting ── */
-function NotesRenderer({ text }) {
-  if (!text) return null;
-  const lines = text.split("\n");
-  return (
-    <div className="ai-notes-body">
-      {lines.map((line, i) => {
-        const trimmed = line.trim();
-        if (!trimmed) return <br key={i} />;
-        if (/^#{1,3}\s/.test(trimmed)) {
-          return (
-            <h3 key={i} className="ai-notes-heading">
-              {trimmed.replace(/^#{1,3}\s/, "")}
-            </h3>
-          );
-        }
-        if (/^\d+\.\s/.test(trimmed) && trimmed.length < 80) {
-          return (
-            <h3 key={i} className="ai-notes-heading">
-              {trimmed}
-            </h3>
-          );
-        }
-        if (/^[-*•]\s/.test(trimmed)) {
-          const content = trimmed.replace(/^[-*•]\s/, "");
-          const parts = content.split(/\*\*(.*?)\*\*/g);
-          return (
-            <li key={i} className="ai-notes-bullet">
-              {parts.map((p, j) => (j % 2 === 1 ? <strong key={j}>{p}</strong> : p))}
-            </li>
-          );
-        }
-        const boldParts = trimmed.split(/\*\*(.*?)\*\*/g);
-        return (
-          <p key={i} className="ai-notes-para">
-            {boldParts.map((part, j) =>
-              j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-            )}
-          </p>
-        );
-      })}
-    </div>
-  );
-}
 
 function VideoPage() {
   const { videoId } = useParams();
@@ -64,12 +18,6 @@ function VideoPage() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [iframeStarted, setIframeStarted] = useState(false);
-
-  // ── AI Notes state ──────────────────────────────────────────────────────────
-  const [notes, setNotes] = useState("");
-  const [notesLoading, setNotesLoading] = useState(false);
-  const [notesVisible, setNotesVisible] = useState(false);
-  const notesRef = useRef(null);
 
   const saveTimerRef = useRef(null);
   const watchedSecondsRef = useRef(resumeAt);
@@ -150,62 +98,11 @@ function VideoPage() {
 
     watchedSecondsRef.current = resumeAt;
     setDescriptionExpanded(false);
-    setNotes("");
-    setNotesVisible(false);
 
     return () => clearInterval(saveTimerRef.current);
   }, [videoId]);
 
   const handleIframeLoad = () => setIframeStarted(true);
-
-  // ── AI Notes generation ─────────────────────────────────────────────────────
-  const generateNotes = async () => {
-    const title = videoMeta.title;
-    if (!title) {
-      toast.error("Video title not loaded yet. Please wait a moment.");
-      return;
-    }
-    setNotesLoading(true);
-    setNotesVisible(true);
-    setTimeout(() => notesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
-
-    try {
-      const res = await fetch(`${API_URL}/api/ai/notes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
-      });
-      const data = await res.json();
-      if (res.status === 429) {
-        toast.error("⏳ AI quota exceeded. Please try again in a few minutes.");
-        setNotesVisible(false);
-        return;
-      }
-      if (!res.ok) throw new Error(data.message || "Failed");
-      setNotes(data.notes);
-    } catch (err) {
-      toast.error("Failed to generate notes. Please try again.");
-      setNotesVisible(false);
-    } finally {
-      setNotesLoading(false);
-    }
-  };
-
-  const handleCopyNotes = () => {
-    navigator.clipboard.writeText(notes).then(() => toast.success("Notes copied to clipboard!"));
-  };
-
-  const handleDownloadNotes = () => {
-    const blob = new Blob([notes], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${(videoMeta.title || "notes").slice(0, 40).replace(/[^a-z0-9]/gi, "_")}_notes.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const handleRegenerateNotes = () => { setNotes(""); generateNotes(); };
 
   // ── Render ─────────────────────────────────────────────────────────────────
   const descriptionText = videoMeta.description || "";
@@ -286,79 +183,7 @@ function VideoPage() {
               </button>
             )}
           </div>
-
-          {/* ── Generate AI Notes Button ── */}
-          {!notesVisible && (
-            <button
-              className="ai-notes-trigger-btn"
-              onClick={generateNotes}
-              disabled={!videoMeta.title}
-            >
-              <span className="ai-notes-trigger-icon">✨</span>
-              Generate AI Study Notes
-              <span className="ai-notes-trigger-badge">Gemini</span>
-            </button>
-          )}
         </div>
-
-        {/* ── AI Notes Panel ── */}
-        {notesVisible && (
-          <div className="ai-notes-panel" ref={notesRef}>
-
-            {/* Panel Header */}
-            <div className="ai-notes-header">
-              <div className="ai-notes-header-left">
-                <div className="ai-notes-gem-icon">✨</div>
-                <div>
-                  <div className="ai-notes-title">AI Study Notes</div>
-                  <div className="ai-notes-subtitle">
-                    {notesLoading
-                      ? "Generating with Gemini AI…"
-                      : `"${(videoMeta.title || "").slice(0, 55)}${(videoMeta.title || "").length > 55 ? "…" : ""}"`}
-                  </div>
-                </div>
-              </div>
-
-              {!notesLoading && notes && (
-                <div className="ai-notes-actions">
-                  <button className="ai-notes-action-btn" onClick={handleCopyNotes}>
-                    📋 Copy
-                  </button>
-                  <button className="ai-notes-action-btn" onClick={handleDownloadNotes}>
-                    ⬇️ Save
-                  </button>
-                  <button className="ai-notes-action-btn ai-notes-regen-btn" onClick={handleRegenerateNotes}>
-                    🔄 Regenerate
-                  </button>
-                  <button
-                    className="ai-notes-action-btn ai-notes-close-btn"
-                    onClick={() => { setNotesVisible(false); setNotes(""); }}
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Loading state */}
-            {notesLoading && (
-              <div className="ai-notes-loading">
-                <div className="ai-notes-spinner-wrap">
-                  <div className="ai-notes-spinner" />
-                  <span>Gemini is thinking…</span>
-                </div>
-                <div className="ai-notes-skeleton">
-                  {[90, 70, 85, 60, 80, 65, 95, 50].map((w, i) => (
-                    <div key={i} className="ai-notes-skeleton-line" style={{ width: `${w}%`, animationDelay: `${i * 0.08}s` }} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Notes content */}
-            {!notesLoading && notes && <NotesRenderer text={notes} />}
-          </div>
-        )}
       </div>
 
       {/* ── Related videos column ── */}
