@@ -7,56 +7,56 @@ const axios = require("axios");
 const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "8mAITcNt70k" },
+    id: { kind: "youtube#video", videoId: "rfscVS0vtbw" },
     snippet: {
-      title: "Harvard CS50 – Full Computer Science University Course",
+      title: "Python for Beginners – Full Course",
       channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/8mAITcNt70k/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg" }
       }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "_uQrJ0TkZlc" },
+    id: { kind: "youtube#video", videoId: "PkZNo7MFNFg" },
     snippet: {
-      title: "Python for Beginners - Full Course [Programming Tutorial]",
-      channelTitle: "Programming with Mosh",
+      title: "Learn JavaScript – Full Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/_uQrJ0TkZlc/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/PkZNo7MFNFg/mqdefault.jpg" }
       }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "jS4aFq5y8yw" },
+    id: { kind: "youtube#video", videoId: "zOjov-2OZ0E" },
     snippet: {
-      title: "JavaScript Full Course for Beginners",
-      channelTitle: "Bro Code",
+      title: "HTML Full Course – Build a Website Tutorial",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/jS4aFq5y8yw/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/zOjov-2OZ0E/mqdefault.jpg" }
       }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "G3e-cpL7ofc" },
+    id: { kind: "youtube#video", videoId: "OXGznpKZ_sA" },
     snippet: {
-      title: "HTML & CSS Full Course - Beginner to Pro",
-      channelTitle: "SuperSimpleDev",
+      title: "CSS Tutorial – Zero to Hero (Complete Course)",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/G3e-cpL7ofc/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/OXGznpKZ_sA/mqdefault.jpg" }
       }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "Ke90Tje7VS0" },
+    id: { kind: "youtube#video", videoId: "bMknfKXIFA8" },
     snippet: {
       title: "React JS Full Course for Beginners",
-      channelTitle: "Bro Code",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/Ke90Tje7VS0/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/bMknfKXIFA8/mqdefault.jpg" }
       }
     }
   },
@@ -73,23 +73,23 @@ const FALLBACK_VIDEOS = [
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "BB3uO7Vd_S4" },
+    id: { kind: "youtube#video", videoId: "ua-CiDNNj30" },
     snippet: {
-      title: "Data Structures and Algorithms for Beginners",
-      channelTitle: "Programming with Mosh",
+      title: "Machine Learning for Everybody – Full Course",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/BB3uO7Vd_S4/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/ua-CiDNNj30/mqdefault.jpg" }
       }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "vB3a4t3S_64" },
+    id: { kind: "youtube#video", videoId: "l9AzO1FMgM8" },
     snippet: {
-      title: "Introduction to Artificial Intelligence (AI) for Beginners",
-      channelTitle: "Simplilearn",
+      title: "Data Structures Easy to Advanced – Full Tutorial",
+      channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/vB3a4t3S_64/mqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" }
       }
     }
   }
