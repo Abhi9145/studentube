@@ -12,7 +12,7 @@ const FALLBACK_VIDEOS = [
       title: "Harvard CS50 – Full Computer Science University Course",
       channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/8mAITcNt70k/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/8mAITcNt70k/mqdefault.jpg" }
       }
     }
   },
@@ -23,7 +23,7 @@ const FALLBACK_VIDEOS = [
       title: "Python for Beginners - Full Course [Programming Tutorial]",
       channelTitle: "Programming with Mosh",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/_uQrJ0TkZlc/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/_uQrJ0TkZlc/mqdefault.jpg" }
       }
     }
   },
@@ -34,7 +34,7 @@ const FALLBACK_VIDEOS = [
       title: "JavaScript Full Course for Beginners",
       channelTitle: "Bro Code",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/jS4aFq5y8yw/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/jS4aFq5y8yw/mqdefault.jpg" }
       }
     }
   },
@@ -45,7 +45,7 @@ const FALLBACK_VIDEOS = [
       title: "HTML & CSS Full Course - Beginner to Pro",
       channelTitle: "SuperSimpleDev",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/G3e-cpL7ofc/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/G3e-cpL7ofc/mqdefault.jpg" }
       }
     }
   },
@@ -56,7 +56,7 @@ const FALLBACK_VIDEOS = [
       title: "React JS Full Course for Beginners",
       channelTitle: "Bro Code",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/Ke90Tje7VS0/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/Ke90Tje7VS0/mqdefault.jpg" }
       }
     }
   },
@@ -67,7 +67,7 @@ const FALLBACK_VIDEOS = [
       title: "Git and GitHub for Beginners - Crash Course",
       channelTitle: "freeCodeCamp.org",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/mqdefault.jpg" }
       }
     }
   },
@@ -78,7 +78,7 @@ const FALLBACK_VIDEOS = [
       title: "Data Structures and Algorithms for Beginners",
       channelTitle: "Programming with Mosh",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/BB3uO7Vd_S4/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/BB3uO7Vd_S4/mqdefault.jpg" }
       }
     }
   },
@@ -89,7 +89,7 @@ const FALLBACK_VIDEOS = [
       title: "Introduction to Artificial Intelligence (AI) for Beginners",
       channelTitle: "Simplilearn",
       thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/vB3a4t3S_64/hqdefault.jpg" }
+        high: { url: "https://i.ytimg.com/vi/vB3a4t3S_64/mqdefault.jpg" }
       }
     }
   }

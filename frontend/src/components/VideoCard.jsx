@@ -150,7 +150,14 @@ function VideoCard({ video }) {
   return (
     <div className="video-card">
       <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
-        <img src={video.thumbnail} alt={video.title} />
+        <img
+          src={video.thumbnail}
+          alt={video.title}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = `https://i.ytimg.com/vi/${video.videoId}/mqdefault.jpg`;
+          }}
+        />
         <h4>{video.title}</h4>
         <p>{video.channel}</p>
       </Link>
