@@ -46,18 +46,19 @@ a{
 /* ========================= */
 
 .navbar{
-    height:70px;
+    height:60px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:0 25px;
+    padding:0 16px;
     background:var(--navbar-bg);
     border-bottom:1px solid var(--border-color);
     position:sticky;
     top:0;
     z-index:999;
-    gap:20px;
+    gap:12px;
     transition: background 0.3s, border-color 0.3s;
+    overflow:hidden;
 }
 
 .logo{
@@ -72,11 +73,17 @@ a{
 
 /* Search */
 
+.search-container{
+    position:relative;
+    flex:1;
+    min-width:0;
+    max-width:500px;
+}
+
 .search-box{
     display:flex;
     gap:0;
-    flex:1;
-    max-width:500px;
+    width:100%;
 }
 
 .search-box input{
@@ -118,7 +125,7 @@ a{
 .nav-links{
     display:flex;
     align-items:center;
-    gap:8px;
+    gap:6px;
     flex-shrink:0;
 }
 
@@ -126,10 +133,11 @@ a{
     font-size:13px;
     font-weight:500;
     color:var(--muted-text);
-    padding:7px 12px;
+    padding:7px 10px;
     border-radius:8px;
     text-decoration:none;
     transition:.2s;
+    white-space:nowrap;
 }
 
 .nav-link:hover{
@@ -304,10 +312,19 @@ a{
 .sidebar{
     width:230px;
     background:var(--card-bg);
-    min-height:calc(100vh - 70px);
+    min-height:calc(100vh - 60px);
     padding:20px;
     border-right:1px solid var(--border-color);
     transition: background 0.3s, border-color 0.3s;
+}
+
+/* Video page two-column layout — wraps on mobile via media query */
+.video-page-layout{
+    display:flex;
+    gap:24px;
+    padding:20px;
+    align-items:flex-start;
+    flex-wrap:wrap;
 }
 
 .sidebar h3{
@@ -579,7 +596,7 @@ display:grid;
 
 grid-template-columns:
 
-repeat(auto-fill,minmax(320px,1fr));
+repeat(auto-fill,minmax(280px,1fr));
 
 gap:22px;
 
@@ -833,12 +850,6 @@ animation:fadeIn .5s ease;
 
 @media(max-width:1100px){
 
-.search-box input{
-
-width:250px;
-
-}
-
 .sidebar{
 
 width:190px;
@@ -863,29 +874,36 @@ min-height:auto;
 
 display:flex;
 
+flex-wrap:nowrap;
+
 overflow-x:auto;
 
-gap:10px;
+gap:8px;
+
+padding:10px 16px;
+
+}
+
+/* Hide sidebar headings in horizontal scroll mode */
+.sidebar h3{
+
+display:none;
 
 }
 
 .category-btn{
 
-min-width:160px;
+min-width:140px;
 
 margin-bottom:0;
 
-}
-
-.search-box{
-
-flex:1;
+white-space:nowrap;
 
 }
 
-.search-box input{
+.search-container{
 
-width:100%;
+max-width:none;
 
 }
 
@@ -893,27 +911,43 @@ width:100%;
 
 @media(max-width:600px){
 
+/* Navbar stays single row — hide text nav links, show only icons/avatar */
 .navbar{
 
-flex-direction:column;
+height:56px;
 
-height:auto;
+padding:0 12px;
 
-padding:15px;
-
-gap:15px;
+gap:8px;
 
 }
 
-.search-box{
+/* Keep logo visible */
+.logo{
 
-width:100%;
+font-size:18px;
 
 }
 
-.search-box input{
+/* Hide long-form nav links text on mobile */
+.nav-link{
 
-width:100%;
+display:none;
+
+}
+
+/* Hide login/signup ghost button text on mobile */
+.nav-btn-ghost{
+
+display:none;
+
+}
+
+.nav-btn-primary{
+
+padding:6px 12px;
+
+font-size:12px;
 
 }
 
@@ -921,21 +955,70 @@ width:100%;
 
 width:95%;
 
-padding:30px;
+padding:24px;
 
 }
 
 .resume-card{
 
-width:170px;
+width:160px;
 
-min-width:170px;
+min-width:160px;
 
 }
 
 .video-grid{
 
 grid-template-columns:1fr;
+
+gap:16px;
+
+}
+
+.main-content{
+
+padding:12px;
+
+}
+
+/* Video page columns stack vertically */
+.video-page-layout{
+
+flex-direction:column;
+
+padding:12px;
+
+gap:16px;
+
+}
+
+.video-page-layout > *{
+
+min-width:0 !important;
+
+flex:none !important;
+
+width:100% !important;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.search-box input{
+
+font-size:13px;
+
+padding:8px 12px;
+
+}
+
+.search-box button{
+
+padding:8px 12px;
+
+font-size:13px;
 
 }
 

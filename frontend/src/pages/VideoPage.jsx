@@ -173,7 +173,7 @@ function VideoPage() {
     : `${descriptionText.slice(0, 200)}...`;
 
   return (
-    <div style={{ display: "flex", gap: "24px", padding: "20px", alignItems: "flex-start" }}>
+    <div className="video-page-layout">
 
       {/* ── Main player column ── */}
       <div style={{ flex: 3, minWidth: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -303,7 +303,7 @@ function VideoPage() {
       </div>
 
       {/* ── Related videos column ── */}
-      <div style={{ flex: 1, minWidth: "260px" }}>
+      <div style={{ flex: 1, minWidth: "240px" }}>
         <RelatedVideos videos={relatedVideos} />
       </div>
     </div>
