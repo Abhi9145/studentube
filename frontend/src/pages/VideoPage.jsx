@@ -176,10 +176,15 @@ function VideoPage() {
         body: JSON.stringify({ title }),
       });
       const data = await res.json();
+      if (res.status === 429) {
+        toast.error("⏳ AI quota exceeded. Please try again in a few minutes.");
+        setNotesVisible(false);
+        return;
+      }
       if (!res.ok) throw new Error(data.message || "Failed");
       setNotes(data.notes);
     } catch (err) {
-      toast.error("Failed to generate notes. Try again.");
+      toast.error("Failed to generate notes. Please try again.");
       setNotesVisible(false);
     } finally {
       setNotesLoading(false);
