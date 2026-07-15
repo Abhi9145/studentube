@@ -13,8 +13,10 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
   };
-  const userName = localStorage.getItem("name") || "Student";
-  const userEmail = localStorage.getItem("email") || "";
+  const rawName = localStorage.getItem("name");
+  const rawEmail = localStorage.getItem("email");
+  const userName = rawName && rawName !== "null" && rawName !== "undefined" ? rawName : "Student";
+  const userEmail = rawEmail && rawEmail !== "null" && rawEmail !== "undefined" ? rawEmail : "";
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -98,10 +100,11 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
 
   const initials = userName
     .split(" ")
+    .filter((w) => w.length > 0)
     .map((w) => w[0])
     .slice(0, 2)
     .join("")
-    .toUpperCase();
+    .toUpperCase() || "S";
 
   return (
     <nav className="navbar">
