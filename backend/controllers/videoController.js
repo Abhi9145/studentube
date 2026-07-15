@@ -92,6 +92,182 @@ const FALLBACK_VIDEOS = [
         high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" }
       }
     }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "vLqTf2b6GZw" },
+    snippet: {
+      title: "C++ Tutorial for Beginners - Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/vLqTf2b6GZw/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "HXV3zeQKqGY" },
+    snippet: {
+      title: "SQL Tutorial - Full Database Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/HXV3zeQKqGY/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "grEKMHGYyns" },
+    snippet: {
+      title: "Java Tutorial for Beginners [Full Course]",
+      channelTitle: "Programming with Mosh",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/grEKMHGYyns/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "TlB_eWDSMt4" },
+    snippet: {
+      title: "Node.js & Express.js - Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/TlB_eWDSMt4/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "30PJ0rFeF9U" },
+    snippet: {
+      title: "Introduction to Physics - Science Crash Course",
+      channelTitle: "CrashCourse",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/30PJ0rFeF9U/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "fNk_zzaMoEs" },
+    snippet: {
+      title: "Calculus 1 - Full College Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/fNk_zzaMoEs/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "pTbSfLHWyDY" },
+    snippet: {
+      title: "Docker for Beginners - Full Crash Course",
+      channelTitle: "TechWorld with Nana",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/pTbSfLHWyDY/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "qwAFL1597OU" },
+    snippet: {
+      title: "Cybersecurity Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/qwAFL1597OU/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "sZypP4H9vFY" },
+    snippet: {
+      title: "Linux Command Line Tutorial for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/sZypP4H9vFY/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "X3paOmcrTjQ" },
+    snippet: {
+      title: "Introduction to Computer Science and Programming",
+      channelTitle: "MIT OpenCourseWare",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/X3paOmcrTjQ/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "LHBEIOLrQUM" },
+    snippet: {
+      title: "Python for Data Science - Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/LHBEIOLrQUM/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "y8k5cM9_D_I" },
+    snippet: {
+      title: "Linear Algebra - College Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/y8k5cM9_D_I/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "V9_vXhA2y64" },
+    snippet: {
+      title: "Next.js 14 Tutorial for Beginners - React Framework",
+      channelTitle: "Codevolution",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/V9_vXhA2y64/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "t2oSFd5MN28" },
+    snippet: {
+      title: "Data Science for Beginners - Full Crash Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/t2oSFd5MN28/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "O5nskjZ_GoI" },
+    snippet: {
+      title: "UX/UI Design Tutorial for Beginners",
+      channelTitle: "DesignCourse",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/O5nskjZ_GoI/mqdefault.jpg" }
+      }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "kGtEAXsHk24" },
+    snippet: {
+      title: "Excel Tutorial for Beginners - Learn in 20 Mins",
+      channelTitle: "Kevin Stratvert",
+      thumbnails: {
+        high: { url: "https://i.ytimg.com/vi/kGtEAXsHk24/mqdefault.jpg" }
+      }
+    }
   }
 ];
 
@@ -211,7 +387,7 @@ const searchVideos = async (req, res) => {
         {
           params: {
             part: "snippet",
-            maxResults: 20,
+            maxResults: 36,
             q: query,
             type: "video",
             key: process.env.YOUTUBE_API_KEY,
