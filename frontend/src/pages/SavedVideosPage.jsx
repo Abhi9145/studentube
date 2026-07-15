@@ -75,17 +75,7 @@ function SavedVideosPage() {
               {/* Thumbnail */}
               <Link to={`/video/${video.videoId}`}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={video.thumbnail} alt={video.title} style={{ width: "100%", height: "180px", objectFit: "cover", display: "block" }}
-                    onError={(e) => {
-                      const id = video.videoId;
-                      if (!id) { e.currentTarget.onerror = null; return; }
-                      const cur = e.currentTarget.src;
-                      if (cur.includes("hqdefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
-                      else if (cur.includes("mqdefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/sddefault.jpg`;
-                      else if (cur.includes("sddefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/default.jpg`;
-                      else e.currentTarget.onerror = null;
-                    }}
-                  />
+                  <img src={video.thumbnail} alt={video.title} style={{ width: "100%", height: "180px", objectFit: "cover", display: "block" }} />
                   <div style={{
                     position: "absolute", inset: 0, background: "rgba(0,0,0,.5)",
                     display: "flex", alignItems: "center", justifyContent: "center",

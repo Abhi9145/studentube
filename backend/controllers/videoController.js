@@ -97,33 +97,12 @@ const FALLBACK_VIDEOS = [
 
 const getFallbackVideos = (query) => {
   const lowerQuery = query.toLowerCase();
-  
-  // Try exact match first
-  let matched = FALLBACK_VIDEOS.filter(video => {
+  const matched = FALLBACK_VIDEOS.filter(video => {
     const title = video.snippet.title.toLowerCase();
     const channel = video.snippet.channelTitle.toLowerCase();
     return title.includes(lowerQuery) || channel.includes(lowerQuery);
   });
-  
-  // If no exact match, try matching individual words (longer than 2 chars)
-  if (matched.length === 0) {
-    const words = lowerQuery.split(/\s+/).filter(w => w.length > 2);
-    if (words.length > 0) {
-      matched = FALLBACK_VIDEOS.filter(video => {
-        const title = video.snippet.title.toLowerCase();
-        const channel = video.snippet.channelTitle.toLowerCase();
-        return words.some(word => title.includes(word) || channel.includes(word));
-      });
-    }
-  }
-  
-  if (matched.length > 0) {
-    const matchedIds = new Set(matched.map(v => v.id.videoId));
-    const extra = FALLBACK_VIDEOS.filter(v => !matchedIds.has(v.id.videoId));
-    return [...matched, ...extra].slice(0, 8);
-  }
-  
-  return FALLBACK_VIDEOS;
+  return matched.length > 0 ? matched : FALLBACK_VIDEOS;
 };
 
 // Search YouTube Videos
@@ -441,7 +420,7 @@ const getVideoDetails = async (req, res) => {
       channel: snippet.channelTitle,
       channelId: snippet.channelId,
       publishedAt: snippet.publishedAt,
-      thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url || "",
+      thumbnail: snippet.thumbnails?.high?.url || snippet.thumbnails?.default?.url,
     });
   } catch (error) {
     console.error("Get video details error:", error);

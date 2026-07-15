@@ -64,15 +64,6 @@ function HistoryPage() {
                 src={video.thumbnail}
                 alt={video.title}
                 className="history-thumb"
-                onError={(e) => {
-                  const id = video.videoId;
-                  if (!id) { e.currentTarget.onerror = null; return; }
-                  const cur = e.currentTarget.src;
-                  if (cur.includes("hqdefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
-                  else if (cur.includes("mqdefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/sddefault.jpg`;
-                  else if (cur.includes("sddefault")) e.currentTarget.src = `https://i.ytimg.com/vi/${id}/default.jpg`;
-                  else e.currentTarget.onerror = null;
-                }}
               />
               <div className="history-info">
                 <div className="history-title">{video.title}</div>

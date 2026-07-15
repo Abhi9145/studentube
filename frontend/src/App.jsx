@@ -87,7 +87,7 @@ function App() {
 
       // Filter out malformed entries (missing videoId or thumbnail)
       const validItems = rawItems.filter(
-        (v) => v?.id?.videoId && (v?.snippet?.thumbnails?.high?.url || v?.snippet?.thumbnails?.medium?.url || v?.snippet?.thumbnails?.default?.url)
+        (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
       );
 
       setVideos(validItems);
@@ -104,59 +104,41 @@ function App() {
   const loadRecommendations = useCallback(async () => {
     setStatus(STATUS.LOADING);
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
-    const targetQueries = shuffled.slice(0, 3);
-    const allVideos = [];
-    const seenIds = new Set();
 
-    try {
-      const fetchPromises = targetQueries.map(async (q) => {
-        try {
-          const res = await fetch(
-            `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
-          );
-          if (!res.ok) return [];
-          const data = await res.json();
-          if (data.educationalOnly) return [];
-          
-          const rawItems = Array.isArray(data)
-            ? data
-            : Array.isArray(data.items)
-            ? data.items
-            : [];
-            
-          return rawItems.filter(
-            (v) => v?.id?.videoId && (v?.snippet?.thumbnails?.high?.url || v?.snippet?.thumbnails?.medium?.url || v?.snippet?.thumbnails?.default?.url)
-          );
-        } catch {
-          return [];
-        }
-      });
+    for (const q of shuffled) {
+      try {
+        const res = await fetch(
+          `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
+        );
+        if (!res.ok) continue;
 
-      const results = await Promise.all(fetchPromises);
-      
-      for (const list of results) {
-        for (const v of list) {
-          const id = v.id.videoId;
-          if (!seenIds.has(id)) {
-            seenIds.add(id);
-            allVideos.push(v);
-          }
+        const data = await res.json();
+        if (data.educationalOnly) continue;
+
+        const rawItems = Array.isArray(data)
+          ? data
+          : Array.isArray(data.items)
+          ? data.items
+          : [];
+
+        const validItems = rawItems.filter(
+          (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+        );
+
+        if (validItems.length > 0) {
+          setVideos(validItems);
+          setStatus(STATUS.SUCCESS);
+          return; // done
         }
+      } catch {
+        // try next
       }
-    } catch (err) {
-      console.error("Load recommendations error:", err);
     }
 
-    if (allVideos.length > 0) {
-      const mixedVideos = allVideos.sort(() => Math.random() - 0.5);
-      setVideos(mixedVideos.slice(0, 16));
-      setStatus(STATUS.SUCCESS);
-    } else {
-      setErrorMsg(
-        "YouTube API may be temporarily unavailable or the daily quota has been reached."
-      );
-      setStatus(STATUS.ERROR);
-    }
+    setErrorMsg(
+      "YouTube API may be temporarily unavailable or the daily quota has been reached."
+    );
+    setStatus(STATUS.ERROR);
   }, []);
 
   useEffect(() => {
@@ -295,7 +277,7 @@ function App() {
             video={{
               title: video.snippet?.title,
               channel: video.snippet?.channelTitle,
-              thumbnail: video.snippet?.thumbnails?.high?.url || video.snippet?.thumbnails?.medium?.url || video.snippet?.thumbnails?.default?.url,
+              thumbnail: video.snippet?.thumbnails?.high?.url,
               videoId: video.id?.videoId,
             }}
           />
@@ -321,9 +303,7 @@ function App() {
 
           {isHome && <ContinueWatching />}
 
-          <h2 style={{ marginBottom: "20px" }}>
-            {isHome ? "🔥 Recommended Videos" : `🔍 Search Results for "${searchTerm || lastQuery}"`}
-          </h2>
+          <h2 style={{ marginBottom: "20px" }}>🔥 Recommended Videos</h2>
 
           {renderContent()}
         </div>

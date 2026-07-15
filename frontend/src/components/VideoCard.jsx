@@ -150,23 +150,7 @@ function VideoCard({ video }) {
   return (
     <div className="video-card">
       <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
-        <img
-          src={video.thumbnail}
-          alt={video.title}
-          onError={(e) => {
-            const videoId = video.videoId;
-            const current = e.currentTarget.src;
-            if (current.includes("hqdefault")) {
-              e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
-            } else if (current.includes("mqdefault")) {
-              e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/sddefault.jpg`;
-            } else if (current.includes("sddefault")) {
-              e.currentTarget.src = `https://i.ytimg.com/vi/${videoId}/default.jpg`;
-            } else {
-              e.currentTarget.onerror = null; // stop loop
-            }
-          }}
-        />
+        <img src={video.thumbnail} alt={video.title} />
         <h4>{video.title}</h4>
         <p>{video.channel}</p>
       </Link>
