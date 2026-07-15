@@ -106,12 +106,14 @@ function VideoPage() {
     // Initial history entry (marks as watched)
     saveHistory(resumeAt);
 
-    // Fetch related
     fetch(`${API_URL}/api/videos/search?q=programming tutorial`)
       .then((r) => r.json())
       .then((data) => {
         const items = Array.isArray(data) ? data : data.items || [];
-        setRelatedVideos(items);
+        const validItems = items.filter(
+          (v) => v?.id?.videoId && (v?.snippet?.thumbnails?.high?.url || v?.snippet?.thumbnails?.medium?.url || v?.snippet?.thumbnails?.default?.url)
+        );
+        setRelatedVideos(validItems);
       })
       .catch(console.error);
 
