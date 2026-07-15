@@ -85,6 +85,20 @@ function ContinueWatching() {
                   src={video.thumbnail}
                   alt={video.title}
                   className="cw-thumb"
+                  onError={(e) => {
+                    const id = video.videoId;
+                    if (!id) { e.currentTarget.onerror = null; return; }
+                    const current = e.currentTarget.src;
+                    if (current.includes("hqdefault")) {
+                      e.currentTarget.src = `https://i.ytimg.com/vi/${id}/mqdefault.jpg`;
+                    } else if (current.includes("mqdefault")) {
+                      e.currentTarget.src = `https://i.ytimg.com/vi/${id}/sddefault.jpg`;
+                    } else if (current.includes("sddefault")) {
+                      e.currentTarget.src = `https://i.ytimg.com/vi/${id}/default.jpg`;
+                    } else {
+                      e.currentTarget.onerror = null;
+                    }
+                  }}
                 />
 
                 {/* Hover overlay */}
