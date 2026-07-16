@@ -105,6 +105,114 @@ const getFallbackVideos = (query) => {
   return matched.length > 0 ? matched : FALLBACK_VIDEOS;
 };
 
+const BANNED_PATTERNS = [
+  /\breaction(s)?\b/i,
+  /\breacting\b/i,
+  /\breact to\b/i,
+  /\bmusic video\b/i,
+  /\bofficial (music )?video\b/i,
+  /\bofficial audio\b/i,
+  /\blyric(s)? video\b/i,
+  /\bsong(s)?\b/i,
+  /\bcover(s)?\b/i,
+  /\blive performance\b/i,
+  /\bvisualizer\b/i,
+  /\bkaraoke\b/i,
+  /\balbum\b/i,
+  /\bsoundtrack\b/i,
+  /\bvevo\b/i,
+  /\bmix\b/i,
+  /\bplaylist\b/i,
+  /\bchoreography\b/i,
+  /\bdance\b/i,
+  /\bsnapchat\b/i,
+  /\btiktok\b/i,
+  /\bshorts\b/i,
+  /\bfunny moments\b/i,
+  /\bcompilation\b/i,
+  /\bprank(s)?\b/i,
+  /\bgaming\b/i,
+  /\bgameplay\b/i,
+  /\btrailer\b/i
+];
+
+const isWordMatch = (query, keyword) => {
+  let startIdx = 0;
+  while ((startIdx = query.indexOf(keyword, startIdx)) !== -1) {
+    const charBefore = startIdx > 0 ? query[startIdx - 1] : null;
+    const charAfter = startIdx + keyword.length < query.length ? query[startIdx + keyword.length] : null;
+
+    const isBeforeValid = !charBefore || !/^[a-zA-Z0-9]$/.test(charBefore);
+    const isAfterValid = !charAfter || !/^[a-zA-Z0-9]$/.test(charAfter);
+
+    if (isBeforeValid && isAfterValid) {
+      return true;
+    }
+    startIdx += 1;
+  }
+  return false;
+};
+
+const getRefinedQuery = (query) => {
+  const lower = query.trim().toLowerCase();
+  if (lower === "react" || lower === "reactjs") {
+    return "react js tutorial";
+  }
+  if (lower === "c") {
+    return "c programming tutorial";
+  }
+  if (lower === "c++") {
+    return "c++ programming tutorial";
+  }
+  if (lower === "java") {
+    return "java programming tutorial";
+  }
+  if (lower === "python") {
+    return "python programming tutorial";
+  }
+  if (lower === "os") {
+    return "operating system tutorial";
+  }
+  if (lower === "ai") {
+    return "artificial intelligence tutorial";
+  }
+  if (lower === "dbms") {
+    return "dbms course";
+  }
+
+  // Broad searches containing "react" but missing educational keywords
+  if (lower.includes("react") && !/\b(js|native|tutorial|course|programming|coding|web|development|developer|lecture|learn|education)\b/.test(lower)) {
+    return query + " js programming tutorial";
+  }
+
+  return query;
+};
+
+const isEducationalVideo = (video) => {
+  const title = (video.snippet?.title || "").toLowerCase();
+  const channel = (video.snippet?.channelTitle || "").toLowerCase();
+
+  // Block general music/songs/playlists, but allow if it's a coding tutorial/app/player
+  const hasMusic = /\b(music|musics|song|songs|playlist|melody|audio|track|tracklist|album|mix|ambient|lofi|instrumental|singing|sing|band|rap|dance|beat|beats)\b/i.test(title) ||
+                    /\b(music|musics|song|songs|playlist|melody|audio|track|tracklist|album|mix|ambient|lofi|instrumental|singing|sing|band|rap|dance|beat|beats)\b/i.test(channel);
+
+  // Block general cricket/sports videos, but allow if it's a coding tutorial/app
+  const hasCricket = /\b(cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin|scoreboard|match highlights)\b/i.test(title) ||
+                     /\b(cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin)\b/i.test(channel);
+
+  const isCodingRelated = /\b(player|app|clone|api|database|system|website|compiler|parser|interpreter|framework|library)\b/i.test(title);
+
+  if ((hasMusic || hasCricket) && !isCodingRelated) {
+    return false;
+  }
+
+  const hasBannedPattern = BANNED_PATTERNS.some(pattern => 
+    pattern.test(title) || pattern.test(channel)
+  );
+
+  return !hasBannedPattern;
+};
+
 // Search YouTube Videos
 const searchVideos = async (req, res) => {
   try {
@@ -165,9 +273,17 @@ const searchVideos = async (req, res) => {
       "aptitude"
     ];
 
-    const isEducational = allowedKeywords.some(
-      (keyword) => lowerQuery.includes(keyword)
+    let isEducational = allowedKeywords.some(
+      (keyword) => isWordMatch(lowerQuery, keyword)
     );
+
+    // Music & Cricket blocker: If query contains music/cricket words but not programming/development project keywords, block it.
+    const containsBannedTerm = /\b(music|musics|song|songs|singing|instrumental|lofi|ambient|playlist|band|rap|dance|beat|beats|cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin)\b/i.test(lowerQuery);
+    const isCodingRelated = /\b(player|app|clone|api|database|system|website)\b/i.test(lowerQuery);
+
+    if (containsBannedTerm && !isCodingRelated) {
+      isEducational = false;
+    }
 
     if (!isEducational) {
       const funnyMessages = [
@@ -192,12 +308,19 @@ const searchVideos = async (req, res) => {
       });
     }
 
-    // 1. Check MongoDB Cache first
+    // 1. Check MongoDB Cache first using cacheKey
+    const cacheKey = lowerQuery + (req.query.pageToken ? "_" + req.query.pageToken : "");
     try {
-      const cached = await SearchCache.findOne({ query: lowerQuery });
-      if (cached && Array.isArray(cached.results) && cached.results.length > 0) {
-        console.log(`[Cache Hit] Serving search results for: "${query}"`);
-        return res.json(cached.results);
+      const cached = await SearchCache.findOne({ query: cacheKey });
+      if (cached && cached.results) {
+        console.log(`[Cache Hit] Serving search results for cacheKey: "${cacheKey}"`);
+        if (Array.isArray(cached.results)) {
+          const filteredCached = cached.results.filter(isEducationalVideo);
+          return res.json({ items: filteredCached, nextPageToken: null });
+        } else if (cached.results.items) {
+          const filteredCached = cached.results.items.filter(isEducationalVideo);
+          return res.json({ items: filteredCached, nextPageToken: cached.results.nextPageToken || null });
+        }
       }
     } catch (cacheErr) {
       console.error("Cache read error:", cacheErr);
@@ -206,38 +329,48 @@ const searchVideos = async (req, res) => {
     // 2. Fetch from YouTube API if not cached
     try {
       console.log(`[API Request] Querying YouTube API for: "${query}"`);
+      const refinedQuery = getRefinedQuery(query);
+      console.log(`[API Request] Refined query: "${refinedQuery}"`);
+      
+      const apiParams = {
+        part: "snippet",
+        maxResults: 50,
+        q: refinedQuery,
+        type: "video",
+        key: process.env.YOUTUBE_API_KEY,
+      };
+
+      if (req.query.pageToken) {
+        apiParams.pageToken = req.query.pageToken;
+      }
+
       const response = await axios.get(
         "https://www.googleapis.com/youtube/v3/search",
-        {
-          params: {
-            part: "snippet",
-            maxResults: 20,
-            q: query,
-            type: "video",
-            key: process.env.YOUTUBE_API_KEY,
-          },
-        }
+        { params: apiParams }
       );
 
       const items = response.data.items || [];
+      const filteredItems = items.filter(isEducationalVideo);
+      const nextPageToken = response.data.nextPageToken || null;
 
       // Save to cache asynchronously (do not block client response)
-      if (items.length > 0) {
+      if (filteredItems.length > 0) {
         SearchCache.create({
-          query: lowerQuery,
-          results: items
+          query: cacheKey,
+          results: { items: filteredItems, nextPageToken }
         }).catch(cacheErr => console.error("Cache write error:", cacheErr));
       }
 
-      return res.json(items);
+      return res.json({ items: filteredItems, nextPageToken });
 
     } catch (apiError) {
       console.error(`YouTube API error for query "${query}":`, apiError.message);
       
       // Serve fallback videos structured exactly like YouTube API results
       const fallbacks = getFallbackVideos(query);
+      const filteredFallbacks = fallbacks.filter(isEducationalVideo);
       console.log(`[Fallback] Serving static educational fallback videos for: "${query}"`);
-      return res.json(fallbacks);
+      return res.json({ items: filteredFallbacks, nextPageToken: null });
     }
 
   } catch (error) {

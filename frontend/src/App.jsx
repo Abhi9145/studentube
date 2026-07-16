@@ -44,6 +44,10 @@ function App() {
     return RECOMMENDATION_QUERIES[Math.floor(Math.random() * RECOMMENDATION_QUERIES.length)];
   });
 
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [recommendationQueriesQueue, setRecommendationQueriesQueue] = useState([]);
+
   // ── Theme initialization ───────────────────────────────────────────────────
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "dark";
@@ -54,6 +58,7 @@ function App() {
   const doSearch = useCallback(async (query) => {
     setStatus(STATUS.LOADING);
     setLastQuery(query);
+    setNextPageToken(null);
 
     try {
       const res = await fetch(
@@ -91,6 +96,7 @@ function App() {
       );
 
       setVideos(validItems);
+      setNextPageToken(data.nextPageToken || null);
       setStatus(STATUS.SUCCESS);
     } catch (err) {
       console.error("Search error:", err);
@@ -105,7 +111,8 @@ function App() {
     setStatus(STATUS.LOADING);
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
 
-    for (const q of shuffled) {
+    for (let i = 0; i < shuffled.length; i++) {
+      const q = shuffled[i];
       try {
         const res = await fetch(
           `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
@@ -127,6 +134,7 @@ function App() {
 
         if (validItems.length > 0) {
           setVideos(validItems);
+          setRecommendationQueriesQueue(shuffled.slice(i + 1));
           setStatus(STATUS.SUCCESS);
           return; // done
         }
@@ -141,9 +149,103 @@ function App() {
     setStatus(STATUS.ERROR);
   }, []);
 
+  // ── Infinite scroll page fetcher ──────────────────────────────────────────
+  const loadMoreVideos = useCallback(async () => {
+    if (loadingMore) return;
+
+    if (isHome) {
+      if (recommendationQueriesQueue.length === 0) return;
+      setLoadingMore(true);
+
+      const nextQueue = [...recommendationQueriesQueue];
+      const q = nextQueue.shift();
+      setRecommendationQueriesQueue(nextQueue);
+
+      try {
+        const res = await fetch(
+          `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const rawItems = Array.isArray(data)
+            ? data
+            : Array.isArray(data.items)
+            ? data.items
+            : [];
+
+          const validItems = rawItems.filter(
+            (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+          );
+
+          if (validItems.length > 0) {
+            setVideos((prev) => {
+              const existingIds = new Set(prev.map(v => v.id?.videoId));
+              const newUnique = validItems.filter(v => v.id?.videoId && !existingIds.has(v.id.videoId));
+              return [...prev, ...newUnique];
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Load more recommendations error:", err);
+      } finally {
+        setLoadingMore(false);
+      }
+    } else {
+      if (!nextPageToken) return;
+      setLoadingMore(true);
+
+      try {
+        const query = searchTerm;
+        const res = await fetch(
+          `${API_URL}/api/videos/search?q=${encodeURIComponent(query)}&pageToken=${nextPageToken}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const rawItems = Array.isArray(data)
+            ? data
+            : Array.isArray(data.items)
+            ? data.items
+            : [];
+
+          const validItems = rawItems.filter(
+            (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
+          );
+
+          if (validItems.length > 0) {
+            setVideos((prev) => {
+              const existingIds = new Set(prev.map(v => v.id?.videoId));
+              const newUnique = validItems.filter(v => v.id?.videoId && !existingIds.has(v.id.videoId));
+              return [...prev, ...newUnique];
+            });
+          }
+          setNextPageToken(data.nextPageToken || null);
+        }
+      } catch (err) {
+        console.error("Load more search results error:", err);
+      } finally {
+        setLoadingMore(false);
+      }
+    }
+  }, [loadingMore, isHome, recommendationQueriesQueue, nextPageToken, searchTerm]);
+
   useEffect(() => {
     loadRecommendations();
   }, [loadRecommendations]);
+
+  // ── Scroll event listener ──────────────────────────────────────────────────
+  useEffect(() => {
+    const handleScroll = () => {
+      if (status !== STATUS.SUCCESS || loadingMore) return;
+      
+      const isNearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 150;
+      if (isNearBottom) {
+        loadMoreVideos();
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [status, loadingMore, loadMoreVideos]);
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleSearch = (customQuery) => {
@@ -306,6 +408,24 @@ function App() {
           <h2 style={{ marginBottom: "20px" }}>🔥 Recommended Videos</h2>
 
           {renderContent()}
+
+          {loadingMore && (
+            <div style={{ display: "flex", justifyContent: "center", padding: "30px 20px" }}>
+              <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+              `}</style>
+              <div
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  border: "2px solid var(--border-color)",
+                  borderTop: "2px solid #ff0000",
+                  borderRadius: "50%",
+                  animation: "spin 0.75s linear infinite",
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </>
