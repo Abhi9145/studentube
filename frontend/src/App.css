@@ -589,6 +589,20 @@ display:none;
 /* RECOMMENDED VIDEOS */
 /* ========================= */
 
+.topic-chips-container {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.topic-chips-container::-webkit-scrollbar {
+    display: none;
+}
+
 .video-grid{
 
 display:grid;
@@ -620,37 +634,53 @@ box-shadow:0 18px 35px rgba(255,0,0,.2);
 }
 
 .video-card img{
-
-width:100%;
-
-height:200px;
-
-object-fit:cover;
-
-transition:.4s;
-
+    width:100%;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    transition:.4s;
 }
 
 .video-card:hover img{
-
-transform:scale(1.08);
-
+    transform:scale(1.08);
 }
 
 .video-card h4{
-
-padding:12px;
-
-font-size:15px;
-
-line-height:1.4;
-
+    padding:12px 12px 6px;
+    font-size:14px;
+    line-height:1.4;
+    font-weight:600;
 }
 
 .video-card p{
-    padding:0 12px 15px;
+    padding:0 12px 12px;
     color:var(--subtle-text);
-    font-size:13px;
+    font-size:12px;
+}
+
+.video-card button {
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.video-card button:hover {
+    background: var(--hover-bg);
+    border-color: var(--muted-text);
+    transform: translateY(-1px);
+}
+
+.video-card button:active {
+    transform: translateY(0);
 }
 /* ========================= */
 /* AUTH PAGES */
@@ -910,117 +940,89 @@ max-width:none;
 
 @media(max-width:600px){
 
-/* Navbar stays single row — hide text nav links, show only icons/avatar */
+/* Navbar changes to 2-row layout on mobile so search box is full width and easy to use */
 .navbar{
-
-height:56px;
-
-padding:0 12px;
-
-gap:8px;
-
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    height: auto;
+    padding: 12px 16px;
+    gap: 12px 0;
 }
 
-/* Keep logo visible */
 .logo{
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 18px;
+    justify-self: start;
+}
 
-font-size:18px;
+.nav-links{
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+}
 
+.search-container{
+    grid-column: 1 / span 2;
+    grid-row: 2;
+    width: 100%;
+    max-width: none;
 }
 
 /* Hide long-form nav links text on mobile */
 .nav-link{
-
-display:none;
-
+    display:none;
 }
 
 /* Hide login/signup ghost button text on mobile */
 .nav-btn-ghost{
-
-display:none;
-
+    display:none;
 }
 
 .nav-btn-primary{
-
-padding:6px 12px;
-
-font-size:12px;
-
+    padding:6px 12px;
+    font-size:12px;
 }
 
 .auth-card{
-
-width:95%;
-
-padding:24px;
-
+    width:95%;
+    padding:24px;
 }
 
 .resume-card{
-
-width:160px;
-
-min-width:160px;
-
+    width:160px;
+    min-width:160px;
 }
 
 .video-grid{
-
-grid-template-columns:1fr;
-
-gap:16px;
-
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap:16px;
 }
 
 .main-content{
-
-padding:12px;
-
+    padding:12px;
 }
 
 /* Video page columns stack vertically */
 .video-page-layout{
-
-flex-direction:column;
-
-padding:12px;
-
-gap:16px;
-
+    flex-direction:column;
+    padding:12px;
+    gap:16px;
 }
 
 .video-page-layout > *{
-
-min-width:0 !important;
-
-flex:none !important;
-
-width:100% !important;
-
+    min-width:0 !important;
+    flex:none !important;
+    width:100% !important;
 }
 
 }
 
 @media(max-width:480px){
-
-.search-box input{
-
-font-size:13px;
-
-padding:8px 12px;
-
-}
-
-.search-box button{
-
-padding:8px 12px;
-
-font-size:13px;
-
-}
-
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
 }
 /* ========================= */
 /* SAVED / HISTORY PAGES     */

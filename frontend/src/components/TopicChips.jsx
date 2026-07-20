@@ -16,15 +16,7 @@ const topics = [
 ];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: "12px",
-        overflowX: "auto",
-        paddingBottom: "10px",
-        marginBottom: "30px",
-      }}
-    >
+    <div className="topic-chips-container">
       {topics.map((topic) => (
         <button
           key={topic}
