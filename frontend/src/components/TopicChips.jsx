@@ -6,6 +6,13 @@ const topics = [
   "DSA",
   "DBMS",
   "AI",
+  "C++",
+  "JavaScript",
+  "Web Development",
+  "Machine Learning",
+  "SQL",
+  "DevOps",
+  "Linux",
 ];
 
   return (

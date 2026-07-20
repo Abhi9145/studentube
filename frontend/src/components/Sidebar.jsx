@@ -5,11 +5,18 @@ function Sidebar({ onCategoryClick, onHomeClick }) {
 
   const categories = [
     "Programming",
+    "DSA",
+    "Web Development",
+    "Python",
+    "Java",
+    "React",
     "Mathematics",
     "Science",
     "Data Science",
-    "Web Development",
+    "Machine Learning",
     "Artificial Intelligence",
+    "C++",
+    "DevOps",
   ];
 
   const handleHome = () => {

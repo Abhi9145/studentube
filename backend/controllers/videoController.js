@@ -108,7 +108,8 @@ const getFallbackVideos = (query) => {
 const BANNED_PATTERNS = [
   /\breaction(s)?\b/i,
   /\breacting\b/i,
-  /\breact to\b/i,
+  /\breact(s|ed)? to\b/i,
+  /\breacts\b/i,
   /\bmusic video\b/i,
   /\bofficial (music )?video\b/i,
   /\bofficial audio\b/i,
@@ -133,7 +134,10 @@ const BANNED_PATTERNS = [
   /\bprank(s)?\b/i,
   /\bgaming\b/i,
   /\bgameplay\b/i,
-  /\btrailer\b/i
+  /\btrailer\b/i,
+  /\bwild reaction\b/i,
+  /\bfirst time (hearing|watching|listening)\b/i,
+  /\bmy thoughts on\b/i
 ];
 
 const isWordMatch = (query, keyword) => {
@@ -155,33 +159,61 @@ const isWordMatch = (query, keyword) => {
 
 const getRefinedQuery = (query) => {
   const lower = query.trim().toLowerCase();
-  if (lower === "react" || lower === "reactjs") {
-    return "react js tutorial";
-  }
-  if (lower === "c") {
-    return "c programming tutorial";
-  }
-  if (lower === "c++") {
-    return "c++ programming tutorial";
-  }
-  if (lower === "java") {
-    return "java programming tutorial";
-  }
-  if (lower === "python") {
-    return "python programming tutorial";
-  }
-  if (lower === "os") {
-    return "operating system tutorial";
-  }
-  if (lower === "ai") {
-    return "artificial intelligence tutorial";
-  }
-  if (lower === "dbms") {
-    return "dbms course";
+
+  // Exact match refinements for ambiguous short keywords
+  const EXACT_REFINEMENTS = {
+    "react": "react js programming tutorial",
+    "reactjs": "react js tutorial",
+    "react js": "react js tutorial for beginners",
+    "c": "c programming tutorial",
+    "c++": "c++ programming tutorial",
+    "c#": "c# programming tutorial",
+    "java": "java programming tutorial",
+    "python": "python programming tutorial",
+    "os": "operating system tutorial",
+    "ai": "artificial intelligence tutorial",
+    "ml": "machine learning tutorial",
+    "dbms": "dbms database management system course",
+    "dsa": "data structures and algorithms tutorial",
+    "ds": "data structures tutorial",
+    "cn": "computer networks tutorial",
+    "oops": "object oriented programming tutorial",
+    "oop": "object oriented programming tutorial",
+    "sql": "sql database tutorial",
+    "html": "html tutorial for beginners",
+    "css": "css tutorial for beginners",
+    "node": "node js tutorial",
+    "nodejs": "node js tutorial",
+    "express": "express js node tutorial",
+    "mongo": "mongodb tutorial",
+    "mongodb": "mongodb tutorial for beginners",
+    "docker": "docker tutorial for beginners",
+    "git": "git version control tutorial",
+    "linux": "linux tutorial for beginners",
+    "rust": "rust programming tutorial",
+    "golang": "golang programming tutorial",
+    "go": "go programming language tutorial",
+    "swift": "swift programming tutorial",
+    "kotlin": "kotlin programming tutorial",
+    "typescript": "typescript tutorial",
+    "angular": "angular framework tutorial",
+    "vue": "vue js tutorial",
+    "flutter": "flutter development tutorial",
+    "django": "django python framework tutorial",
+    "flask": "flask python web tutorial",
+    "spring": "spring boot java tutorial",
+    "aws": "aws cloud computing tutorial",
+    "azure": "azure cloud tutorial",
+    "devops": "devops tutorial for beginners",
+    "kubernetes": "kubernetes tutorial",
+  };
+
+  if (EXACT_REFINEMENTS[lower]) {
+    return EXACT_REFINEMENTS[lower];
   }
 
   // Broad searches containing "react" but missing educational keywords
-  if (lower.includes("react") && !/\b(js|native|tutorial|course|programming|coding|web|development|developer|lecture|learn|education)\b/.test(lower)) {
+  if (lower.includes("react") && !/\b(js|native|tutorial|course|programming|coding|web|development|developer|lecture|learn|education|hook|component|state|redux|context)\b/.test(lower)) {
     return query + " js programming tutorial";
   }
 
@@ -236,6 +268,7 @@ const searchVideos = async (req, res) => {
       "css",
       "c",
       "c++",
+      "c#",
       "programming",
       "coding",
       "tutorial",
@@ -254,6 +287,7 @@ const searchVideos = async (req, res) => {
       "algorithm",
       "data structure",
       "datastructure",
+      "dsa",
       "dbms",
       "operating system",
       "os",
@@ -262,6 +296,7 @@ const searchVideos = async (req, res) => {
       "machine learning",
       "artificial intelligence",
       "ai",
+      "ml",
       "data science",
       "web development",
       "android development",
@@ -270,18 +305,84 @@ const searchVideos = async (req, res) => {
       "exam",
       "placement",
       "interview",
-      "aptitude"
+      "aptitude",
+      "sql",
+      "docker",
+      "kubernetes",
+      "devops",
+      "cloud",
+      "aws",
+      "azure",
+      "linux",
+      "git",
+      "api",
+      "typescript",
+      "angular",
+      "vue",
+      "flutter",
+      "django",
+      "flask",
+      "spring",
+      "kotlin",
+      "swift",
+      "rust",
+      "golang",
+      "oops",
+      "oop",
+      "cn",
+      "compiler",
+      "engineering",
+      "electronics",
+      "embedded",
+      "microprocessor",
+      "digital",
+      "analog",
+      "calculus",
+      "algebra",
+      "statistics",
+      "probability",
+      "discrete",
+      "graph theory",
+      "sorting",
+      "searching",
+      "dynamic programming",
+      "recursion",
+      "array",
+      "linked list",
+      "stack",
+      "queue",
+      "tree",
+      "heap",
+      "hashing",
+      "greedy",
+      "backtracking"
     ];
 
     let isEducational = allowedKeywords.some(
       (keyword) => isWordMatch(lowerQuery, keyword)
     );
 
-    // Music & Cricket blocker: If query contains music/cricket words but not programming/development project keywords, block it.
-    const containsBannedTerm = /\b(music|musics|song|songs|singing|instrumental|lofi|ambient|playlist|band|rap|dance|beat|beats|cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin)\b/i.test(lowerQuery);
-    const isCodingRelated = /\b(player|app|clone|api|database|system|website)\b/i.test(lowerQuery);
+    // Hard-block list: queries that are purely entertainment, even if they accidentally match a keyword.
+    // e.g. "music" matches "c" word boundary, "history" could match "history of rap" etc.
+    const HARD_BLOCKED_QUERIES = [
+      "music", "songs", "song", "singing", "rap", "dance", "lofi", "ambient",
+      "cricket", "ipl", "football", "basketball", "movie", "movies", "film",
+      "trailer", "vlog", "vlogs", "tiktok", "shorts", "memes", "meme",
+      "gaming", "gameplay", "fortnite", "minecraft", "gta", "pubg",
+      "anime", "manga", "drama", "series", "netflix", "amazon prime",
+      "bollywood", "hollywood", "celebrity", "gossip", "news",
+      "prank", "pranks", "funny", "comedy", "standup", "roast"
+    ];
 
-    if (containsBannedTerm && !isCodingRelated) {
+    if (HARD_BLOCKED_QUERIES.includes(lowerQuery.trim())) {
+      isEducational = false;
+    }
+
+    // Also block if query contains banned entertainment terms (unless it's a coding project)
+    const containsBannedTerm = /\b(music|musics|song|songs|singing|instrumental|lofi|ambient|band|rap|dance|beat|beats|cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin|movie|movies|film|vlog|vlogs|tiktok|meme|memes|anime|manga|bollywood|hollywood|fortnite|minecraft|gta|pubg)\b/i.test(lowerQuery);
+    const isCodingProject = /\b(player|app|clone|api|database|system|website|tutorial|course|programming|coding|build|develop|project)\b/i.test(lowerQuery);
+
+    if (containsBannedTerm && !isCodingProject) {
       isEducational = false;
     }
 

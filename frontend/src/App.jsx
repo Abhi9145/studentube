@@ -20,7 +20,7 @@ const STATUS = {
 const RECOMMENDATION_QUERIES = [
   "computer science tutorial",
   "programming tutorial",
-  "python tutorial",
+  "python tutorial for beginners",
   "web development tutorial",
   "javascript crash course",
   "data structures algorithms",
@@ -31,7 +31,33 @@ const RECOMMENDATION_QUERIES = [
   "artificial intelligence basics",
   "git github tutorial",
   "docker container tutorial",
-  "linux terminal guide"
+  "linux terminal guide",
+  "dsa tutorial",
+  "java programming course",
+  "c++ programming tutorial",
+  "node js express tutorial",
+  "html css tutorial",
+  "typescript tutorial",
+  "angular tutorial",
+  "vue js tutorial",
+  "flutter development",
+  "django python tutorial",
+  "spring boot java",
+  "aws cloud tutorial",
+  "devops tutorial",
+  "kubernetes tutorial",
+  "rust programming",
+  "golang tutorial",
+  "sql database tutorial",
+  "operating system lecture",
+  "computer networks tutorial",
+  "object oriented programming",
+  "dynamic programming tutorial",
+  "system design interview",
+  "placement preparation coding",
+  "physics lecture",
+  "calculus mathematics course",
+  "statistics probability tutorial",
 ];
 
 function App() {
@@ -107,39 +133,67 @@ function App() {
   }, []);
 
   // ── Load recommendations helper ──────────────────────────────────────────
+  // Fetches from multiple random queries to fill the home page with a rich grid
   const loadRecommendations = useCallback(async () => {
     setStatus(STATUS.LOADING);
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
 
-    for (let i = 0; i < shuffled.length; i++) {
-      const q = shuffled[i];
+    // Fetch first 3 queries concurrently for a large initial batch
+    const initialBatch = shuffled.slice(0, 3);
+    const remaining = shuffled.slice(3);
+
+    const fetchQuery = async (q) => {
       try {
         const res = await fetch(
           `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
         );
-        if (!res.ok) continue;
-
+        if (!res.ok) return [];
         const data = await res.json();
-        if (data.educationalOnly) continue;
-
+        if (data.educationalOnly) return [];
         const rawItems = Array.isArray(data)
           ? data
           : Array.isArray(data.items)
           ? data.items
           : [];
-
-        const validItems = rawItems.filter(
+        return rawItems.filter(
           (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
         );
-
-        if (validItems.length > 0) {
-          setVideos(validItems);
-          setRecommendationQueriesQueue(shuffled.slice(i + 1));
-          setStatus(STATUS.SUCCESS);
-          return; // done
-        }
       } catch {
-        // try next
+        return [];
+      }
+    };
+
+    try {
+      const results = await Promise.all(initialBatch.map(fetchQuery));
+      const allItems = results.flat();
+
+      // Deduplicate by videoId
+      const seen = new Set();
+      const unique = allItems.filter((v) => {
+        const id = v.id?.videoId;
+        if (!id || seen.has(id)) return false;
+        seen.add(id);
+        return true;
+      });
+
+      if (unique.length > 0) {
+        setVideos(unique);
+        setRecommendationQueriesQueue(remaining);
+        setStatus(STATUS.SUCCESS);
+        return;
+      }
+    } catch {
+      // fall through
+    }
+
+    // Fallback: try remaining one by one
+    for (const q of remaining) {
+      const items = await fetchQuery(q);
+      if (items.length > 0) {
+        setVideos(items);
+        setRecommendationQueriesQueue(remaining.slice(remaining.indexOf(q) + 1));
+        setStatus(STATUS.SUCCESS);
+        return;
       }
     }
 
