@@ -138,9 +138,9 @@ function App() {
     setStatus(STATUS.LOADING);
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
 
-    // Fetch first 3 queries concurrently for a large initial batch
-    const initialBatch = shuffled.slice(0, 3);
-    const remaining = shuffled.slice(3);
+    const firstQuery = shuffled[0];
+    const backgroundQueries = shuffled.slice(1, 4); // Fetch 3 more in the background
+    const remaining = shuffled.slice(4);
 
     const fetchQuery = async (q) => {
       try {
@@ -163,35 +163,44 @@ function App() {
       }
     };
 
+    // 1. Fetch first query instantly to render home page immediately
     try {
-      const results = await Promise.all(initialBatch.map(fetchQuery));
-      const allItems = results.flat();
-
-      // Deduplicate by videoId
-      const seen = new Set();
-      const unique = allItems.filter((v) => {
-        const id = v.id?.videoId;
-        if (!id || seen.has(id)) return false;
-        seen.add(id);
-        return true;
-      });
-
-      if (unique.length > 0) {
-        setVideos(unique);
-        setRecommendationQueriesQueue(remaining);
+      const firstBatch = await fetchQuery(firstQuery);
+      if (firstBatch.length > 0) {
+        setVideos(firstBatch);
         setStatus(STATUS.SUCCESS);
+        setRecommendationQueriesQueue(shuffled.slice(1));
+
+        // 2. Fetch additional queries in the background and append them
+        Promise.all(backgroundQueries.map(fetchQuery)).then((results) => {
+          const newItems = results.flat();
+          if (newItems.length > 0) {
+            setVideos((prev) => {
+              const seen = new Set(prev.map((v) => v.id?.videoId));
+              const uniqueNew = newItems.filter((v) => {
+                const id = v.id?.videoId;
+                if (!id || seen.has(id)) return false;
+                seen.add(id);
+                return true;
+              });
+              return [...prev, ...uniqueNew];
+            });
+            setRecommendationQueriesQueue(remaining);
+          }
+        }).catch(console.error);
+
         return;
       }
-    } catch {
-      // fall through
+    } catch (err) {
+      console.error("Initial load error:", err);
     }
 
     // Fallback: try remaining one by one
-    for (const q of remaining) {
+    for (const q of shuffled) {
       const items = await fetchQuery(q);
       if (items.length > 0) {
         setVideos(items);
-        setRecommendationQueriesQueue(remaining.slice(remaining.indexOf(q) + 1));
+        setRecommendationQueriesQueue(shuffled.slice(shuffled.indexOf(q) + 1));
         setStatus(STATUS.SUCCESS);
         return;
       }
