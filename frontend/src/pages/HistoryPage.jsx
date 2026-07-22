@@ -1,6 +1,7 @@
 import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 function HistoryPage() {
   const [videos, setVideos] = useState([]);
@@ -61,7 +62,7 @@ function HistoryPage() {
               className="history-item"
             >
               <img
-                src={video.thumbnail}
+                src={getProxiedThumbnail(video.thumbnail)}
                 alt={video.title}
                 className="history-thumb"
               />

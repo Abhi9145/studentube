@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState, useCallback } from "react";
 import RelatedVideos from "../components/RelatedVideos";
 import toast from "react-hot-toast";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 /* ── Helpers ── */
 const STORAGE_KEY = (id) => `yt_progress_${id}`;
@@ -96,7 +97,7 @@ function VideoPage() {
         body: JSON.stringify({
           videoId,
           title: videoMeta.title || `Video ${videoId}`,
-          thumbnail: videoMeta.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+          thumbnail: getProxiedThumbnail(videoMeta.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
           channel: videoMeta.channel || "YouTube",
           watchedSeconds: Math.floor(secs),
         }),
@@ -136,16 +137,16 @@ function VideoPage() {
         title: data.title || "",
         channel: data.channel || "YouTube",
         description: data.description || "",
-        thumbnail: data.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+        thumbnail: getProxiedThumbnail(data.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
       }))
       .catch(() => {
         fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
           .then((r) => r.json())
           .then((d) => setVideoMeta({
             title: d.title || "", channel: d.author_name || "YouTube",
-            description: "", thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            description: "", thumbnail: getProxiedThumbnail(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
           }))
-          .catch(() => setVideoMeta({ title: "", channel: "YouTube", description: "", thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` }));
+          .catch(() => setVideoMeta({ title: "", channel: "YouTube", description: "", thumbnail: getProxiedThumbnail(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`) }));
       });
 
     watchedSecondsRef.current = resumeAt;

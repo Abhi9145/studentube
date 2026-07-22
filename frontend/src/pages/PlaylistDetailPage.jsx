@@ -2,6 +2,7 @@ import { API_URL } from "../config";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 function PlaylistDetailPage() {
   const { playlistId } = useParams();
@@ -122,7 +123,7 @@ function PlaylistDetailPage() {
           }}
         >
           {cover ? (
-            <img src={cover} alt={playlist.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img src={getProxiedThumbnail(cover)} alt={playlist.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             "📁"
           )}
@@ -215,7 +216,7 @@ function PlaylistDetailPage() {
               {/* Thumbnail */}
               <Link to={`/video/${video.videoId}`} style={{ flexShrink: 0 }}>
                 <img
-                  src={video.thumbnail}
+                  src={getProxiedThumbnail(video.thumbnail)}
                   alt={video.title}
                   className="history-thumb"
                   style={{ width: "180px", height: "101px" }}

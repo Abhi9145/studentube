@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { API_URL } from "../config";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 function VideoCard({ video }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -151,7 +152,7 @@ function VideoCard({ video }) {
     <div className="video-card">
       <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
         <img
-          src={video.thumbnail}
+          src={getProxiedThumbnail(video.thumbnail)}
           alt={video.title}
           onError={(e) => {
             e.currentTarget.onerror = null;

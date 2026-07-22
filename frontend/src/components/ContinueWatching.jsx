@@ -1,6 +1,7 @@
 import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 const STORAGE_KEY = (id) => `yt_progress_${id}`;
 
@@ -82,7 +83,7 @@ function ContinueWatching() {
               {/* Thumbnail */}
               <div className="cw-thumb-wrap">
                 <img
-                  src={video.thumbnail}
+                  src={getProxiedThumbnail(video.thumbnail)}
                   alt={video.title}
                   className="cw-thumb"
                 />

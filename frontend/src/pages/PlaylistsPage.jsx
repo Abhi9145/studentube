@@ -2,6 +2,7 @@ import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 /* ── Emoji set for auto-generated playlist covers ── */
 const PLAYLIST_EMOJIS = ["📘", "📗", "📙", "📕", "🎯", "🚀", "⚡", "🔬", "🧮", "🖥️", "🤖", "🎓"];
@@ -177,7 +178,7 @@ function PlaylistsPage() {
                 {/* ── Thumbnail strip ── */}
                 <Link to={`/playlists/${playlist._id}`} className="playlist-cover">
                   {cover ? (
-                    <img src={cover} alt={playlist.name} className="playlist-cover-img" />
+                    <img src={getProxiedThumbnail(cover)} alt={playlist.name} className="playlist-cover-img" />
                   ) : (
                     <div className="playlist-cover-placeholder">{emoji}</div>
                   )}
@@ -250,7 +251,7 @@ function PlaylistsPage() {
                         <span className="pl-video-idx">{idx + 1}</span>
                         <Link to={`/video/${video.videoId}`}>
                           <img
-                            src={video.thumbnail}
+                            src={getProxiedThumbnail(video.thumbnail)}
                             alt={video.title}
                             className="pl-video-thumb"
                           />

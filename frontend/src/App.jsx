@@ -7,6 +7,7 @@ import TopicChips from "./components/TopicChips";
 import VideoCard from "./components/VideoCard";
 import ContinueWatching from "./components/ContinueWatching";
 import { API_URL } from "./config";
+import { getProxiedThumbnail } from "./utils/thumbnail";
 
 // Status constants
 const STATUS = {
@@ -438,12 +439,17 @@ function App() {
       <div className="video-grid">
         {videos.map((video) => (
           <VideoCard
-            key={video.id?.videoId}
+            key={video.id?.videoId || video.id || video.videoId}
             video={{
-              title: video.snippet?.title,
-              channel: video.snippet?.channelTitle,
-              thumbnail: video.snippet?.thumbnails?.high?.url,
-              videoId: video.id?.videoId,
+              title: video.snippet?.title || video.title,
+              channel: video.snippet?.channelTitle || video.channel,
+              thumbnail: getProxiedThumbnail(
+                video.snippet?.thumbnails?.high?.url ||
+                video.snippet?.thumbnails?.medium?.url ||
+                video.snippet?.thumbnails?.default?.url ||
+                video.thumbnail
+              ),
+              videoId: video.id?.videoId || (typeof video.id === "string" ? video.id : video.videoId),
             }}
           />
         ))}

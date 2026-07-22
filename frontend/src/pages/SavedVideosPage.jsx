@@ -1,6 +1,8 @@
 import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getProxiedThumbnail } from "../utils/thumbnail";
 
 function SavedVideosPage() {
   const [videos, setVideos] = useState([]);
@@ -75,7 +77,7 @@ function SavedVideosPage() {
               {/* Thumbnail */}
               <Link to={`/video/${video.videoId}`}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
-                  <img src={video.thumbnail} alt={video.title} style={{ width: "100%", height: "180px", objectFit: "cover", display: "block" }} />
+                  <img src={getProxiedThumbnail(video.thumbnail)} alt={video.title} style={{ width: "100%", height: "180px", objectFit: "cover", display: "block" }} />
                   <div style={{
                     position: "absolute", inset: 0, background: "rgba(0,0,0,.5)",
                     display: "flex", alignItems: "center", justifyContent: "center",
