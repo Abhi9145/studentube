@@ -76,9 +76,13 @@ function VideoPage() {
   const watchedSecondsRef = useRef(resumeAt);
 
   const buildEmbedUrl = useCallback((startSec = 0) => {
-    const base = `https://www.youtube.com/embed/${videoId}`;
+    const base = `https://www.youtube-nocookie.com/embed/${videoId}`;
     const params = new URLSearchParams({
-      autoplay: "1", rel: "0", modestbranding: "1", enablejsapi: "1",
+      autoplay: "1",
+      rel: "0",
+      modestbranding: "1",
+      enablejsapi: "1",
+      origin: window.location.origin,
     });
     if (startSec > 0) params.set("start", String(Math.floor(startSec)));
     return `${base}?${params.toString()}`;
@@ -247,6 +251,7 @@ function VideoPage() {
             key={embedUrl} width="100%" height="100%" src={embedUrl}
             title="YouTube Video Player" frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen onLoad={handleIframeLoad} style={{ display: "block" }}
           />
         </div>
@@ -273,7 +278,7 @@ function VideoPage() {
             }}>
               {videoMeta.channel ? videoMeta.channel.charAt(0) : "Y"}
             </div>
-            <div>
+            <div style={{ flex: 1 }}>
               <div style={{ fontWeight: "600", fontSize: "16px", color: "var(--text-color, #fff)" }}>
                 {videoMeta.channel || "YouTube Channel"}
               </div>
@@ -281,6 +286,27 @@ function VideoPage() {
                 Verified Creator
               </div>
             </div>
+            <a
+              href={`https://www.youtube.com/watch?v=${videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "8px 14px",
+                borderRadius: "20px",
+                background: "rgba(255,255,255,0.08)",
+                color: "#fff",
+                textDecoration: "none",
+                fontSize: "13px",
+                fontWeight: "600",
+                border: "1px solid rgba(255,255,255,0.15)",
+                transition: "background 0.2s",
+              }}
+            >
+              Watch on YouTube ↗
+            </a>
           </div>
 
           {/* Description */}
