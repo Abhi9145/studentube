@@ -9,10 +9,11 @@ function RelatedVideos({ videos }) {
       {videos.map((video) => {
         const vId = video.id?.videoId || (typeof video.id === "string" ? video.id : video.videoId);
         const vTitle = video.snippet?.title || video.title || "Educational Video";
-        const vThumb = video.snippet?.thumbnails?.medium?.url ||
-                       video.snippet?.thumbnails?.high?.url ||
-                       video.snippet?.thumbnails?.default?.url ||
-                       video.thumbnail;
+        const rawThumb = video.snippet?.thumbnails?.medium?.url ||
+                         video.snippet?.thumbnails?.high?.url ||
+                         video.snippet?.thumbnails?.default?.url ||
+                         video.thumbnail;
+        const vThumb = rawThumb || (vId ? `https://i.ytimg.com/vi/${vId}/hqdefault.jpg` : null);
 
         return (
           <Link

@@ -126,19 +126,31 @@ function VideoPage() {
   useEffect(() => {
     saveHistory(resumeAt);
 
-    fetch(`${API_URL}/api/videos/search?q=programming tutorial`)
-      .then((r) => r.json())
-      .then((data) => setRelatedVideos(Array.isArray(data) ? data : data.items || []))
-      .catch(console.error);
-
     fetch(`${API_URL}/api/videos/details/${videoId}`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((data) => setVideoMeta({
-        title: data.title || "",
-        channel: data.channel || "YouTube",
-        description: data.description || "",
-        thumbnail: getProxiedThumbnail(data.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
-      }))
+      .then((data) => {
+        setVideoMeta({
+          title: data.title || "",
+          channel: data.channel || "YouTube",
+          description: data.description || "",
+          thumbnail: getProxiedThumbnail(data.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
+        });
+
+        // Search related videos using video title or fallback topic
+        const query = data.title ? encodeURIComponent(data.title.slice(0, 40)) : "programming tutorial";
+        fetch(`${API_URL}/api/videos/search?q=${query}`)
+          .then((r) => r.json())
+          .then((relData) => {
+            const list = Array.isArray(relData) ? relData : relData.items || [];
+            // Filter out current video
+            const filtered = list.filter((v) => {
+              const vId = v.id?.videoId || (typeof v.id === "string" ? v.id : v.videoId);
+              return vId !== videoId;
+            });
+            setRelatedVideos(filtered.slice(0, 10));
+          })
+          .catch(console.error);
+      })
       .catch(() => {
         fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`)
           .then((r) => r.json())
@@ -147,6 +159,11 @@ function VideoPage() {
             description: "", thumbnail: getProxiedThumbnail(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`),
           }))
           .catch(() => setVideoMeta({ title: "", channel: "YouTube", description: "", thumbnail: getProxiedThumbnail(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`) }));
+
+        fetch(`${API_URL}/api/videos/search?q=programming tutorial`)
+          .then((r) => r.json())
+          .then((relData) => setRelatedVideos(Array.isArray(relData) ? relData : relData.items || []))
+          .catch(console.error);
       });
 
     watchedSecondsRef.current = resumeAt;
