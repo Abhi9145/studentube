@@ -65,6 +65,7 @@ function VideoPage() {
   const [descriptionExpanded, setDescriptionExpanded] = useState(false);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [iframeStarted, setIframeStarted] = useState(false);
+  const [playerSource, setPlayerSource] = useState("youtube");
 
   // ── AI Notes state ──────────────────────────────────────────────────────────
   const [notes, setNotes] = useState("");
@@ -88,7 +89,9 @@ function VideoPage() {
     return `${base}?${params.toString()}`;
   }, [videoId]);
 
-  const [embedUrl] = useState(() => buildEmbedUrl(resumeAt));
+  const activeEmbedUrl = playerSource === "proxy"
+    ? `https://yewtu.be/embed/${videoId}${resumeAt > 0 ? `?t=${Math.floor(resumeAt)}` : ""}`
+    : buildEmbedUrl(resumeAt);
 
   const saveHistory = useCallback(async (secs) => {
     const token = localStorage.getItem("token");
@@ -242,13 +245,54 @@ function VideoPage() {
       {/* ── Main player column ── */}
       <div style={{ flex: 3, minWidth: 0, display: "flex", flexDirection: "column", gap: "20px" }}>
 
+        {/* Player mode switcher for campus/institutional WiFi firewall blocks */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px",
+          background: "var(--card-bg, #181818)", padding: "10px 16px", borderRadius: "12px", border: "1px solid var(--border-color, #222)"
+        }}>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <span style={{ fontSize: "12px", color: "var(--muted-text, #aaa)", fontWeight: "600" }}>Player Mode:</span>
+            <button
+              type="button"
+              onClick={() => setPlayerSource("youtube")}
+              style={{
+                padding: "6px 14px", borderRadius: "16px", fontSize: "12px", fontWeight: "600", cursor: "pointer",
+                background: playerSource === "youtube" ? "#ff0000" : "rgba(255,255,255,0.08)",
+                color: "#fff", border: "1px solid " + (playerSource === "youtube" ? "#ff0000" : "rgba(255,255,255,0.15)"), transition: ".2s"
+              }}
+            >
+              ▶ Direct YouTube
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlayerSource("proxy")}
+              style={{
+                padding: "6px 14px", borderRadius: "16px", fontSize: "12px", fontWeight: "600", cursor: "pointer",
+                background: playerSource === "proxy" ? "#00c853" : "rgba(255,255,255,0.08)",
+                color: "#fff", border: "1px solid " + (playerSource === "proxy" ? "#00c853" : "rgba(255,255,255,0.15)"), transition: ".2s"
+              }}
+              title="Bypasses institutional WiFi & firewall YouTube embed blocks"
+            >
+              🛡️ Firewall Proxy Player
+            </button>
+          </div>
+          <a
+            href={`https://www.youtube.com/watch?v=${videoId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "#aaa", fontSize: "12px", textDecoration: "none", fontWeight: "500" }}
+          >
+            Open on YouTube.com ↗
+          </a>
+        </div>
+
         {/* iframe */}
         <div style={{
           borderRadius: "14px", overflow: "hidden",
           boxShadow: "0 8px 32px rgba(0,0,0,.6)", aspectRatio: "16/9", background: "#000",
         }}>
           <iframe
-            key={embedUrl} width="100%" height="100%" src={embedUrl}
+            key={activeEmbedUrl} width="100%" height="100%" src={activeEmbedUrl}
             title="YouTube Video Player" frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             referrerPolicy="strict-origin-when-cross-origin"
