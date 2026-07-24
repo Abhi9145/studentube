@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import toast from "react-hot-toast";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -75,6 +75,15 @@ function App() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [recommendationQueriesQueue, setRecommendationQueriesQueue] = useState([]);
 
+  // Ref to track whether we are currently on the home screen.
+  // Background recommendation callbacks check this before writing state
+  // so they never overwrite user search results.
+  const isHomeRef = useRef(true);
+
+  // AbortController ref to cancel in-flight recommendation fetches
+  // when the user navigates away from home (e.g. performs a search).
+  const recommendationAbortRef = useRef(null);
+
   // ── Theme initialization ───────────────────────────────────────────────────
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "dark";
@@ -83,6 +92,13 @@ function App() {
 
   // ── Shared fetch helper ─────────────────────────────────────────────────────
   const doSearch = useCallback(async (query) => {
+    // Cancel any in-flight recommendation fetches so they can't
+    // overwrite the search results we're about to display.
+    if (recommendationAbortRef.current) {
+      recommendationAbortRef.current.abort();
+      recommendationAbortRef.current = null;
+    }
+
     setStatus(STATUS.LOADING);
     setLastQuery(query);
     setNextPageToken(null);
@@ -136,17 +152,25 @@ function App() {
   // ── Load recommendations helper ──────────────────────────────────────────
   // Fetches from multiple random queries to fill the home page with a rich grid
   const loadRecommendations = useCallback(async () => {
+    // Abort any previous recommendation fetches still in-flight
+    if (recommendationAbortRef.current) {
+      recommendationAbortRef.current.abort();
+    }
+    const abortController = new AbortController();
+    recommendationAbortRef.current = abortController;
+
     setStatus(STATUS.LOADING);
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
 
     const firstQuery = shuffled[0];
-    const backgroundQueries = shuffled.slice(1, 4); // Fetch 3 more in the background
-    const remaining = shuffled.slice(4);
+    const backgroundQueries = shuffled.slice(1, 2); // Fetch 1 more in the background to save YouTube API quota
+    const remaining = shuffled.slice(2);
 
     const fetchQuery = async (q) => {
       try {
         const res = await fetch(
-          `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`
+          `${API_URL}/api/videos/search?q=${encodeURIComponent(q)}`,
+          { signal: abortController.signal }
         );
         if (!res.ok) return [];
         const data = await res.json();
@@ -159,7 +183,9 @@ function App() {
         return rawItems.filter(
           (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
         );
-      } catch {
+      } catch (err) {
+        // Silently ignore abort errors
+        if (err.name === "AbortError") return [];
         return [];
       }
     };
@@ -167,6 +193,10 @@ function App() {
     // 1. Fetch first query instantly to render home page immediately
     try {
       const firstBatch = await fetchQuery(firstQuery);
+
+      // Guard: only update state if we are still on the home screen
+      if (!isHomeRef.current || abortController.signal.aborted) return;
+
       if (firstBatch.length > 0) {
         setVideos(firstBatch);
         setStatus(STATUS.SUCCESS);
@@ -174,6 +204,9 @@ function App() {
 
         // 2. Fetch additional queries in the background and append them
         Promise.all(backgroundQueries.map(fetchQuery)).then((results) => {
+          // Guard: don't touch state if user navigated away from home
+          if (!isHomeRef.current || abortController.signal.aborted) return;
+
           const newItems = results.flat();
           if (newItems.length > 0) {
             setVideos((prev) => {
@@ -188,17 +221,22 @@ function App() {
             });
             setRecommendationQueriesQueue(remaining);
           }
-        }).catch(console.error);
+        }).catch((err) => {
+          if (err.name !== "AbortError") console.error(err);
+        });
 
         return;
       }
     } catch (err) {
+      if (err.name === "AbortError") return;
       console.error("Initial load error:", err);
     }
 
     // Fallback: try remaining one by one
     for (const q of shuffled) {
+      if (!isHomeRef.current || abortController.signal.aborted) return;
       const items = await fetchQuery(q);
+      if (!isHomeRef.current || abortController.signal.aborted) return;
       if (items.length > 0) {
         setVideos(items);
         setRecommendationQueriesQueue(shuffled.slice(shuffled.indexOf(q) + 1));
@@ -207,6 +245,7 @@ function App() {
       }
     }
 
+    if (!isHomeRef.current || abortController.signal.aborted) return;
     setErrorMsg(
       "YouTube API may be temporarily unavailable or the daily quota has been reached."
     );
@@ -315,18 +354,21 @@ function App() {
   const handleSearch = (customQuery) => {
     const query = typeof customQuery === "string" ? customQuery : searchTerm;
     if (!query.trim()) return;
+    isHomeRef.current = false;
     setIsHome(false);
     doSearch(query);
   };
 
   const handleCategoryClick = (category) => {
     setSearchTerm(category);
+    isHomeRef.current = false;
     setIsHome(false);
     doSearch(category);
   };
 
   const handleHomeClick = () => {
     setSearchTerm("");
+    isHomeRef.current = true;
     setIsHome(true);
     loadRecommendations();
   };

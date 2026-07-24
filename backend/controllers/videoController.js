@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const SavedVideo = require("../models/SavedVideo");
 const History = require("../models/History");
 const SearchCache = require("../models/SearchCache");
@@ -106,38 +107,27 @@ const getFallbackVideos = (query) => {
 };
 
 const BANNED_PATTERNS = [
-  /\breaction(s)?\b/i,
-  /\breacting\b/i,
-  /\breact(s|ed)? to\b/i,
-  /\breacts\b/i,
+  /\b(reaction video|reacting to|reacts to|reacted to|wild reaction|first time reaction)\b/i,
   /\bmusic video\b/i,
   /\bofficial (music )?video\b/i,
   /\bofficial audio\b/i,
   /\blyric(s)? video\b/i,
-  /\bsong(s)?\b/i,
-  /\bcover(s)?\b/i,
+  /\bcover(s)? song\b/i,
   /\blive performance\b/i,
   /\bvisualizer\b/i,
   /\bkaraoke\b/i,
   /\balbum\b/i,
   /\bsoundtrack\b/i,
   /\bvevo\b/i,
-  /\bmix\b/i,
-  /\bplaylist\b/i,
   /\bchoreography\b/i,
   /\bdance\b/i,
   /\bsnapchat\b/i,
   /\btiktok\b/i,
-  /\bshorts\b/i,
   /\bfunny moments\b/i,
-  /\bcompilation\b/i,
   /\bprank(s)?\b/i,
   /\bgaming\b/i,
   /\bgameplay\b/i,
-  /\btrailer\b/i,
-  /\bwild reaction\b/i,
-  /\bfirst time (hearing|watching|listening)\b/i,
-  /\bmy thoughts on\b/i
+  /\btrailer\b/i
 ];
 
 const isWordMatch = (query, keyword) => {
@@ -224,17 +214,20 @@ const isEducationalVideo = (video) => {
   const title = (video.snippet?.title || "").toLowerCase();
   const channel = (video.snippet?.channelTitle || "").toLowerCase();
 
-  // Block general music/songs/playlists, but allow if it's a coding tutorial/app/player
-  const hasMusic = /\b(music|musics|song|songs|playlist|melody|audio|track|tracklist|album|mix|ambient|lofi|instrumental|singing|sing|band|rap|dance|beat|beats)\b/i.test(title) ||
-                    /\b(music|musics|song|songs|playlist|melody|audio|track|tracklist|album|mix|ambient|lofi|instrumental|singing|sing|band|rap|dance|beat|beats)\b/i.test(channel);
+  // Explicitly allow any coding/educational content
+  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution)\b/i.test(title);
+  if (isEducationalContent) {
+    return true;
+  }
+
+  // Block general music/songs, but allow if it's a coding tutorial/app/player
+  const hasMusic = /\b(music video|official music|official audio|lyric video|singing|rap song|dance beat|hiphop)\b/i.test(title) ||
+                    /\b(vevo|official music)\b/i.test(channel);
 
   // Block general cricket/sports videos, but allow if it's a coding tutorial/app
-  const hasCricket = /\b(cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin|scoreboard|match highlights)\b/i.test(title) ||
-                     /\b(cricket|crickets|cricketer|cricketers|ipl|t20|odi|bcci|batsman|batsmen|bowler|bowlers|wicket|wickets|dhoni|kohli|sachin)\b/i.test(channel);
+  const hasCricket = /\b(cricket match|ipl highlights|t20 match|odi match|bcci|batsman|bowler|wicket|match highlights)\b/i.test(title);
 
-  const isCodingRelated = /\b(player|app|clone|api|database|system|website|compiler|parser|interpreter|framework|library)\b/i.test(title);
-
-  if ((hasMusic || hasCricket) && !isCodingRelated) {
+  if (hasMusic || hasCricket) {
     return false;
   }
 
@@ -409,22 +402,28 @@ const searchVideos = async (req, res) => {
       });
     }
 
-    // 1. Check MongoDB Cache first using cacheKey
+    // 1. Check MongoDB Cache first using cacheKey (only if DB is connected)
     const cacheKey = lowerQuery + (req.query.pageToken ? "_" + req.query.pageToken : "");
-    try {
-      const cached = await SearchCache.findOne({ query: cacheKey });
-      if (cached && cached.results) {
-        console.log(`[Cache Hit] Serving search results for cacheKey: "${cacheKey}"`);
-        if (Array.isArray(cached.results)) {
-          const filteredCached = cached.results.filter(isEducationalVideo);
-          return res.json({ items: filteredCached, nextPageToken: null });
-        } else if (cached.results.items) {
-          const filteredCached = cached.results.items.filter(isEducationalVideo);
-          return res.json({ items: filteredCached, nextPageToken: cached.results.nextPageToken || null });
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const cached = await SearchCache.findOne({ query: cacheKey }).maxTimeMS(1000);
+        if (cached && cached.results) {
+          console.log(`[Cache Hit] Serving search results for cacheKey: "${cacheKey}"`);
+          if (Array.isArray(cached.results)) {
+            const filteredCached = cached.results.filter(isEducationalVideo);
+            if (filteredCached.length > 0) {
+              return res.json({ items: filteredCached, nextPageToken: null });
+            }
+          } else if (cached.results.items) {
+            const filteredCached = cached.results.items.filter(isEducationalVideo);
+            if (filteredCached.length > 0) {
+              return res.json({ items: filteredCached, nextPageToken: cached.results.nextPageToken || null });
+            }
+          }
         }
+      } catch (cacheErr) {
+        console.error("Cache read error:", cacheErr.message);
       }
-    } catch (cacheErr) {
-      console.error("Cache read error:", cacheErr);
     }
 
     // 2. Fetch from YouTube API if not cached
@@ -450,16 +449,21 @@ const searchVideos = async (req, res) => {
         { params: apiParams }
       );
 
-      const items = response.data.items || [];
-      const filteredItems = items.filter(isEducationalVideo);
+      let filteredItems = (response.data.items || []).filter(isEducationalVideo);
       const nextPageToken = response.data.nextPageToken || null;
 
-      // Save to cache asynchronously (do not block client response)
-      if (filteredItems.length > 0) {
-        SearchCache.create({
-          query: cacheKey,
-          results: { items: filteredItems, nextPageToken }
-        }).catch(cacheErr => console.error("Cache write error:", cacheErr));
+      // If YouTube returns empty or filtered out items, use fallback videos
+      if (filteredItems.length === 0) {
+        console.log(`[Fallback] 0 items filtered for "${query}". Using static educational fallback videos.`);
+        filteredItems = getFallbackVideos(query);
+      } else {
+        // Save to cache asynchronously if DB connected
+        if (mongoose.connection.readyState === 1) {
+          SearchCache.create({
+            query: cacheKey,
+            results: { items: filteredItems, nextPageToken }
+          }).catch(cacheErr => console.error("Cache write error:", cacheErr.message));
+        }
       }
 
       return res.json({ items: filteredItems, nextPageToken });
@@ -469,9 +473,8 @@ const searchVideos = async (req, res) => {
       
       // Serve fallback videos structured exactly like YouTube API results
       const fallbacks = getFallbackVideos(query);
-      const filteredFallbacks = fallbacks.filter(isEducationalVideo);
       console.log(`[Fallback] Serving static educational fallback videos for: "${query}"`);
-      return res.json({ items: filteredFallbacks, nextPageToken: null });
+      return res.json({ items: fallbacks, nextPageToken: null });
     }
 
   } catch (error) {
