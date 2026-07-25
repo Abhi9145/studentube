@@ -6,104 +6,309 @@ const axios = require("axios");
 
 // High-quality fallback educational videos to serve when YouTube API quota is exceeded or offline
 const FALLBACK_VIDEOS = [
-  {
-    kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "rfscVS0vtbw" },
-    snippet: {
-      title: "Python for Beginners – Full Course",
-      channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg" }
-      }
-    }
-  },
+  // JavaScript
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "PkZNo7MFNFg" },
+    tags: ["javascript", "js", "web", "programming", "coding", "frontend"],
     snippet: {
       title: "Learn JavaScript – Full Course for Beginners",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/PkZNo7MFNFg/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/PkZNo7MFNFg/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "W6NZfCO5SIk" },
+    tags: ["javascript", "js", "programming", "coding", "tutorial"],
+    snippet: {
+      title: "JavaScript Tutorial for Beginners: Learn JavaScript in 1 Hour",
+      channelTitle: "Programming with Mosh",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/W6NZfCO5SIk/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "hdI2bqOjy3c" },
+    tags: ["javascript", "js", "crash course", "web development"],
+    snippet: {
+      title: "JavaScript Crash Course For Beginners",
+      channelTitle: "Traversy Media",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/hdI2bqOjy3c/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "30LWjhZ8g0E" },
+    tags: ["javascript", "js", "dom", "html", "web development"],
+    snippet: {
+      title: "JavaScript DOM Crash Course – Complete Tutorial",
+      channelTitle: "Traversy Media",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/30LWjhZ8g0E/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "VlPiVmYuo0U" },
+    tags: ["javascript", "js", "async", "promises", "web"],
+    snippet: {
+      title: "Async JavaScript Tutorial – Promises, Async/Await & Fetch",
+      channelTitle: "The Net Ninja",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/VlPiVmYuo0U/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "SBmSRK3feww" },
+    tags: ["javascript", "js", "es6", "advanced"],
+    snippet: {
+      title: "JavaScript ES6, ES7, ES8 Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/SBmSRK3feww/mqdefault.jpg" } }
+    }
+  },
+
+  // Python
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "rfscVS0vtbw" },
+    tags: ["python", "programming", "coding", "beginners"],
+    snippet: {
+      title: "Python for Beginners – Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "kqtD5dpn9C8" },
+    tags: ["python", "programming", "tutorial"],
+    snippet: {
+      title: "Python Tutorial for Beginners – Full Course",
+      channelTitle: "Programming with Mosh",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/kqtD5dpn9C8/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "_uQrJ0TkZlc" },
+    tags: ["python", "advanced", "course"],
+    snippet: {
+      title: "Python Course – Beginner to Advanced",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/_uQrJ0TkZlc/mqdefault.jpg" } }
+    }
+  },
+
+  // React
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "bMknfKXIFA8" },
+    tags: ["react", "reactjs", "frontend", "javascript", "web"],
+    snippet: {
+      title: "React JS Full Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/bMknfKXIFA8/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "w7ejDZ8SWv8" },
+    tags: ["react", "reactjs", "crash course"],
+    snippet: {
+      title: "React JS Crash Course 2024",
+      channelTitle: "Traversy Media",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/w7ejDZ8SWv8/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "SqcY0GlETPk" },
+    tags: ["react", "hooks", "components"],
+    snippet: {
+      title: "React Course – Beginner's Tutorial for React JS",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/SqcY0GlETPk/mqdefault.jpg" } }
+    }
+  },
+
+  // Java
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "eIrMbAQSU34" },
+    tags: ["java", "programming", "oops", "coding"],
+    snippet: {
+      title: "Java Tutorial for Beginners – Learn Java Programming",
+      channelTitle: "Programming with Mosh",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/eIrMbAQSU34/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "A74TOX803D0" },
+    tags: ["java", "course", "oops"],
+    snippet: {
+      title: "Java Programming Course – Full Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/A74TOX803D0/mqdefault.jpg" } }
+    }
+  },
+
+  // C++
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "vLnPwxZdW4Y" },
+    tags: ["c++", "cpp", "programming", "coding", "dsa"],
+    snippet: {
+      title: "C++ Tutorial for Beginners – Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/vLnPwxZdW4Y/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "ZzaPdXTrSb8" },
+    tags: ["c++", "cpp", "programming"],
+    snippet: {
+      title: "C++ Programming Course for Beginners",
+      channelTitle: "Programming with Mosh",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/ZzaPdXTrSb8/mqdefault.jpg" } }
+    }
+  },
+
+  // Data Structures & Algorithms (DSA)
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "l9AzO1FMgM8" },
+    tags: ["dsa", "data structures", "algorithms", "coding", "interview"],
+    snippet: {
+      title: "Data Structures Easy to Advanced – Full Tutorial",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "8hly31xKLI0" },
+    tags: ["dsa", "algorithms", "computer science"],
+    snippet: {
+      title: "Algorithms and Data Structures Tutorial",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/8hly31xKLI0/mqdefault.jpg" } }
+    }
+  },
+
+  // Web Development (HTML/CSS)
+  {
+    kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "zOjov-2OZ0E" },
+    tags: ["html", "web development", "frontend", "css"],
     snippet: {
       title: "HTML Full Course – Build a Website Tutorial",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/zOjov-2OZ0E/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/zOjov-2OZ0E/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "OXGznpKZ_sA" },
+    tags: ["css", "web development", "frontend", "html"],
     snippet: {
       title: "CSS Tutorial – Zero to Hero (Complete Course)",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/OXGznpKZ_sA/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/OXGznpKZ_sA/mqdefault.jpg" } }
+    }
+  },
+
+  // DBMS & SQL
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "HXV3zeQKqGY" },
+    tags: ["sql", "dbms", "database", "backend"],
+    snippet: {
+      title: "SQL Tutorial – Full Database Course for Beginners",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/HXV3zeQKqGY/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "bMknfKXIFA8" },
+    id: { kind: "youtube#video", videoId: "7S_tz1z_5bA" },
+    tags: ["dbms", "database", "sql"],
     snippet: {
-      title: "React JS Full Course for Beginners",
+      title: "Database Design Course – Learn Relational Databases",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/bMknfKXIFA8/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/7S_tz1z_5bA/mqdefault.jpg" } }
     }
   },
-  {
-    kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "RGOj5yH7evk" },
-    snippet: {
-      title: "Git and GitHub for Beginners - Crash Course",
-      channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/mqdefault.jpg" }
-      }
-    }
-  },
+
+  // AI & Machine Learning
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "ua-CiDNNj30" },
+    tags: ["machine learning", "ml", "ai", "artificial intelligence", "python"],
     snippet: {
       title: "Machine Learning for Everybody – Full Course",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/ua-CiDNNj30/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/ua-CiDNNj30/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "l9AzO1FMgM8" },
+    id: { kind: "youtube#video", videoId: "Gv9_4yMHF28" },
+    tags: ["artificial intelligence", "ai", "machine learning"],
     snippet: {
-      title: "Data Structures Easy to Advanced – Full Tutorial",
+      title: "Artificial Intelligence Course for Beginners",
       channelTitle: "freeCodeCamp.org",
-      thumbnails: {
-        high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" }
-      }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/Gv9_4yMHF28/mqdefault.jpg" } }
+    }
+  },
+
+  // DevOps, Git & Linux
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "RGOj5yH7evk" },
+    tags: ["git", "github", "devops", "version control"],
+    snippet: {
+      title: "Git and GitHub for Beginners – Crash Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "wNQ5jM33_jE" },
+    tags: ["docker", "devops", "containers"],
+    snippet: {
+      title: "Docker Tutorial for Beginners – Full Course",
+      channelTitle: "freeCodeCamp.org",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/wNQ5jM33_jE/mqdefault.jpg" } }
     }
   }
 ];
 
 const getFallbackVideos = (query) => {
-  const lowerQuery = query.toLowerCase();
-  const matched = FALLBACK_VIDEOS.filter(video => {
+  const lowerQuery = (query || "").toLowerCase().trim();
+
+  // Find videos matching title, channel, or topic tags
+  const matched = FALLBACK_VIDEOS.filter((video) => {
     const title = video.snippet.title.toLowerCase();
     const channel = video.snippet.channelTitle.toLowerCase();
-    return title.includes(lowerQuery) || channel.includes(lowerQuery);
+    const tags = (video.tags || []).join(" ").toLowerCase();
+    return (
+      title.includes(lowerQuery) ||
+      channel.includes(lowerQuery) ||
+      tags.includes(lowerQuery) ||
+      (lowerQuery.length > 2 && title.split(/\s+/).some((w) => lowerQuery.includes(w)))
+    );
   });
-  return matched.length > 0 ? matched : FALLBACK_VIDEOS;
+
+  // Always return a rich list of at least 15-24 videos by padding with general top educational fallbacks
+  const matchedIds = new Set(matched.map((v) => v.id.videoId));
+  const fill = FALLBACK_VIDEOS.filter((v) => !matchedIds.has(v.id.videoId));
+  const combined = [...matched, ...fill];
+
+  return combined.slice(0, 24);
 };
 
 const BANNED_PATTERNS = [
@@ -155,6 +360,8 @@ const getRefinedQuery = (query) => {
     "react": "react js programming tutorial",
     "reactjs": "react js tutorial",
     "react js": "react js tutorial for beginners",
+    "javascript": "javascript tutorial for beginners",
+    "js": "javascript tutorial for beginners",
     "c": "c programming tutorial",
     "c++": "c++ programming tutorial",
     "c#": "c# programming tutorial",
@@ -215,7 +422,7 @@ const isEducationalVideo = (video) => {
   const channel = (video.snippet?.channelTitle || "").toLowerCase();
 
   // Explicitly allow any coding/educational content
-  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution)\b/i.test(title);
+  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud)\b/i.test(title);
   if (isEducationalContent) {
     return true;
   }
