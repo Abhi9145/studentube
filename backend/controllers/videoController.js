@@ -409,16 +409,17 @@ const searchVideos = async (req, res) => {
         const cached = await SearchCache.findOne({ query: cacheKey }).maxTimeMS(1000);
         if (cached && cached.results) {
           console.log(`[Cache Hit] Serving search results for cacheKey: "${cacheKey}"`);
+          let cachedItems = [];
+          let cachedPageToken = null;
           if (Array.isArray(cached.results)) {
-            const filteredCached = cached.results.filter(isEducationalVideo);
-            if (filteredCached.length > 0) {
-              return res.json({ items: filteredCached, nextPageToken: null });
-            }
-          } else if (cached.results.items) {
-            const filteredCached = cached.results.items.filter(isEducationalVideo);
-            if (filteredCached.length > 0) {
-              return res.json({ items: filteredCached, nextPageToken: cached.results.nextPageToken || null });
-            }
+            cachedItems = cached.results;
+          } else if (cached.results.items && Array.isArray(cached.results.items)) {
+            cachedItems = cached.results.items;
+            cachedPageToken = cached.results.nextPageToken || null;
+          }
+
+          if (cachedItems.length > 0) {
+            return res.json({ items: cachedItems, nextPageToken: cachedPageToken });
           }
         }
       } catch (cacheErr) {
@@ -456,14 +457,15 @@ const searchVideos = async (req, res) => {
       if (filteredItems.length === 0) {
         console.log(`[Fallback] 0 items filtered for "${query}". Using static educational fallback videos.`);
         filteredItems = getFallbackVideos(query);
-      } else {
-        // Save to cache asynchronously if DB connected
-        if (mongoose.connection.readyState === 1) {
-          SearchCache.create({
-            query: cacheKey,
-            results: { items: filteredItems, nextPageToken }
-          }).catch(cacheErr => console.error("Cache write error:", cacheErr.message));
-        }
+      }
+
+      // Save to cache (using findOneAndUpdate with upsert to prevent duplicate key errors)
+      if (mongoose.connection.readyState === 1 && filteredItems.length > 0) {
+        SearchCache.findOneAndUpdate(
+          { query: cacheKey },
+          { query: cacheKey, results: { items: filteredItems, nextPageToken }, createdAt: new Date() },
+          { upsert: true, new: true }
+        ).catch(cacheErr => console.error("Cache write error:", cacheErr.message));
       }
 
       return res.json({ items: filteredItems, nextPageToken });
@@ -474,6 +476,16 @@ const searchVideos = async (req, res) => {
       // Serve fallback videos structured exactly like YouTube API results
       const fallbacks = getFallbackVideos(query);
       console.log(`[Fallback] Serving static educational fallback videos for: "${query}"`);
+
+      // Cache fallbacks so subsequent requests for this query are fast
+      if (mongoose.connection.readyState === 1 && fallbacks.length > 0) {
+        SearchCache.findOneAndUpdate(
+          { query: cacheKey },
+          { query: cacheKey, results: { items: fallbacks, nextPageToken: null }, createdAt: new Date() },
+          { upsert: true, new: true }
+        ).catch(cacheErr => console.error("Cache write error:", cacheErr.message));
+      }
+
       return res.json({ items: fallbacks, nextPageToken: null });
     }
 

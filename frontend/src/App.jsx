@@ -61,6 +61,36 @@ const RECOMMENDATION_QUERIES = [
   "statistics probability tutorial",
 ];
 
+// Helpers for video ID & thumbnail extraction
+const getVideoId = (v) => {
+  if (!v) return null;
+  if (v.id?.videoId) return v.id.videoId;
+  if (typeof v.id === "string") return v.id;
+  if (v.videoId) return v.videoId;
+  return null;
+};
+
+const getVideoThumbnail = (v) => {
+  if (!v) return null;
+  const url =
+    v.snippet?.thumbnails?.high?.url ||
+    v.snippet?.thumbnails?.medium?.url ||
+    v.snippet?.thumbnails?.default?.url ||
+    v.thumbnail;
+  if (url) return url;
+  const id = getVideoId(v);
+  return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
+};
+
+const filterValidItems = (items) => {
+  if (!Array.isArray(items)) return [];
+  return items.filter((v) => {
+    const id = getVideoId(v);
+    const thumb = getVideoThumbnail(v);
+    return Boolean(id && thumb);
+  });
+};
+
 function App() {
   const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,12 +106,9 @@ function App() {
   const [recommendationQueriesQueue, setRecommendationQueriesQueue] = useState([]);
 
   // Ref to track whether we are currently on the home screen.
-  // Background recommendation callbacks check this before writing state
-  // so they never overwrite user search results.
   const isHomeRef = useRef(true);
 
   // AbortController ref to cancel in-flight recommendation fetches
-  // when the user navigates away from home (e.g. performs a search).
   const recommendationAbortRef = useRef(null);
 
   // ── Theme initialization ───────────────────────────────────────────────────
@@ -133,10 +160,7 @@ function App() {
         ? data.items
         : [];
 
-      // Filter out malformed entries (missing videoId or thumbnail)
-      const validItems = rawItems.filter(
-        (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
-      );
+      const validItems = filterValidItems(rawItems);
 
       setVideos(validItems);
       setNextPageToken(data.nextPageToken || null);
@@ -150,9 +174,7 @@ function App() {
   }, []);
 
   // ── Load recommendations helper ──────────────────────────────────────────
-  // Fetches from multiple random queries to fill the home page with a rich grid
   const loadRecommendations = useCallback(async () => {
-    // Abort any previous recommendation fetches still in-flight
     if (recommendationAbortRef.current) {
       recommendationAbortRef.current.abort();
     }
@@ -163,7 +185,7 @@ function App() {
     const shuffled = [...RECOMMENDATION_QUERIES].sort(() => Math.random() - 0.5);
 
     const firstQuery = shuffled[0];
-    const backgroundQueries = shuffled.slice(1, 2); // Fetch 1 more in the background to save YouTube API quota
+    const backgroundQueries = shuffled.slice(1, 2);
     const remaining = shuffled.slice(2);
 
     const fetchQuery = async (q) => {
@@ -180,21 +202,16 @@ function App() {
           : Array.isArray(data.items)
           ? data.items
           : [];
-        return rawItems.filter(
-          (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
-        );
+        return filterValidItems(rawItems);
       } catch (err) {
-        // Silently ignore abort errors
         if (err.name === "AbortError") return [];
         return [];
       }
     };
 
-    // 1. Fetch first query instantly to render home page immediately
     try {
       const firstBatch = await fetchQuery(firstQuery);
 
-      // Guard: only update state if we are still on the home screen
       if (!isHomeRef.current || abortController.signal.aborted) return;
 
       if (firstBatch.length > 0) {
@@ -202,20 +219,16 @@ function App() {
         setStatus(STATUS.SUCCESS);
         setRecommendationQueriesQueue(shuffled.slice(1));
 
-        // 2. Fetch additional queries in the background and append them
         Promise.all(backgroundQueries.map(fetchQuery)).then((results) => {
-          // Guard: don't touch state if user navigated away from home
           if (!isHomeRef.current || abortController.signal.aborted) return;
 
           const newItems = results.flat();
           if (newItems.length > 0) {
             setVideos((prev) => {
-              const seen = new Set(prev.map((v) => v.id?.videoId));
+              const existingIds = new Set(prev.map((v) => getVideoId(v)).filter(Boolean));
               const uniqueNew = newItems.filter((v) => {
-                const id = v.id?.videoId;
-                if (!id || seen.has(id)) return false;
-                seen.add(id);
-                return true;
+                const id = getVideoId(v);
+                return id && !existingIds.has(id);
               });
               return [...prev, ...uniqueNew];
             });
@@ -232,7 +245,6 @@ function App() {
       console.error("Initial load error:", err);
     }
 
-    // Fallback: try remaining one by one
     for (const q of shuffled) {
       if (!isHomeRef.current || abortController.signal.aborted) return;
       const items = await fetchQuery(q);
@@ -276,14 +288,15 @@ function App() {
             ? data.items
             : [];
 
-          const validItems = rawItems.filter(
-            (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
-          );
+          const validItems = filterValidItems(rawItems);
 
           if (validItems.length > 0) {
             setVideos((prev) => {
-              const existingIds = new Set(prev.map(v => v.id?.videoId));
-              const newUnique = validItems.filter(v => v.id?.videoId && !existingIds.has(v.id.videoId));
+              const existingIds = new Set(prev.map((v) => getVideoId(v)).filter(Boolean));
+              const newUnique = validItems.filter((v) => {
+                const id = getVideoId(v);
+                return id && !existingIds.has(id);
+              });
               return [...prev, ...newUnique];
             });
           }
@@ -310,14 +323,15 @@ function App() {
             ? data.items
             : [];
 
-          const validItems = rawItems.filter(
-            (v) => v?.id?.videoId && v?.snippet?.thumbnails?.high?.url
-          );
+          const validItems = filterValidItems(rawItems);
 
           if (validItems.length > 0) {
             setVideos((prev) => {
-              const existingIds = new Set(prev.map(v => v.id?.videoId));
-              const newUnique = validItems.filter(v => v.id?.videoId && !existingIds.has(v.id.videoId));
+              const existingIds = new Set(prev.map((v) => getVideoId(v)).filter(Boolean));
+              const newUnique = validItems.filter((v) => {
+                const id = getVideoId(v);
+                return id && !existingIds.has(id);
+              });
               return [...prev, ...newUnique];
             });
           }
@@ -455,7 +469,7 @@ function App() {
       );
     }
 
-    if (status === STATUS.BLOCKED || videos.length === 0) {
+    if (status === STATUS.BLOCKED) {
       return (
         <div
           style={{
@@ -477,24 +491,60 @@ function App() {
       );
     }
 
+    if (status === STATUS.SUCCESS && videos.length === 0) {
+      return (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "70px 20px",
+            background: "var(--card-bg)",
+            borderRadius: "16px",
+            border: "1px dashed var(--card-border)",
+          }}
+        >
+          <div style={{ fontSize: "42px", marginBottom: "16px" }}>🔍</div>
+          <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
+            No videos found for &quot;{searchTerm || lastQuery}&quot;
+          </h3>
+          <p style={{ color: "var(--faint-text)", fontSize: "14px", marginBottom: "20px" }}>
+            Try searching for another educational topic like Python, React, DSA, Math, or C++.
+          </p>
+          <button
+            onClick={handleHomeClick}
+            style={{
+              background: "#ff0000",
+              color: "#fff",
+              border: "none",
+              borderRadius: "20px",
+              padding: "10px 24px",
+              fontSize: "14px",
+              fontWeight: "700",
+              cursor: "pointer",
+            }}
+          >
+            🏠 Return Home
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="video-grid">
-        {videos.map((video) => (
-          <VideoCard
-            key={video.id?.videoId || video.id || video.videoId}
-            video={{
-              title: video.snippet?.title || video.title,
-              channel: video.snippet?.channelTitle || video.channel,
-              thumbnail: getProxiedThumbnail(
-                video.snippet?.thumbnails?.high?.url ||
-                video.snippet?.thumbnails?.medium?.url ||
-                video.snippet?.thumbnails?.default?.url ||
-                video.thumbnail
-              ),
-              videoId: video.id?.videoId || (typeof video.id === "string" ? video.id : video.videoId),
-            }}
-          />
-        ))}
+        {videos.map((video, idx) => {
+          const vId = getVideoId(video);
+          const vThumb = getVideoThumbnail(video);
+          return (
+            <VideoCard
+              key={vId || idx}
+              video={{
+                title: video.snippet?.title || video.title || "Educational Video",
+                channel: video.snippet?.channelTitle || video.channel || "YouTube",
+                thumbnail: getProxiedThumbnail(vThumb),
+                videoId: vId,
+              }}
+            />
+          );
+        })}
       </div>
     );
   };
@@ -516,7 +566,9 @@ function App() {
 
           {isHome && <ContinueWatching />}
 
-          <h2 style={{ marginBottom: "20px" }}>🔥 Recommended Videos</h2>
+          <h2 style={{ marginBottom: "20px" }}>
+            {isHome ? "🔥 Recommended Videos" : `🔍 Results for "${searchTerm || lastQuery}"`}
+          </h2>
 
           {renderContent()}
 

@@ -24,6 +24,11 @@ function Sidebar({ onCategoryClick, onHomeClick }) {
     if (onHomeClick) onHomeClick();
   };
 
+  const handleCategory = (category) => {
+    navigate("/");
+    if (onCategoryClick) onCategoryClick(category);
+  };
+
   return (
     <div className="sidebar">
       <h3>Navigation</h3>
@@ -56,7 +61,7 @@ function Sidebar({ onCategoryClick, onHomeClick }) {
         <button
           key={category}
           className="category-btn"
-          onClick={() => onCategoryClick(category)}
+          onClick={() => handleCategory(category)}
         >
           {category}
         </button>
