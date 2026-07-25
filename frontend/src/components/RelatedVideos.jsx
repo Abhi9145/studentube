@@ -6,7 +6,7 @@ function RelatedVideos({ videos }) {
     <div className="related-videos">
       <h3>Related Videos</h3>
 
-      {videos.map((video) => {
+      {videos.map((video, idx) => {
         const vId = video.id?.videoId || (typeof video.id === "string" ? video.id : video.videoId);
         const vTitle = video.snippet?.title || video.title || "Educational Video";
         const rawThumb = video.snippet?.thumbnails?.medium?.url ||
@@ -17,7 +17,7 @@ function RelatedVideos({ videos }) {
 
         return (
           <Link
-            key={vId}
+            key={vId ? `${vId}-${idx}` : idx}
             to={`/video/${vId}`}
             style={{
               textDecoration: "none",

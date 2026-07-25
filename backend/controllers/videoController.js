@@ -625,7 +625,8 @@ const searchVideos = async (req, res) => {
             cachedPageToken = cached.results.nextPageToken || null;
           }
 
-          if (cachedItems.length > 0) {
+          // Ignore stale/incomplete cache entries with fewer than 5 items
+          if (cachedItems.length >= 5) {
             return res.json({ items: cachedItems, nextPageToken: cachedPageToken });
           }
         }
