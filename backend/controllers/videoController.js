@@ -629,15 +629,24 @@ const isEducationalVideo = (video) => {
   const title = (video.snippet?.title || "").toLowerCase();
   const channel = (video.snippet?.channelTitle || "").toLowerCase();
 
-  // Unconditionally allow Infonix channel and KTU educational content
-  if (channel.includes("infonix") || title.includes("infonix") || title.includes("ktu") || channel.includes("ktu")) {
+  // Reject smartphone troubleshooting/unboxing videos (e.g. Infinix/Oppo phone repair/secret codes)
+  const isSmartphoneVideo = /\b(infinix|oppo|vivo|realme|redmi|xiaomi|samsung galaxy|iphone|android phone|usb debugging|screen mirroring|pattern lock|secret code|sim card|ram increase|hard reset)\b/i.test(title);
+  if (isSmartphoneVideo && !/\b(app development|mobile development|flutter|react native|android studio)\b/i.test(title)) {
+    return false;
+  }
+
+  // Allow Infonix channel and KTU educational content
+  if (channel.includes("infonix") || title.includes("infonix")) {
+    return true;
+  }
+  if (title.includes("ktu") || channel.includes("ktu")) {
     return true;
   }
 
   // Explicitly allow any coding/educational content
   const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud|ktu|infonix|semester|btech|syllabus)\b/i.test(title);
-  if (isEducationalContent) {
-    return true;
+  if (!isEducationalContent) {
+    return false;
   }
 
   // Block general music/songs, but allow if it's a coding tutorial/app/player
@@ -879,9 +888,9 @@ const searchVideos = async (req, res) => {
       let filteredItems = (response.data.items || []).filter(isEducationalVideo);
       const nextPageToken = response.data.nextPageToken || null;
 
-      // If YouTube returns empty or filtered out items, use fallback videos
-      if (filteredItems.length === 0) {
-        console.log(`[Fallback] 0 items filtered for "${query}". Using static educational fallback videos.`);
+      // If YouTube returns empty or fewer than 15 items, pad with fallback educational videos
+      if (filteredItems.length < 15) {
+        console.log(`[Fallback] Fewer than 15 items filtered for "${query}". Using static educational fallback videos.`);
         filteredItems = getFallbackVideos(query);
       }
 
