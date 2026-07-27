@@ -29,6 +29,8 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
   const searchContainerRef = useRef(null);
 
   const educationalKeywords = [
+    "xylem", "xylem learning", "eduport", "plus two", "plus one", "12th", "11th", "class 12", "class 11",
+    "keam", "neet", "jee", "physics wallah", "pw", "brilliant pala", "victers", "kerala syllabus", "cbse class 12",
     "codewithharry", "brocode", "bro code", "freecodecamp", "apna college", "gate smashers", "neso academy",
     "abdul bari", "striver", "take u forward", "fireship", "the net ninja", "web dev simplified", "telusko",
     "clever programmer", "tech with tim", "cs dojo", "bytebytego", "edureka", "simplilearn", "love babbar",

@@ -539,26 +539,71 @@ const FALLBACK_VIDEOS = [
       thumbnails: { high: { url: "https://i.ytimg.com/vi/0IAPZzGSbME/mqdefault.jpg" } }
     }
   },
+  // 12th Standard, Plus Two, Xylem, Eduport & Entrance Channels
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "EAR7De6Goz4" },
-    duration: "25:40:00",
-    tags: ["striver", "take u forward", "takeuforward", "dsa", "leetcode"],
+    id: { kind: "youtube#video", videoId: "9o4v6hR5T2A" },
+    duration: "4:30:15",
+    tags: ["xylem", "xylem learning", "plus two", "12th", "physics", "kerala syllabus"],
     snippet: {
-      title: "Striver's A2Z DSA Course / Sheet – Complete Coding Interview Prep",
-      channelTitle: "take U forward",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/EAR7De6Goz4/mqdefault.jpg" } }
+      title: "Plus Two Physics Full Revision & Electrostatics – Xylem Learning",
+      channelTitle: "Xylem Learning",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/9o4v6hR5T2A/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "V_xro1b0FDE" },
-    duration: "6:15:30",
-    tags: ["chai aur code", "hitesh choudhary", "javascript", "react", "hindi"],
+    id: { kind: "youtube#video", videoId: "fN3O0zR8R-w" },
+    duration: "5:12:40",
+    tags: ["xylem", "xylem learning", "plus two", "12th", "chemistry", "kerala syllabus"],
     snippet: {
-      title: "Chai aur JavaScript – Complete Modern JS Course in Hindi",
-      channelTitle: "Chai aur Code",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/V_xro1b0FDE/mqdefault.jpg" } }
+      title: "Plus Two Chemistry Solutions & Electrochemistry – Xylem Learning",
+      channelTitle: "Xylem Learning",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/fN3O0zR8R-w/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "K6t_g-bA88w" },
+    duration: "3:45:20",
+    tags: ["eduport", "eduport plus two", "12th", "maths", "kerala syllabus"],
+    snippet: {
+      title: "Plus Two Mathematics Relations & Calculus One Shot – Eduport",
+      channelTitle: "Eduport Academic",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/K6t_g-bA88w/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "y1m5k0G98jA" },
+    duration: "6:20:00",
+    tags: ["eduport", "eduport plus two", "12th", "biology", "kerala syllabus"],
+    snippet: {
+      title: "Plus Two Biology Reproduction & Genetics Full Revision – Eduport",
+      channelTitle: "Eduport Academic",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/y1m5k0G98jA/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "1s84T1W4Nf0" },
+    duration: "8:15:30",
+    tags: ["physics wallah", "pw", "class 12", "12th physics", "cbse", "neet"],
+    snippet: {
+      title: "Class 12th Physics : Electrostatics One Shot Marathon – Physics Wallah",
+      channelTitle: "Physics Wallah",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/1s84T1W4Nf0/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "x0v1A3m4Lk9" },
+    duration: "7:50:10",
+    tags: ["brilliant pala", "keam", "neet", "jee", "plus two", "entrance"],
+    snippet: {
+      title: "KEAM / NEET Entrance Physics & Chemistry Top Questions – Brilliant Pala",
+      channelTitle: "Brilliant Study Centre Pala",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/x0v1A3m4Lk9/mqdefault.jpg" } }
     }
   }
 ];
@@ -575,6 +620,8 @@ const getFallbackVideos = (query) => {
       title.includes(lowerQuery) ||
       channel.includes(lowerQuery) ||
       tags.includes(lowerQuery) ||
+      (lowerQuery.includes("xylem") && (title.includes("xylem") || channel.includes("xylem") || tags.includes("xylem"))) ||
+      (lowerQuery.includes("eduport") && (title.includes("eduport") || channel.includes("eduport") || tags.includes("eduport"))) ||
       (lowerQuery.includes("infonix") && (title.includes("infonix") || channel.includes("infonix") || tags.includes("infonix"))) ||
       (lowerQuery.includes("ktu") && (title.includes("ktu") || tags.includes("ktu"))) ||
       (lowerQuery.length > 2 && title.split(/\s+/).some((w) => w.length > 2 && lowerQuery.includes(w)))
@@ -635,6 +682,34 @@ const getRefinedQuery = (query) => {
 
   // Exact match refinements for ambiguous short keywords
   const EXACT_REFINEMENTS = {
+    "xylem": "Xylem Learning 12th Plus Two Kerala syllabus lectures",
+    "xylem learning": "Xylem Learning 12th Plus Two Kerala syllabus lectures",
+    "xylem class 12": "Xylem Learning class 12 chemistry physics math lectures",
+    "xylem plus two": "Xylem Learning Plus Two Kerala Higher Secondary lectures",
+    "xylem neet": "Xylem NEET entrance preparation lectures",
+    "xylem jee": "Xylem JEE entrance preparation lectures",
+    "xylem sslc": "Xylem SSLC 10th class lectures",
+    "eduport": "Eduport Academic Plus Two 12th Kerala syllabus lectures",
+    "eduport plus two": "Eduport Plus Two class 12 physics chemistry math lectures",
+    "eduport class 12": "Eduport class 12 Kerala syllabus lectures",
+    "physics wallah": "Physics Wallah PW Class 12 NEET JEE lectures",
+    "pw": "Physics Wallah PW Class 12 NEET JEE lectures",
+    "physicswallah": "Physics Wallah PW Class 12 NEET JEE lectures",
+    "target learning": "Target Learning App Plus Two 12th Kerala syllabus",
+    "brilliant pala": "Brilliant Study Centre Pala NEET KEAM entrance coaching",
+    "victers": "KITE Victers Kerala Higher Secondary Plus Two class 12",
+    "12th": "Class 12 12th standard full course tutorial",
+    "12th standard": "12th standard full syllabus lecture course",
+    "plus two": "Plus Two 12th standard Kerala CBSE syllabus lecture",
+    "plus 2": "Plus Two 12th standard Kerala CBSE syllabus lecture",
+    "class 12": "Class 12 full syllabus lecture course",
+    "11th": "Class 11 11th standard full course tutorial",
+    "plus one": "Plus One 11th standard Kerala CBSE syllabus lecture",
+    "plus 1": "Plus One 11th standard Kerala CBSE syllabus lecture",
+    "keam": "KEAM engineering entrance preparation lectures",
+    "neet": "NEET medical entrance preparation lectures",
+    "jee": "JEE main advanced entrance preparation lectures",
+    "cuet": "CUET entrance exam preparation lectures",
     "codewithharry": "CodeWithHarry programming tutorial course",
     "code with harry": "CodeWithHarry programming tutorial course",
     "brocode": "Bro Code programming course tutorial",
@@ -754,13 +829,13 @@ const isEducationalVideo = (video) => {
   }
 
   // Allow top educational channels & creators unconditionally
-  const isEducationalCreator = /\b(codewithharry|code with harry|brocode|bro code|mosh|programming with mosh|freecodecamp|traversy|apna college|gate smashers|neso academy|abdul bari|striver|take u forward|fireship|net ninja|web dev simplified|telusko|clever programmer|tech with tim|cs dojo|corey schafer|bytebytego|edureka|simplilearn|love babbar|codehelp|kunal kushwaha|jennys lectures|chai aur code|hitesh choudhary|infonix|ktu)\b/i.test(channel + " " + title);
+  const isEducationalCreator = /\b(xylem|eduport|physics wallah|physicswallah|pw|target learning|brilliant pala|victers|unacademy|vedantu|khan academy|learnohub|magnet brains|apni kaksha|codewithharry|code with harry|brocode|bro code|mosh|programming with mosh|freecodecamp|traversy|apna college|gate smashers|neso academy|abdul bari|striver|take u forward|fireship|net ninja|web dev simplified|telusko|clever programmer|tech with tim|cs dojo|corey schafer|bytebytego|edureka|simplilearn|love babbar|codehelp|kunal kushwaha|jennys lectures|chai aur code|hitesh choudhary|infonix|ktu)\b/i.test(channel + " " + title);
   if (isEducationalCreator) {
     return true;
   }
 
   // Explicitly allow any coding/educational content
-  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud|ktu|infonix|semester|btech|syllabus)\b/i.test(title);
+  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud|ktu|infonix|semester|btech|syllabus|12th|11th|plus two|plus one|class 12|class 11|keam|neet|jee|cuet|kerala|cbse|ncert)\b/i.test(title);
   if (!isEducationalContent) {
     return false;
   }
@@ -795,6 +870,32 @@ const searchVideos = async (req, res) => {
     const lowerQuery = query.toLowerCase();
 
     const allowedKeywords = [
+      "xylem",
+      "eduport",
+      "physics wallah",
+      "physicswallah",
+      "pw",
+      "target",
+      "brilliant",
+      "victers",
+      "plus two",
+      "plus one",
+      "class 12",
+      "class 11",
+      "12th",
+      "11th",
+      "kerala",
+      "cbse",
+      "ncert",
+      "keam",
+      "neet",
+      "jee",
+      "cuet",
+      "unacademy",
+      "vedantu",
+      "khan academy",
+      "learnohub",
+      "magnet brains",
       "codewithharry",
       "code with harry",
       "brocode",
