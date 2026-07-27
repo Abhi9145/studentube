@@ -12,9 +12,32 @@ function VideoCard({ video }) {
   const [newPlaylistName, setNewPlaylistName] = useState("");
   const [creatingPlaylist, setCreatingPlaylist] = useState(false);
 
+  // Hover video preview state & refs
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeoutRef = useRef(null);
+
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token");
   const videoDuration = getOrGenerateDuration(video);
+
+  const handleMouseEnter = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    // 350ms hover delay before triggering video preview
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsHovered(true);
+    }, 350);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    setIsHovered(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -153,17 +176,42 @@ function VideoCard({ video }) {
   return (
     <div className="video-card">
       <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
-        <div className="thumbnail-wrapper" style={{ position: "relative" }}>
+        <div
+          className="thumbnail-wrapper"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          style={{ position: "relative", overflow: "hidden" }}
+        >
           <img
             src={getProxiedThumbnail(video.thumbnail)}
             alt={video.title}
+            style={{
+              opacity: isHovered ? 0 : 1,
+              transition: "opacity 0.3s ease",
+            }}
             onError={(e) => {
               e.currentTarget.onerror = null;
               e.currentTarget.src =
                 "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23222'/%3E%3Ctext x='160' y='98' text-anchor='middle' fill='%23555' font-family='sans-serif' font-size='14'%3ENo Thumbnail%3C/text%3E%3C/svg%3E";
             }}
           />
-          {videoDuration && (
+
+          {isHovered && video.videoId && (
+            <div className="hover-preview-container">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&loop=1&playlist=${video.videoId}&enablejsapi=1&playsinline=1`}
+                title={video.title}
+                allow="autoplay; encrypted-media"
+                className="hover-preview-iframe"
+              />
+              <div className="hover-preview-badge">
+                <span className="pulse-dot" />
+                Previewing
+              </div>
+            </div>
+          )}
+
+          {videoDuration && !isHovered && (
             <span className="video-duration-badge">
               {videoDuration}
             </span>
