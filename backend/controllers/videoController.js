@@ -275,53 +275,63 @@ const FALLBACK_VIDEOS = [
       thumbnails: { high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/mqdefault.jpg" } }
     }
   },
-  // Infonix Channel & KTU Semester-Wise Educational Videos
+  // Infonix Channel & Educational Content (Unique Video IDs)
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "PkZNo7MFNFg" },
+    id: { kind: "youtube#video", videoId: "W6NZfCO5SIk" },
     tags: ["infonix", "infonix channel", "programming", "coding", "web", "tutorial"],
     snippet: {
       title: "Infonix – Complete Programming & Web Development Course",
       channelTitle: "Infonix",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/PkZNo7MFNFg/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/W6NZfCO5SIk/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "rfscVS0vtbw" },
+    id: { kind: "youtube#video", videoId: "hdI2bqOjy3c" },
     tags: ["infonix", "infonix channel", "python", "tutorial", "coding"],
     snippet: {
       title: "Infonix – Python Masterclass & Practical Coding Tutorial",
       channelTitle: "Infonix",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/hdI2bqOjy3c/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "bMknfKXIFA8" },
+    id: { kind: "youtube#video", videoId: "30LWjhZ8g0E" },
     tags: ["infonix", "infonix channel", "react", "javascript", "tech"],
     snippet: {
       title: "Infonix – React JS & Frontend Engineering Guide",
       channelTitle: "Infonix",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/bMknfKXIFA8/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/30LWjhZ8g0E/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "VlPiVmYuo0U" },
+    tags: ["infonix", "infonix channel", "dsa", "algorithms"],
+    snippet: {
+      title: "Infonix – Data Structures & Algorithms Full Course",
+      channelTitle: "Infonix",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/VlPiVmYuo0U/mqdefault.jpg" } }
     }
   },
 
-  // KTU S1 & S2 Subjects
+  // KTU S1 & S2 Subjects (Unique Video IDs)
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "WSvQvLp-1Qk" },
-    tags: ["ktu", "ktu s1", "ktu s2", "ktu math", "calculus", "linear algebra", "btech"],
+    id: { kind: "youtube#video", videoId: "bHIhgxav9LY" },
+    tags: ["ktu", "ktu s1", "ktu s2", "ktu math", "calculus", "linear algebra", "btech", "semester"],
     snippet: {
       title: "KTU S1/S2 Engineering Mathematics – Calculus & Linear Algebra Full Lectures",
       channelTitle: "KTU Engineering Academy",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/WSvQvLp-1Qk/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/bHIhgxav9LY/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "7Tz29-T0Trc" },
-    tags: ["ktu", "ktu s1", "ktu s2", "engineering physics", "btech", "physics"],
+    tags: ["ktu", "ktu s1", "ktu s2", "engineering physics", "btech", "physics", "semester"],
     snippet: {
       title: "KTU S1/S2 Engineering Physics – Module Wise Preparation & Lectures",
       channelTitle: "KTU Tech Tutorials",
@@ -331,41 +341,61 @@ const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "fNk_zzaMoSs" },
-    tags: ["ktu", "ktu s1", "ktu s2", "engineering chemistry", "btech"],
+    tags: ["ktu", "ktu s1", "ktu s2", "engineering chemistry", "btech", "semester"],
     snippet: {
       title: "KTU S1/S2 Engineering Chemistry – Full Module Series",
       channelTitle: "KTU B.Tech Hub",
       thumbnails: { high: { url: "https://i.ytimg.com/vi/fNk_zzaMoSs/mqdefault.jpg" } }
     }
   },
-
-  // KTU S3 Subjects
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "l9AzO1FMgM8" },
-    tags: ["ktu", "ktu s3", "ktu cse", "dsa", "data structures", "algorithms"],
+    id: { kind: "youtube#video", videoId: "3gK_2XWkA0k" },
+    tags: ["ktu", "ktu s1", "ktu s2", "engineering mechanics", "btech", "semester"],
+    snippet: {
+      title: "KTU S1/S2 Engineering Mechanics – Module Wise Lectures & Solved Problems",
+      channelTitle: "KTU Mechanics Guide",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/3gK_2XWkA0k/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S3 Subjects (Unique Video IDs)
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "AT14lCXuMKI" },
+    tags: ["ktu", "ktu s3", "ktu cse", "dsa", "data structures", "algorithms", "semester"],
     snippet: {
       title: "KTU S3 CSE Data Structures (DSA) – Complete Module Wise Course",
       channelTitle: "KTU CSE Tutorials",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/AT14lCXuMKI/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "8hly31xKLI0" },
-    tags: ["ktu", "ktu s3", "lsd", "logic system design", "digital electronics"],
+    tags: ["ktu", "ktu s3", "lsd", "logic system design", "digital electronics", "semester"],
     snippet: {
       title: "KTU S3 CSE Logic System Design (LSD) – Full Course Lectures",
       channelTitle: "KTU Electronics & CSE",
       thumbnails: { high: { url: "https://i.ytimg.com/vi/8hly31xKLI0/mqdefault.jpg" } }
     }
   },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "qw--VYLpxG4" },
+    tags: ["ktu", "ktu s3", "discrete math", "dms", "btech", "semester"],
+    snippet: {
+      title: "KTU S3 Discrete Mathematical Structures (DMS) – Full Module Notes",
+      channelTitle: "KTU Math Corner",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/qw--VYLpxG4/mqdefault.jpg" } }
+    }
+  },
 
-  // KTU S4 Subjects
+  // KTU S4 Subjects (Unique Video IDs)
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "3c-iBn73dDE" },
-    tags: ["ktu", "ktu s4", "ktu cse", "operating systems", "os"],
+    tags: ["ktu", "ktu s4", "ktu cse", "operating systems", "os", "semester"],
     snippet: {
       title: "KTU S4 CSE Operating Systems (OS) – Exam Preparation & Module Notes",
       channelTitle: "KTU CS Corner",
@@ -374,48 +404,78 @@ const FALLBACK_VIDEOS = [
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "HXV3zeQKqGY" },
-    tags: ["ktu", "ktu s4", "dbms", "database management", "sql"],
+    id: { kind: "youtube#video", videoId: "q_JsgpiuY54" },
+    tags: ["ktu", "ktu s4", "dbms", "database management", "sql", "semester"],
     snippet: {
       title: "KTU S4 CSE Database Management Systems (DBMS) – Complete Lectures",
       channelTitle: "KTU Academic Tutorials",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/HXV3zeQKqGY/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/q_JsgpiuY54/mqdefault.jpg" } }
     }
   },
 
-  // KTU S5 Subjects
+  // KTU S5 Subjects (Unique Video IDs)
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "VmbA0piP0cY" },
-    tags: ["ktu", "ktu s5", "computer networks", "cn", "flat", "system software"],
+    tags: ["ktu", "ktu s5", "computer networks", "cn", "flat", "system software", "semester"],
     snippet: {
       title: "KTU S5 CSE Computer Networks (CN) – Full Module Course",
       channelTitle: "KTU B.Tech Engineering",
       thumbnails: { high: { url: "https://i.ytimg.com/vi/VmbA0piP0cY/mqdefault.jpg" } }
     }
   },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "XpLyXg1-U3U" },
+    tags: ["ktu", "ktu s5", "flat", "automata theory", "compiler", "semester"],
+    snippet: {
+      title: "KTU S5 Formal Languages & Automata Theory (FLAT) – Complete Lectures",
+      channelTitle: "KTU CSE Tutorials",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/XpLyXg1-U3U/mqdefault.jpg" } }
+    }
+  },
 
-  // KTU S6 Subjects
+  // KTU S6 Subjects (Unique Video IDs)
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "hQcFE0RD0cQ" },
-    tags: ["ktu", "ktu s6", "compiler design", "daa", "software engineering"],
+    tags: ["ktu", "ktu s6", "compiler design", "daa", "software engineering", "semester"],
     snippet: {
       title: "KTU S6 CSE Compiler Design – Module Wise Video Lectures",
       channelTitle: "KTU Scholar",
       thumbnails: { high: { url: "https://i.ytimg.com/vi/hQcFE0RD0cQ/mqdefault.jpg" } }
     }
   },
-
-  // KTU S7 & S8 Subjects
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "Gv9_4yMHF28" },
-    tags: ["ktu", "ktu s7", "ktu s8", "artificial intelligence", "ai", "machine learning"],
+    id: { kind: "youtube#video", videoId: "RBSGKlAvoiM" },
+    tags: ["ktu", "ktu s6", "daa", "algorithm analysis", "btech", "semester"],
+    snippet: {
+      title: "KTU S6 Design & Analysis of Algorithms (DAA) – Full Module Series",
+      channelTitle: "KTU CSE Academy",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/RBSGKlAvoiM/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S7 & S8 Subjects (Unique Video IDs)
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "JMUxmLyrhSk" },
+    tags: ["ktu", "ktu s7", "ktu s8", "artificial intelligence", "ai", "machine learning", "semester"],
     snippet: {
       title: "KTU S7/S8 CSE Artificial Intelligence & Machine Learning – Complete Guide",
       channelTitle: "KTU Advanced Tech",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/Gv9_4yMHF28/mqdefault.jpg" } }
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/JMUxmLyrhSk/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "i_LwzRVP7bg" },
+    tags: ["ktu", "ktu s7", "cryptography", "network security", "semester"],
+    snippet: {
+      title: "KTU S7 Cryptography & Network Security – Module Wise Preparation",
+      channelTitle: "KTU Security Series",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/i_LwzRVP7bg/mqdefault.jpg" } }
     }
   }
 ];
@@ -432,7 +492,9 @@ const getFallbackVideos = (query) => {
       title.includes(lowerQuery) ||
       channel.includes(lowerQuery) ||
       tags.includes(lowerQuery) ||
-      (lowerQuery.length > 2 && title.split(/\s+/).some((w) => lowerQuery.includes(w)))
+      (lowerQuery.includes("infonix") && (title.includes("infonix") || channel.includes("infonix") || tags.includes("infonix"))) ||
+      (lowerQuery.includes("ktu") && (title.includes("ktu") || tags.includes("ktu"))) ||
+      (lowerQuery.length > 2 && title.split(/\s+/).some((w) => w.length > 2 && lowerQuery.includes(w)))
     );
   });
 
@@ -566,6 +628,11 @@ const getRefinedQuery = (query) => {
 const isEducationalVideo = (video) => {
   const title = (video.snippet?.title || "").toLowerCase();
   const channel = (video.snippet?.channelTitle || "").toLowerCase();
+
+  // Unconditionally allow Infonix channel and KTU educational content
+  if (channel.includes("infonix") || title.includes("infonix") || title.includes("ktu") || channel.includes("ktu")) {
+    return true;
+  }
 
   // Explicitly allow any coding/educational content
   const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud|ktu|infonix|semester|btech|syllabus)\b/i.test(title);
