@@ -165,9 +165,6 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
 
       {/* Nav links */}
       <div className="nav-links">
-        <Link to="/saved" className="nav-link">Saved</Link>
-        <Link to="/history" className="nav-link">History</Link>
-
         {/* Theme Toggle */}
         <button 
           className="theme-toggle-btn" 
