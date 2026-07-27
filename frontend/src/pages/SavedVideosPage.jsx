@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getProxiedThumbnail } from "../utils/thumbnail";
+import { getOrGenerateDuration } from "../utils/duration";
 
 function SavedVideosPage() {
   const [videos, setVideos] = useState([]);
@@ -78,6 +79,9 @@ function SavedVideosPage() {
               <Link to={`/video/${video.videoId}`}>
                 <div style={{ position: "relative", overflow: "hidden" }}>
                   <img src={getProxiedThumbnail(video.thumbnail)} alt={video.title} style={{ width: "100%", height: "180px", objectFit: "cover", display: "block" }} />
+                  <span className="video-duration-badge">
+                    {getOrGenerateDuration(video)}
+                  </span>
                   <div style={{
                     position: "absolute", inset: 0, background: "rgba(0,0,0,.5)",
                     display: "flex", alignItems: "center", justifyContent: "center",

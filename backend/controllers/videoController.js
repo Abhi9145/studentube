@@ -10,6 +10,7 @@ const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "PkZNo7MFNFg" },
+    duration: "3:26:42",
     tags: ["javascript", "js", "web", "programming", "coding", "frontend"],
     snippet: {
       title: "Learn JavaScript – Full Course for Beginners",
@@ -20,6 +21,7 @@ const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "W6NZfCO5SIk" },
+    duration: "48:15",
     tags: ["javascript", "js", "programming", "coding", "tutorial"],
     snippet: {
       title: "JavaScript Tutorial for Beginners: Learn JavaScript in 1 Hour",
@@ -30,6 +32,7 @@ const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "hdI2bqOjy3c" },
+    duration: "1:40:28",
     tags: ["javascript", "js", "crash course", "web development"],
     snippet: {
       title: "JavaScript Crash Course For Beginners",
@@ -40,6 +43,7 @@ const FALLBACK_VIDEOS = [
   {
     kind: "youtube#searchResult",
     id: { kind: "youtube#video", videoId: "30LWjhZ8g0E" },
+    duration: "42:10",
     tags: ["javascript", "js", "dom", "html", "web development"],
     snippet: {
       title: "JavaScript DOM Crash Course – Complete Tutorial",

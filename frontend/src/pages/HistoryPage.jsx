@@ -2,6 +2,7 @@ import { API_URL } from "../config";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProxiedThumbnail } from "../utils/thumbnail";
+import { getOrGenerateDuration } from "../utils/duration";
 
 function HistoryPage() {
   const [videos, setVideos] = useState([]);
@@ -61,11 +62,16 @@ function HistoryPage() {
               to={`/video/${video.videoId}`}
               className="history-item"
             >
-              <img
-                src={getProxiedThumbnail(video.thumbnail)}
-                alt={video.title}
-                className="history-thumb"
-              />
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <img
+                  src={getProxiedThumbnail(video.thumbnail)}
+                  alt={video.title}
+                  className="history-thumb"
+                />
+                <span className="video-duration-badge" style={{ bottom: "6px", right: "6px", fontSize: "10px", padding: "2px 5px" }}>
+                  {getOrGenerateDuration(video)}
+                </span>
+              </div>
               <div className="history-info">
                 <div className="history-title">{video.title}</div>
                 <div className="history-channel">{video.channel}</div>

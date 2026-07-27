@@ -3,6 +3,7 @@ import { API_URL } from "../config";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getProxiedThumbnail } from "../utils/thumbnail";
+import { getOrGenerateDuration } from "../utils/duration";
 
 function VideoCard({ video }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -13,6 +14,7 @@ function VideoCard({ video }) {
 
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token");
+  const videoDuration = getOrGenerateDuration(video);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -151,15 +153,22 @@ function VideoCard({ video }) {
   return (
     <div className="video-card">
       <Link to={`/video/${video.videoId}`} style={{ textDecoration: "none", color: "inherit" }}>
-        <img
-          src={getProxiedThumbnail(video.thumbnail)}
-          alt={video.title}
-          onError={(e) => {
-            e.currentTarget.onerror = null;
-            e.currentTarget.src =
-              "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23222'/%3E%3Ctext x='160' y='98' text-anchor='middle' fill='%23555' font-family='sans-serif' font-size='14'%3ENo Thumbnail%3C/text%3E%3C/svg%3E";
-          }}
-        />
+        <div className="thumbnail-wrapper" style={{ position: "relative" }}>
+          <img
+            src={getProxiedThumbnail(video.thumbnail)}
+            alt={video.title}
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src =
+                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='180'%3E%3Crect width='320' height='180' fill='%23222'/%3E%3Ctext x='160' y='98' text-anchor='middle' fill='%23555' font-family='sans-serif' font-size='14'%3ENo Thumbnail%3C/text%3E%3C/svg%3E";
+            }}
+          />
+          {videoDuration && (
+            <span className="video-duration-badge">
+              {videoDuration}
+            </span>
+          )}
+        </div>
         <h4>{video.title}</h4>
         <p>{video.channel}</p>
       </Link>
