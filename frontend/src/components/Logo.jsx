@@ -13,45 +13,37 @@ function Logo({ className = "", size = "normal" }) {
         userSelect: "none",
       }}
     >
-      {/* Unique Emblem: Academic Mortarboard + Cyber Shield Play Fusion */}
+      {/* Minimalist Geometric "S" Monogram (Overlapping Play Arrows forming 'S') */}
       <svg
         width={width}
         height={height}
         viewBox="0 0 40 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0, filter: "drop-shadow(0 2px 8px rgba(255, 0, 0, 0.4))" }}
+        style={{ flexShrink: 0, filter: "drop-shadow(0 2px 10px rgba(255, 0, 0, 0.45))" }}
       >
         <defs>
-          <linearGradient id="stRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ff3333" />
-            <stop offset="100%" stopColor="#cc0000" />
+          <linearGradient id="sGradTop" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ff4d4d" />
+            <stop offset="100%" stopColor="#ff0033" />
+          </linearGradient>
+          <linearGradient id="sGradBot" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#d90000" />
+            <stop offset="100%" stopColor="#990000" />
           </linearGradient>
         </defs>
 
-        {/* Academic Mortarboard Cap Top Diamond */}
-        <polygon
-          points="20,6 35,13.5 20,21 5,13.5"
-          fill="url(#stRedGrad)"
+        {/* Top Play Chevron forming upper S curve */}
+        <path
+          d="M30 6H14C9.02944 6 5 10.0294 5 15C5 19.9706 9.02944 24 14 24H28L18 16.5L28 9H30Z"
+          fill="url(#sGradTop)"
         />
 
-        {/* Cap Base Band */}
+        {/* Bottom Play Chevron forming lower S curve */}
         <path
-          d="M11 17.5V24C11 26.5 15 28.5 20 28.5C25 28.5 29 26.5 29 24V17.5"
-          stroke="url(#stRedGrad)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          fill="none"
+          d="M10 34H26C30.9706 34 35 29.9706 35 25C35 20.0294 30.9706 16 26 16H12L22 23.5L12 31H10Z"
+          fill="url(#sGradBot)"
         />
-
-        {/* Cap Tassel */}
-        <path
-          d="M32 15V22.5"
-          stroke="url(#stRedGrad)"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <circle cx="32" cy="23.5" r="1.5" fill="#ff3333" />
       </svg>
 
       {/* Brand Typography */}
