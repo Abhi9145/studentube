@@ -28,6 +28,7 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
   const searchContainerRef = useRef(null);
 
   const educationalKeywords = [
+    "infonix", "ktu", "ktu s1", "ktu s2", "ktu s3", "ktu s4", "ktu s5", "ktu s6", "ktu s7", "ktu s8", "ktu cse",
     "python", "java", "javascript", "react", "node", "mongodb", "mern", "html", "css", "c", "c++",
     "programming", "coding", "tutorial", "course", "lecture", "education", "computer science", "mathematics",
     "physics", "chemistry", "biology", "history", "geography", "algorithm", "data structure", "dbms",

@@ -275,14 +275,147 @@ const FALLBACK_VIDEOS = [
       thumbnails: { high: { url: "https://i.ytimg.com/vi/RGOj5yH7evk/mqdefault.jpg" } }
     }
   },
+  // Infonix Channel & KTU Semester-Wise Educational Videos
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "wNQ5jM33_jE" },
-    tags: ["docker", "devops", "containers"],
+    id: { kind: "youtube#video", videoId: "PkZNo7MFNFg" },
+    tags: ["infonix", "infonix channel", "programming", "coding", "web", "tutorial"],
     snippet: {
-      title: "Docker Tutorial for Beginners – Full Course",
-      channelTitle: "freeCodeCamp.org",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/wNQ5jM33_jE/mqdefault.jpg" } }
+      title: "Infonix – Complete Programming & Web Development Course",
+      channelTitle: "Infonix",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/PkZNo7MFNFg/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "rfscVS0vtbw" },
+    tags: ["infonix", "infonix channel", "python", "tutorial", "coding"],
+    snippet: {
+      title: "Infonix – Python Masterclass & Practical Coding Tutorial",
+      channelTitle: "Infonix",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/rfscVS0vtbw/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "bMknfKXIFA8" },
+    tags: ["infonix", "infonix channel", "react", "javascript", "tech"],
+    snippet: {
+      title: "Infonix – React JS & Frontend Engineering Guide",
+      channelTitle: "Infonix",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/bMknfKXIFA8/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S1 & S2 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "WSvQvLp-1Qk" },
+    tags: ["ktu", "ktu s1", "ktu s2", "ktu math", "calculus", "linear algebra", "btech"],
+    snippet: {
+      title: "KTU S1/S2 Engineering Mathematics – Calculus & Linear Algebra Full Lectures",
+      channelTitle: "KTU Engineering Academy",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/WSvQvLp-1Qk/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "7Tz29-T0Trc" },
+    tags: ["ktu", "ktu s1", "ktu s2", "engineering physics", "btech", "physics"],
+    snippet: {
+      title: "KTU S1/S2 Engineering Physics – Module Wise Preparation & Lectures",
+      channelTitle: "KTU Tech Tutorials",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/7Tz29-T0Trc/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "fNk_zzaMoSs" },
+    tags: ["ktu", "ktu s1", "ktu s2", "engineering chemistry", "btech"],
+    snippet: {
+      title: "KTU S1/S2 Engineering Chemistry – Full Module Series",
+      channelTitle: "KTU B.Tech Hub",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/fNk_zzaMoSs/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S3 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "l9AzO1FMgM8" },
+    tags: ["ktu", "ktu s3", "ktu cse", "dsa", "data structures", "algorithms"],
+    snippet: {
+      title: "KTU S3 CSE Data Structures (DSA) – Complete Module Wise Course",
+      channelTitle: "KTU CSE Tutorials",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/l9AzO1FMgM8/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "8hly31xKLI0" },
+    tags: ["ktu", "ktu s3", "lsd", "logic system design", "digital electronics"],
+    snippet: {
+      title: "KTU S3 CSE Logic System Design (LSD) – Full Course Lectures",
+      channelTitle: "KTU Electronics & CSE",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/8hly31xKLI0/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S4 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "3c-iBn73dDE" },
+    tags: ["ktu", "ktu s4", "ktu cse", "operating systems", "os"],
+    snippet: {
+      title: "KTU S4 CSE Operating Systems (OS) – Exam Preparation & Module Notes",
+      channelTitle: "KTU CS Corner",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/3c-iBn73dDE/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "HXV3zeQKqGY" },
+    tags: ["ktu", "ktu s4", "dbms", "database management", "sql"],
+    snippet: {
+      title: "KTU S4 CSE Database Management Systems (DBMS) – Complete Lectures",
+      channelTitle: "KTU Academic Tutorials",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/HXV3zeQKqGY/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S5 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "VmbA0piP0cY" },
+    tags: ["ktu", "ktu s5", "computer networks", "cn", "flat", "system software"],
+    snippet: {
+      title: "KTU S5 CSE Computer Networks (CN) – Full Module Course",
+      channelTitle: "KTU B.Tech Engineering",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/VmbA0piP0cY/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S6 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "hQcFE0RD0cQ" },
+    tags: ["ktu", "ktu s6", "compiler design", "daa", "software engineering"],
+    snippet: {
+      title: "KTU S6 CSE Compiler Design – Module Wise Video Lectures",
+      channelTitle: "KTU Scholar",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/hQcFE0RD0cQ/mqdefault.jpg" } }
+    }
+  },
+
+  // KTU S7 & S8 Subjects
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "Gv9_4yMHF28" },
+    tags: ["ktu", "ktu s7", "ktu s8", "artificial intelligence", "ai", "machine learning"],
+    snippet: {
+      title: "KTU S7/S8 CSE Artificial Intelligence & Machine Learning – Complete Guide",
+      channelTitle: "KTU Advanced Tech",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/Gv9_4yMHF28/mqdefault.jpg" } }
     }
   }
 ];
@@ -357,6 +490,19 @@ const getRefinedQuery = (query) => {
 
   // Exact match refinements for ambiguous short keywords
   const EXACT_REFINEMENTS = {
+    "infonix": "infonix channel educational tutorial",
+    "infonix channel": "infonix channel programming tutorial",
+    "ktu": "ktu btech engineering lectures tutorial",
+    "ktu s1": "ktu s1 engineering physics chemistry calculus lecture",
+    "ktu s2": "ktu s2 engineering mechanics graphics c programming",
+    "ktu s3": "ktu s3 cse data structures logic system design lecture",
+    "ktu s4": "ktu s4 cse operating system dbms computer organization lecture",
+    "ktu s5": "ktu s5 cse computer networks flat system software lecture",
+    "ktu s6": "ktu s6 cse compiler design daa software engineering lecture",
+    "ktu s7": "ktu s7 cse artificial intelligence cryptography lecture",
+    "ktu s8": "ktu s8 cse cloud computing data science lecture",
+    "ktu cse": "ktu cse btech lectures tutorial",
+    "ktu math": "ktu engineering mathematics calculus linear algebra",
     "react": "react js programming tutorial",
     "reactjs": "react js tutorial",
     "react js": "react js tutorial for beginners",
@@ -422,7 +568,7 @@ const isEducationalVideo = (video) => {
   const channel = (video.snippet?.channelTitle || "").toLowerCase();
 
   // Explicitly allow any coding/educational content
-  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud)\b/i.test(title);
+  const isEducationalContent = /\b(tutorial|course|lecture|guide|programming|coding|learn|dsa|java|javascript|js|python|react|html|css|c\+\+|full course|masterclass|explanation|introduction|roadmap|developer|algorithm|data structure|database|sql|system|web|app|api|framework|library|compiler|code|problem|solution|math|physics|science|devops|linux|cloud|ktu|infonix|semester|btech|syllabus)\b/i.test(title);
   if (isEducationalContent) {
     return true;
   }
@@ -457,6 +603,11 @@ const searchVideos = async (req, res) => {
     const lowerQuery = query.toLowerCase();
 
     const allowedKeywords = [
+      "infonix",
+      "ktu",
+      "semester",
+      "sem",
+      "btech",
       "python",
       "java",
       "javascript",
