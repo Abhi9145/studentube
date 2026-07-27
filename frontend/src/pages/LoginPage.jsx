@@ -4,6 +4,7 @@ import { auth } from "../firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import "./Auth.css";
 import { API_URL } from "../config";
+import Logo from "../components/Logo";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -87,7 +88,9 @@ function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-left">
-        <div className="auth-left-badge">Studentube</div>
+        <div className="auth-left-badge">
+          <Logo size="large" />
+        </div>
         <h2>Learn Smarter.<br />Watch Better.</h2>
         <p>Your AI-powered study companion for coding, engineering, placements and college. Save videos, build playlists, and track your progress.</p>
         <div className="auth-features">

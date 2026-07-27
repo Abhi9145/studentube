@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 
 function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
   const token = localStorage.getItem("token");
@@ -115,12 +116,7 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" onClick={onLogoClick} style={{ textDecoration: "none", flexShrink: 0 }}>
-        <div className="logo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff0000" style={{ display: "inline-block", verticalAlign: "middle", marginRight: "6px" }}>
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-          Studentube
-        </div>
+        <Logo />
       </Link>
 
       {/* Search */}

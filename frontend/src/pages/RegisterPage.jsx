@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 import { API_URL } from "../config";
+import Logo from "../components/Logo";
 
 function RegisterPage() {
   const [name, setName] = useState("");
@@ -50,7 +51,9 @@ function RegisterPage() {
   return (
     <div className="auth-page">
       <div className="auth-left">
-        <div className="auth-left-badge">Studentube</div>
+        <div className="auth-left-badge">
+          <Logo size="large" />
+        </div>
         <h2>Start Your<br />Learning Journey.</h2>
         <p>Create a free account and unlock curated educational videos, AI-generated study notes, personal playlists, and watch history tracking.</p>
         <div className="auth-features">
