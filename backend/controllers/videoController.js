@@ -461,25 +461,104 @@ const FALLBACK_VIDEOS = [
     }
   },
 
-  // KTU S7 & S8 Subjects (Unique Video IDs)
+  // Top Educational YouTube Creators (CodeWithHarry, Bro Code, Apna College, Gate Smashers, Neso, Abdul Bari, Striver, etc.)
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "JMUxmLyrhSk" },
-    tags: ["ktu", "ktu s7", "ktu s8", "artificial intelligence", "ai", "machine learning", "semester"],
+    id: { kind: "youtube#video", videoId: "7wnove7y-OI" },
+    duration: "10:15:30",
+    tags: ["codewithharry", "code with harry", "python", "programming", "hindi"],
     snippet: {
-      title: "KTU S7/S8 CSE Artificial Intelligence & Machine Learning – Complete Guide",
-      channelTitle: "KTU Advanced Tech",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/JMUxmLyrhSk/mqdefault.jpg" } }
+      title: "Python Tutorial for Beginners in Hindi – Full Course with Notes",
+      channelTitle: "CodeWithHarry",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/7wnove7y-OI/mqdefault.jpg" } }
     }
   },
   {
     kind: "youtube#searchResult",
-    id: { kind: "youtube#video", videoId: "i_LwzRVP7bg" },
-    tags: ["ktu", "ktu s7", "cryptography", "network security", "semester"],
+    id: { kind: "youtube#video", videoId: "chx9Rs41W6g" },
+    duration: "7:45:20",
+    tags: ["codewithharry", "code with harry", "c++", "cpp", "dsa"],
     snippet: {
-      title: "KTU S7 Cryptography & Network Security – Module Wise Preparation",
-      channelTitle: "KTU Security Series",
-      thumbnails: { high: { url: "https://i.ytimg.com/vi/i_LwzRVP7bg/mqdefault.jpg" } }
+      title: "C++ Language Tutorial in Hindi – Complete Course",
+      channelTitle: "CodeWithHarry",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/chx9Rs41W6g/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "xk4_1vDrnnw" },
+    duration: "12:00:00",
+    tags: ["brocode", "bro code", "c++", "programming", "tutorial"],
+    snippet: {
+      title: "C++ Full Course for Beginners – Learn C++ in 12 Hours",
+      channelTitle: "Bro Code",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/xk4_1vDrnnw/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "H3XIJYEPdus" },
+    duration: "12:15:40",
+    tags: ["brocode", "bro code", "python", "coding", "tutorial"],
+    snippet: {
+      title: "Python Full Course for Beginners – Full Tutorial",
+      channelTitle: "Bro Code",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/H3XIJYEPdus/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "VTLCoHnySrU" },
+    duration: "8:30:15",
+    tags: ["apna college", "apnacollege", "java", "dsa", "shradha khapra"],
+    snippet: {
+      title: "Java & Data Structures (DSA) Course – Complete Placement Prep",
+      channelTitle: "Apna College",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/VTLCoHnySrU/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "vLqTf2b6GZw" },
+    duration: "45:20",
+    tags: ["gate smashers", "gatesmashers", "os", "operating system", "dbms"],
+    snippet: {
+      title: "Operating System (OS) Full Course – Gate Smashers",
+      channelTitle: "Gate Smashers",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/vLqTf2b6GZw/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "0IAPZzGSbME" },
+    duration: "11:42:00",
+    tags: ["abdul bari", "abdulbari", "algorithms", "dsa", "computer science"],
+    snippet: {
+      title: "Algorithms & Data Structures Masterclass – Abdul Bari",
+      channelTitle: "Abdul Bari",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/0IAPZzGSbME/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "EAR7De6Goz4" },
+    duration: "25:40:00",
+    tags: ["striver", "take u forward", "takeuforward", "dsa", "leetcode"],
+    snippet: {
+      title: "Striver's A2Z DSA Course / Sheet – Complete Coding Interview Prep",
+      channelTitle: "take U forward",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/EAR7De6Goz4/mqdefault.jpg" } }
+    }
+  },
+  {
+    kind: "youtube#searchResult",
+    id: { kind: "youtube#video", videoId: "V_xro1b0FDE" },
+    duration: "6:15:30",
+    tags: ["chai aur code", "hitesh choudhary", "javascript", "react", "hindi"],
+    snippet: {
+      title: "Chai aur JavaScript – Complete Modern JS Course in Hindi",
+      channelTitle: "Chai aur Code",
+      thumbnails: { high: { url: "https://i.ytimg.com/vi/V_xro1b0FDE/mqdefault.jpg" } }
     }
   }
 ];
@@ -556,6 +635,41 @@ const getRefinedQuery = (query) => {
 
   // Exact match refinements for ambiguous short keywords
   const EXACT_REFINEMENTS = {
+    "codewithharry": "CodeWithHarry programming tutorial course",
+    "code with harry": "CodeWithHarry programming tutorial course",
+    "brocode": "Bro Code programming course tutorial",
+    "bro code": "Bro Code programming course tutorial",
+    "mosh": "Programming with Mosh programming course",
+    "programming with mosh": "Programming with Mosh programming course",
+    "apna college": "Apna College coding DSA course",
+    "apnacollege": "Apna College coding DSA course",
+    "gate smashers": "Gate Smashers computer science lectures",
+    "gatesmashers": "Gate Smashers computer science lectures",
+    "neso academy": "Neso Academy computer science engineering lectures",
+    "nesoacademy": "Neso Academy computer science engineering lectures",
+    "abdul bari": "Abdul Bari algorithms data structures course",
+    "abdulbari": "Abdul Bari algorithms data structures course",
+    "striver": "take U forward Striver DSA sheet tutorial",
+    "take u forward": "take U forward Striver DSA sheet tutorial",
+    "takeuforward": "take U forward Striver DSA sheet tutorial",
+    "fireship": "Fireship code in 100 seconds tech tutorial",
+    "net ninja": "The Net Ninja web development full course",
+    "the net ninja": "The Net Ninja web development full course",
+    "web dev simplified": "Web Dev Simplified web development tutorial",
+    "telusko": "Telusko Java Python programming tutorial",
+    "clever programmer": "Clever Programmer full stack python web course",
+    "tech with tim": "Tech With Tim Python machine learning tutorial",
+    "cs dojo": "CS Dojo data structures programming tutorial",
+    "corey schafer": "Corey Schafer Python tutorial course",
+    "bytebytego": "ByteByteGo system design architecture",
+    "edureka": "Edureka full course tutorial",
+    "simplilearn": "Simplilearn full course tutorial",
+    "love babbar": "Love Babbar CodeHelp DSA course",
+    "codehelp": "Love Babbar CodeHelp DSA course",
+    "kunal kushwaha": "Kunal Kushwaha Java DSA DevOps course",
+    "jennys lectures": "Jenny's Lectures CS subjects tutorial",
+    "chai aur code": "Chai aur Code JavaScript Python React course",
+    "hitesh choudhary": "Hitesh Choudhary Chai aur Code web dev course",
     "infonix": "infonix channel educational tutorial",
     "infonix channel": "infonix channel programming tutorial",
     "ktu": "ktu btech engineering lectures tutorial",
@@ -639,11 +753,9 @@ const isEducationalVideo = (video) => {
     return false;
   }
 
-  // Allow Infonix channel and KTU educational content
-  if (channel.includes("infonix") || title.includes("infonix")) {
-    return true;
-  }
-  if (title.includes("ktu") || channel.includes("ktu")) {
+  // Allow top educational channels & creators unconditionally
+  const isEducationalCreator = /\b(codewithharry|code with harry|brocode|bro code|mosh|programming with mosh|freecodecamp|traversy|apna college|gate smashers|neso academy|abdul bari|striver|take u forward|fireship|net ninja|web dev simplified|telusko|clever programmer|tech with tim|cs dojo|corey schafer|bytebytego|edureka|simplilearn|love babbar|codehelp|kunal kushwaha|jennys lectures|chai aur code|hitesh choudhary|infonix|ktu)\b/i.test(channel + " " + title);
+  if (isEducationalCreator) {
     return true;
   }
 
@@ -683,6 +795,40 @@ const searchVideos = async (req, res) => {
     const lowerQuery = query.toLowerCase();
 
     const allowedKeywords = [
+      "codewithharry",
+      "code with harry",
+      "brocode",
+      "bro code",
+      "mosh",
+      "programming with mosh",
+      "freecodecamp",
+      "traversy",
+      "apna college",
+      "apnacollege",
+      "gate smashers",
+      "gatesmashers",
+      "neso academy",
+      "abdul bari",
+      "striver",
+      "take u forward",
+      "takeuforward",
+      "fireship",
+      "net ninja",
+      "web dev simplified",
+      "telusko",
+      "clever programmer",
+      "tech with tim",
+      "cs dojo",
+      "corey schafer",
+      "bytebytego",
+      "edureka",
+      "simplilearn",
+      "love babbar",
+      "codehelp",
+      "kunal kushwaha",
+      "jennys lectures",
+      "chai aur code",
+      "hitesh choudhary",
       "infonix",
       "ktu",
       "semester",

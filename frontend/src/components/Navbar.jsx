@@ -28,6 +28,10 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
   const searchContainerRef = useRef(null);
 
   const educationalKeywords = [
+    "codewithharry", "brocode", "bro code", "freecodecamp", "apna college", "gate smashers", "neso academy",
+    "abdul bari", "striver", "take u forward", "fireship", "the net ninja", "web dev simplified", "telusko",
+    "clever programmer", "tech with tim", "cs dojo", "bytebytego", "edureka", "simplilearn", "love babbar",
+    "codehelp", "kunal kushwaha", "jennys lectures", "chai aur code", "hitesh choudhary", "programming with mosh",
     "infonix", "ktu", "ktu s1", "ktu s2", "ktu s3", "ktu s4", "ktu s5", "ktu s6", "ktu s7", "ktu s8", "ktu cse",
     "python", "java", "javascript", "react", "node", "mongodb", "mern", "html", "css", "c", "c++",
     "programming", "coding", "tutorial", "course", "lecture", "education", "computer science", "mathematics",
