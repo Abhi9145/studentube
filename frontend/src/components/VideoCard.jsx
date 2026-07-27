@@ -3,7 +3,7 @@ import { API_URL } from "../config";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getProxiedThumbnail } from "../utils/thumbnail";
-import { getOrGenerateDuration } from "../utils/duration";
+import { getOrGenerateDuration, getOrGenerateUploadTime } from "../utils/duration";
 
 function VideoCard({ video }) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -19,6 +19,7 @@ function VideoCard({ video }) {
   const dropdownRef = useRef(null);
   const token = localStorage.getItem("token");
   const videoDuration = getOrGenerateDuration(video);
+  const uploadTime = getOrGenerateUploadTime(video);
 
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
@@ -218,7 +219,11 @@ function VideoCard({ video }) {
           )}
         </div>
         <h4>{video.title}</h4>
-        <p>{video.channel}</p>
+        <p className="video-card-meta">
+          <span className="video-card-channel">{video.channel}</span>
+          <span className="video-card-dot">•</span>
+          <span className="video-card-time">{uploadTime}</span>
+        </p>
       </Link>
 
       <div style={{ display: "flex", gap: "8px", padding: "0 12px 14px" }}>
