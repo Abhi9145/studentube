@@ -1,22 +1,30 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
-function Sidebar({ onCategoryClick, onHomeClick }) {
+function Sidebar({ onCategoryClick, onHomeClick, activeCategory }) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const navItems = [
+    { name: "Home", path: "/", icon: "🏠", isHomeAction: true },
+    { name: "Playlists", path: "/playlists", icon: "📁" },
+    { name: "Saved Videos", path: "/saved", icon: "💾" },
+    { name: "Watch History", path: "/history", icon: "🕒" },
+  ];
 
   const categories = [
-    "Programming",
-    "DSA",
-    "Web Development",
-    "Python",
-    "Java",
-    "React",
-    "Mathematics",
-    "Science",
-    "Data Science",
-    "Machine Learning",
-    "Artificial Intelligence",
-    "C++",
-    "DevOps",
+    { name: "Programming", icon: "💻" },
+    { name: "DSA", icon: "⚡" },
+    { name: "Web Development", icon: "🌐" },
+    { name: "Python", icon: "🐍" },
+    { name: "Java", icon: "☕" },
+    { name: "React", icon: "⚛️" },
+    { name: "Mathematics", icon: "📐" },
+    { name: "Science", icon: "🔬" },
+    { name: "Data Science", icon: "📊" },
+    { name: "Machine Learning", icon: "🤖" },
+    { name: "Artificial Intelligence", icon: "🧠" },
+    { name: "C++", icon: "⚡" },
+    { name: "DevOps", icon: "🛠️" },
   ];
 
   const handleHome = () => {
@@ -24,49 +32,65 @@ function Sidebar({ onCategoryClick, onHomeClick }) {
     if (onHomeClick) onHomeClick();
   };
 
-  const handleCategory = (category) => {
+  const handleCategory = (categoryName) => {
     navigate("/");
-    if (onCategoryClick) onCategoryClick(category);
+    if (onCategoryClick) onCategoryClick(categoryName);
   };
 
   return (
-    <div className="sidebar">
-      <h3>Navigation</h3>
+    <aside className="sidebar">
+      <div className="sidebar-section">
+        <div className="sidebar-section-title">
+          <span>NAVIGATION</span>
+        </div>
+        <div className="sidebar-nav-list">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path && (!item.isHomeAction || !activeCategory);
+            if (item.isHomeAction) {
+              return (
+                <button
+                  key={item.name}
+                  className={`sidebar-link-btn ${isActive ? "active" : ""}`}
+                  onClick={handleHome}
+                >
+                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="sidebar-label">{item.name}</span>
+                </button>
+              );
+            }
+            return (
+              <Link key={item.name} to={item.path} style={{ textDecoration: "none" }}>
+                <button className={`sidebar-link-btn ${isActive ? "active" : ""}`}>
+                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="sidebar-label">{item.name}</span>
+                </button>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
-      <button className="category-btn" onClick={handleHome}>
-        🏠 Home
-      </button>
-
-      <Link to="/playlists">
-        <button className="category-btn">
-          📁 Playlists
-        </button>
-      </Link>
-
-      <Link to="/saved">
-        <button className="category-btn">
-          💾 Saved Videos
-        </button>
-      </Link>
-
-      <Link to="/history">
-        <button className="category-btn">
-          🕒 Watch History
-        </button>
-      </Link>
-
-      <h3 style={{ marginTop: "20px" }}>Categories</h3>
-
-      {categories.map((category) => (
-        <button
-          key={category}
-          className="category-btn"
-          onClick={() => handleCategory(category)}
-        >
-          {category}
-        </button>
-      ))}
-    </div>
+      <div className="sidebar-section" style={{ marginTop: "24px" }}>
+        <div className="sidebar-section-title">
+          <span>EXPLORE TOPICS</span>
+        </div>
+        <div className="sidebar-nav-list">
+          {categories.map((cat) => {
+            const isActive = activeCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                className={`sidebar-link-btn category-item-btn ${isActive ? "active" : ""}`}
+                onClick={() => handleCategory(cat.name)}
+              >
+                <span className="sidebar-icon">{cat.icon}</span>
+                <span className="sidebar-label">{cat.name}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </aside>
   );
 }
 

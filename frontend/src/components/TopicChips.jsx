@@ -1,48 +1,51 @@
-function TopicChips({ onTopicClick }) {
-const topics = [
-  "Python",
-  "React",
-  "Java",
-  "DSA",
-  "DBMS",
-  "AI",
-  "C++",
-  "JavaScript",
-  "Web Development",
-  "Machine Learning",
-  "SQL",
-  "DevOps",
-  "Linux",
-];
+import { useState } from "react";
+
+function TopicChips({ onTopicClick, activeTopic }) {
+  const topics = [
+    { name: "All", icon: "✨" },
+    { name: "Python", icon: "🐍" },
+    { name: "React", icon: "⚛️" },
+    { name: "Java", icon: "☕" },
+    { name: "DSA", icon: "⚡" },
+    { name: "DBMS", icon: "🗄️" },
+    { name: "AI", icon: "🧠" },
+    { name: "C++", icon: "💻" },
+    { name: "JavaScript", icon: "📜" },
+    { name: "Web Development", icon: "🌐" },
+    { name: "Machine Learning", icon: "🤖" },
+    { name: "SQL", icon: "📊" },
+    { name: "DevOps", icon: "🛠️" },
+    { name: "Linux", icon: "🐧" },
+  ];
+
+  const [selectedTopic, setSelectedTopic] = useState(activeTopic || "All");
+
+  const handleClick = (topicName) => {
+    setSelectedTopic(topicName);
+    if (topicName === "All") {
+      onTopicClick("");
+    } else {
+      onTopicClick(topicName);
+    }
+  };
 
   return (
-    <div className="topic-chips-container">
-      {topics.map((topic) => (
-        <button
-          key={topic}
-          onClick={() => onTopicClick(topic)}
-          style={{
-            padding: "10px 18px",
-            borderRadius: "999px",
-            border: "none",
-            background: "#272727",
-            color: "white",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            transition: ".3s",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.background = "#ff0000";
-            e.target.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.background = "#272727";
-            e.target.style.transform = "scale(1)";
-          }}
-        >
-          {topic}
-        </button>
-      ))}
+    <div className="topic-chips-wrapper">
+      <div className="topic-chips-scroll">
+        {topics.map((t) => {
+          const isActive = (selectedTopic === t.name) || (activeTopic === t.name) || (t.name === "All" && !activeTopic);
+          return (
+            <button
+              key={t.name}
+              className={`topic-chip-btn ${isActive ? "active" : ""}`}
+              onClick={() => handleClick(t.name)}
+            >
+              <span className="chip-icon">{t.icon}</span>
+              <span className="chip-label">{t.name}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

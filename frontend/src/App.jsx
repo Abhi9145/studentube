@@ -559,10 +559,17 @@ function App() {
       />
 
       <div className="layout">
-        <Sidebar onCategoryClick={handleCategoryClick} onHomeClick={handleHomeClick} />
+        <Sidebar
+          onCategoryClick={handleCategoryClick}
+          onHomeClick={handleHomeClick}
+          activeCategory={!isHome ? (searchTerm || lastQuery) : ""}
+        />
 
         <div className="main-content">
-          <TopicChips onTopicClick={handleCategoryClick} />
+          <TopicChips
+            onTopicClick={handleCategoryClick}
+            activeTopic={!isHome ? (searchTerm || lastQuery) : ""}
+          />
 
           {isHome && <ContinueWatching />}
 
