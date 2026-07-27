@@ -50,14 +50,14 @@ function RegisterPage() {
   return (
     <div className="auth-page">
       <div className="auth-left">
-        <div className="auth-left-badge">🎓 Studentube</div>
+        <div className="auth-left-badge">Studentube</div>
         <h2>Start Your<br />Learning Journey.</h2>
         <p>Create a free account and unlock curated educational videos, AI-generated study notes, personal playlists, and watch history tracking.</p>
         <div className="auth-features">
-          <div className="auth-feature">✅ 100% free to use</div>
-          <div className="auth-feature">🔒 Secure & private account</div>
-          <div className="auth-feature">🤖 AI study notes on any topic</div>
-          <div className="auth-feature">📊 Track your learning progress</div>
+          <div className="auth-feature">100% free to use</div>
+          <div className="auth-feature">Secure & private account</div>
+          <div className="auth-feature">AI study notes on any topic</div>
+          <div className="auth-feature">Track your learning progress</div>
         </div>
       </div>
 

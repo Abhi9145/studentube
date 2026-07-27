@@ -21,13 +21,13 @@ function Dashboard() {
       <div className="welcome-card">
         <div>
           <h1>
-            👋 Welcome Back,
+            Welcome Back,
             <br />
             {name}
           </h1>
 
           <p>
-            Keep learning something new today 🚀
+            Keep learning something new today
           </p>
         </div>
 
@@ -42,25 +42,21 @@ function Dashboard() {
       <div className="stats-grid">
 
         <div className="stat-card">
-          <h2>🔥</h2>
           <h3>Daily Goal</h3>
           <p>{progress}%</p>
         </div>
 
         <div className="stat-card">
-          <h2>▶</h2>
           <h3>Videos Watched</h3>
           <p>{watched.length}</p>
         </div>
 
         <div className="stat-card">
-          <h2>📚</h2>
           <h3>Playlists</h3>
           <p>{playlists.length}</p>
         </div>
 
         <div className="stat-card">
-          <h2>🔥</h2>
           <h3>Current Streak</h3>
           <p>6 Days</p>
         </div>

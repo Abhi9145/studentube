@@ -175,13 +175,13 @@ function VideoCard({ video }) {
 
       <div style={{ display: "flex", gap: "8px", padding: "0 12px 14px" }}>
         <button onClick={saveVideo} style={{ flex: 1 }}>
-          💾 Save
+          Save
         </button>
 
         {/* Playlist relative wrapper */}
         <div style={{ position: "relative", flex: 1 }} ref={dropdownRef}>
           <button onClick={toggleDropdown} style={{ width: "100%" }}>
-            ➕ Playlist
+            Playlist
           </button>
 
           {showDropdown && (
@@ -200,7 +200,7 @@ function VideoCard({ video }) {
                       className="dropdown-item-btn"
                       onClick={() => addToPlaylist(pl._id, pl.name)}
                     >
-                      📁 {pl.name}
+                      {pl.name}
                     </button>
                   ))
                 )}

@@ -115,7 +115,12 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
     <nav className="navbar">
       {/* Logo */}
       <Link to="/" onClick={onLogoClick} style={{ textDecoration: "none", flexShrink: 0 }}>
-        <div className="logo">▶ Studentube</div>
+        <div className="logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#ff0000" style={{ display: "inline-block", verticalAlign: "middle", marginRight: "6px" }}>
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Studentube
+        </div>
       </Link>
 
       {/* Search */}
@@ -133,7 +138,12 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
             onFocus={() => setShowSuggestions(true)}
             onKeyDown={handleKeyDown}
           />
-          <button onClick={() => { setShowSuggestions(false); handleSearch(); }}>🔍</button>
+          <button onClick={() => { setShowSuggestions(false); handleSearch(); }} aria-label="Search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
         </div>
 
         {/* Search Recommendations / Autocomplete Dropdown */}
@@ -146,7 +156,11 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
                 onClick={() => handleSuggestionClick(suggestion)}
                 onMouseEnter={() => setActiveSuggestionIndex(index)}
               >
-                🔍 <span className="suggestion-text">{suggestion}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}>
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span className="suggestion-text">{suggestion}</span>
               </div>
             ))}
           </div>
@@ -155,16 +169,33 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
 
       {/* Nav links */}
       <div className="nav-links">
-        <Link to="/saved" className="nav-link">💾 Saved</Link>
-        <Link to="/history" className="nav-link">🕒 History</Link>
+        <Link to="/saved" className="nav-link">Saved</Link>
+        <Link to="/history" className="nav-link">History</Link>
 
         {/* Theme Toggle */}
         <button 
           className="theme-toggle-btn" 
           onClick={toggleTheme}
           title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+          style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
-          {theme === "dark" ? "☀️" : "🌙"}
+          {theme === "dark" ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          )}
         </button>
 
         {!token ? (
@@ -196,22 +227,22 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch, onLogoClick }) {
                 <div className="nav-dropdown-divider" />
 
                 <Link to="/profile" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                  👤 My Profile
+                  My Profile
                 </Link>
                 <Link to="/saved" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                  💾 Saved Videos
+                  Saved Videos
                 </Link>
                 <Link to="/history" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                  🕒 Watch History
+                  Watch History
                 </Link>
                 <Link to="/playlists" className="nav-dropdown-item" onClick={() => setDropdownOpen(false)}>
-                  📁 My Playlists
+                  My Playlists
                 </Link>
 
                 <div className="nav-dropdown-divider" />
 
                 <button className="nav-dropdown-logout" onClick={logout}>
-                  🚪 Logout
+                  Logout
                 </button>
               </div>
             )}

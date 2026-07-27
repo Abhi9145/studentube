@@ -5,26 +5,61 @@ function Sidebar({ onCategoryClick, onHomeClick, activeCategory }) {
   const location = useLocation();
 
   const navItems = [
-    { name: "Home", path: "/", icon: "🏠", isHomeAction: true },
-    { name: "Playlists", path: "/playlists", icon: "📁" },
-    { name: "Saved Videos", path: "/saved", icon: "💾" },
-    { name: "Watch History", path: "/history", icon: "🕒" },
+    {
+      name: "Home",
+      path: "/",
+      isHomeAction: true,
+      iconSvg: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      ),
+    },
+    {
+      name: "Playlists",
+      path: "/playlists",
+      iconSvg: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+      ),
+    },
+    {
+      name: "Saved Videos",
+      path: "/saved",
+      iconSvg: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+      ),
+    },
+    {
+      name: "Watch History",
+      path: "/history",
+      iconSvg: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      ),
+    },
   ];
 
   const categories = [
-    { name: "Programming", icon: "💻" },
-    { name: "DSA", icon: "⚡" },
-    { name: "Web Development", icon: "🌐" },
-    { name: "Python", icon: "🐍" },
-    { name: "Java", icon: "☕" },
-    { name: "React", icon: "⚛️" },
-    { name: "Mathematics", icon: "📐" },
-    { name: "Science", icon: "🔬" },
-    { name: "Data Science", icon: "📊" },
-    { name: "Machine Learning", icon: "🤖" },
-    { name: "Artificial Intelligence", icon: "🧠" },
-    { name: "C++", icon: "⚡" },
-    { name: "DevOps", icon: "🛠️" },
+    "Programming",
+    "DSA",
+    "Web Development",
+    "Python",
+    "Java",
+    "React",
+    "Mathematics",
+    "Science",
+    "Data Science",
+    "Machine Learning",
+    "Artificial Intelligence",
+    "C++",
+    "DevOps",
   ];
 
   const handleHome = () => {
@@ -53,7 +88,7 @@ function Sidebar({ onCategoryClick, onHomeClick, activeCategory }) {
                   className={`sidebar-link-btn ${isActive ? "active" : ""}`}
                   onClick={handleHome}
                 >
-                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="sidebar-icon">{item.iconSvg}</span>
                   <span className="sidebar-label">{item.name}</span>
                 </button>
               );
@@ -61,7 +96,7 @@ function Sidebar({ onCategoryClick, onHomeClick, activeCategory }) {
             return (
               <Link key={item.name} to={item.path} style={{ textDecoration: "none" }}>
                 <button className={`sidebar-link-btn ${isActive ? "active" : ""}`}>
-                  <span className="sidebar-icon">{item.icon}</span>
+                  <span className="sidebar-icon">{item.iconSvg}</span>
                   <span className="sidebar-label">{item.name}</span>
                 </button>
               </Link>
@@ -75,16 +110,16 @@ function Sidebar({ onCategoryClick, onHomeClick, activeCategory }) {
           <span>EXPLORE TOPICS</span>
         </div>
         <div className="sidebar-nav-list">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.name;
+          {categories.map((catName) => {
+            const isActive = activeCategory === catName;
             return (
               <button
-                key={cat.name}
+                key={catName}
                 className={`sidebar-link-btn category-item-btn ${isActive ? "active" : ""}`}
-                onClick={() => handleCategory(cat.name)}
+                onClick={() => handleCategory(catName)}
               >
-                <span className="sidebar-icon">{cat.icon}</span>
-                <span className="sidebar-label">{cat.name}</span>
+                <span className="sidebar-bullet" />
+                <span className="sidebar-label">{catName}</span>
               </button>
             );
           })}

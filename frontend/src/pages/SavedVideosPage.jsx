@@ -59,14 +59,13 @@ function SavedVideosPage() {
     <div style={{ padding: "24px 20px" }}>
       {/* Header */}
       <div className="page-header">
-        <h2>📌 Saved Videos</h2>
+        <h2>Saved Videos</h2>
         <span className="page-count">{videos.length} saved</span>
       </div>
 
       {/* Empty state */}
       {videos.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">💾</div>
           <h3>Nothing saved yet</h3>
           <p>Bookmark educational videos to find them here anytime. Start exploring below.</p>
           <Link to="/" className="empty-state-btn">Explore Videos</Link>

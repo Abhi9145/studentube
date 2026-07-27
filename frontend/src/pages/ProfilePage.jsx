@@ -58,7 +58,7 @@ function ProfilePage() {
         padding: "20px",
       }}
     >
-      <h1>👤 My Profile</h1>
+      <h1>My Profile</h1>
 
       {/* Profile Card */}
       <div
@@ -116,7 +116,7 @@ function ProfilePage() {
           onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.03)")}
           onMouseLeave={(e) => (e.currentTarget.style.transform = "none")}
         >
-          {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+          {theme === "light" ? "Dark Mode" : "Light Mode"}
         </button>
       </div>
 
@@ -126,7 +126,7 @@ function ProfilePage() {
           marginBottom: "20px",
         }}
       >
-        📊 Statistics
+        Statistics
       </h2>
 
       {/* Stats Grid */}
@@ -146,8 +146,7 @@ function ProfilePage() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>📁</h1>
-          <h2 style={{ fontSize: "24px", fontWeight: "700" }}>{stats.playlists}</h2>
+          <h2 style={{ fontSize: "32px", fontWeight: "700", color: "#ff0000" }}>{stats.playlists}</h2>
           <p style={{ color: "var(--muted-text)", marginTop: "4px" }}>Playlists</p>
         </div>
 
@@ -160,8 +159,7 @@ function ProfilePage() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>💾</h1>
-          <h2 style={{ fontSize: "24px", fontWeight: "700" }}>{stats.savedVideos}</h2>
+          <h2 style={{ fontSize: "32px", fontWeight: "700", color: "#ff0000" }}>{stats.savedVideos}</h2>
           <p style={{ color: "var(--muted-text)", marginTop: "4px" }}>Saved Videos</p>
         </div>
 
@@ -174,8 +172,7 @@ function ProfilePage() {
             textAlign: "center",
           }}
         >
-          <h1 style={{ fontSize: "36px", marginBottom: "10px" }}>📜</h1>
-          <h2 style={{ fontSize: "24px", fontWeight: "700" }}>{stats.history}</h2>
+          <h2 style={{ fontSize: "32px", fontWeight: "700", color: "#ff0000" }}>{stats.history}</h2>
           <p style={{ color: "var(--muted-text)", marginTop: "4px" }}>History</p>
         </div>
       </div>

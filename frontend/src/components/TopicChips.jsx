@@ -2,20 +2,20 @@ import { useState } from "react";
 
 function TopicChips({ onTopicClick, activeTopic }) {
   const topics = [
-    { name: "All", icon: "✨" },
-    { name: "Python", icon: "🐍" },
-    { name: "React", icon: "⚛️" },
-    { name: "Java", icon: "☕" },
-    { name: "DSA", icon: "⚡" },
-    { name: "DBMS", icon: "🗄️" },
-    { name: "AI", icon: "🧠" },
-    { name: "C++", icon: "💻" },
-    { name: "JavaScript", icon: "📜" },
-    { name: "Web Development", icon: "🌐" },
-    { name: "Machine Learning", icon: "🤖" },
-    { name: "SQL", icon: "📊" },
-    { name: "DevOps", icon: "🛠️" },
-    { name: "Linux", icon: "🐧" },
+    "All",
+    "Python",
+    "React",
+    "Java",
+    "DSA",
+    "DBMS",
+    "AI",
+    "C++",
+    "JavaScript",
+    "Web Development",
+    "Machine Learning",
+    "SQL",
+    "DevOps",
+    "Linux",
   ];
 
   const [selectedTopic, setSelectedTopic] = useState(activeTopic || "All");
@@ -32,16 +32,15 @@ function TopicChips({ onTopicClick, activeTopic }) {
   return (
     <div className="topic-chips-wrapper">
       <div className="topic-chips-scroll">
-        {topics.map((t) => {
-          const isActive = (selectedTopic === t.name) || (activeTopic === t.name) || (t.name === "All" && !activeTopic);
+        {topics.map((name) => {
+          const isActive = (selectedTopic === name) || (activeTopic === name) || (name === "All" && !activeTopic);
           return (
             <button
-              key={t.name}
+              key={name}
               className={`topic-chip-btn ${isActive ? "active" : ""}`}
-              onClick={() => handleClick(t.name)}
+              onClick={() => handleClick(name)}
             >
-              <span className="chip-icon">{t.icon}</span>
-              <span className="chip-label">{t.name}</span>
+              <span className="chip-label">{name}</span>
             </button>
           );
         })}

@@ -143,7 +143,7 @@ function App() {
 
       // Non-educational rejection from backend
       if (data.educationalOnly) {
-        toast(data.message, { icon: "📚", duration: 4000 });
+        toast(data.message, { duration: 4000 });
         setStatus(STATUS.BLOCKED);
         setVideos([]);
         return;
@@ -431,7 +431,6 @@ function App() {
             border: "1px dashed var(--card-border)",
           }}
         >
-          <div style={{ fontSize: "42px", marginBottom: "16px" }}>😵</div>
           <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
             Couldn&apos;t load videos
           </h3>
@@ -463,7 +462,7 @@ function App() {
             onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "none")}
           >
-            🔄 Try Again
+            Try Again
           </button>
         </div>
       );
@@ -480,7 +479,6 @@ function App() {
             border: "1px dashed var(--card-border)",
           }}
         >
-          <div style={{ fontSize: "42px", marginBottom: "16px" }}>📚</div>
           <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
             Educational content only
           </h3>
@@ -502,7 +500,6 @@ function App() {
             border: "1px dashed var(--card-border)",
           }}
         >
-          <div style={{ fontSize: "42px", marginBottom: "16px" }}>🔍</div>
           <h3 style={{ marginBottom: "10px", fontSize: "18px", color: "var(--text-secondary)" }}>
             No videos found for &quot;{searchTerm || lastQuery}&quot;
           </h3>
@@ -522,7 +519,7 @@ function App() {
               cursor: "pointer",
             }}
           >
-            🏠 Return Home
+            Return Home
           </button>
         </div>
       );
@@ -574,7 +571,7 @@ function App() {
           {isHome && <ContinueWatching />}
 
           <h2 style={{ marginBottom: "20px" }}>
-            {isHome ? "🔥 Recommended Videos" : `🔍 Results for "${searchTerm || lastQuery}"`}
+            {isHome ? "Recommended Videos" : `Results for "${searchTerm || lastQuery}"`}
           </h2>
 
           {renderContent()}

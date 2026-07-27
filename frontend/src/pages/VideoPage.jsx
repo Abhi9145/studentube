@@ -370,7 +370,7 @@ function VideoPage() {
                 background: "none", border: "none", color: "#ff0000", fontWeight: "600",
                 padding: "4px 0 0 0", cursor: "pointer", fontSize: "13px", display: "inline-block", marginTop: "8px"
               }}>
-                {descriptionExpanded ? "Show Less ──" : "Show More ──"}
+                {descriptionExpanded ? "Show Less" : "Show More"}
               </button>
             )}
           </div>
@@ -382,7 +382,6 @@ function VideoPage() {
               onClick={generateNotes}
               disabled={!videoMeta.title}
             >
-              <span className="ai-notes-trigger-icon">✨</span>
               Generate AI Study Notes
               <span className="ai-notes-trigger-badge">Gemini</span>
             </button>
@@ -396,7 +395,6 @@ function VideoPage() {
             {/* Panel Header */}
             <div className="ai-notes-header">
               <div className="ai-notes-header-left">
-                <div className="ai-notes-gem-icon">✨</div>
                 <div>
                   <div className="ai-notes-title">AI Study Notes</div>
                   <div className="ai-notes-subtitle">
@@ -410,13 +408,13 @@ function VideoPage() {
               {!notesLoading && notes && (
                 <div className="ai-notes-actions">
                   <button className="ai-notes-action-btn" onClick={handleCopyNotes}>
-                    📋 Copy
+                    Copy
                   </button>
                   <button className="ai-notes-action-btn" onClick={handleDownloadNotes}>
-                    ⬇️ Save
+                    Save
                   </button>
                   <button className="ai-notes-action-btn ai-notes-regen-btn" onClick={handleRegenerateNotes}>
-                    🔄 Regenerate
+                    Regenerate
                   </button>
                   <button
                     className="ai-notes-action-btn ai-notes-close-btn"

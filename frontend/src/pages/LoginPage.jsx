@@ -87,14 +87,14 @@ function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-left">
-        <div className="auth-left-badge">🎓 Studentube</div>
+        <div className="auth-left-badge">Studentube</div>
         <h2>Learn Smarter.<br />Watch Better.</h2>
         <p>Your AI-powered study companion for coding, engineering, placements and college. Save videos, build playlists, and track your progress.</p>
         <div className="auth-features">
-          <div className="auth-feature">✅ Curated educational content only</div>
-          <div className="auth-feature">📁 Build and organize playlists</div>
-          <div className="auth-feature">🤖 AI-generated study notes</div>
-          <div className="auth-feature">🕒 Track watch history</div>
+          <div className="auth-feature">Curated educational content only</div>
+          <div className="auth-feature">Build and organize playlists</div>
+          <div className="auth-feature">AI-generated study notes</div>
+          <div className="auth-feature">Track watch history</div>
         </div>
       </div>
 

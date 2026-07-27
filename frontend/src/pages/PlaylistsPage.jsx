@@ -4,10 +4,6 @@ import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getProxiedThumbnail } from "../utils/thumbnail";
 
-/* ── Emoji set for auto-generated playlist covers ── */
-const PLAYLIST_EMOJIS = ["📘", "📗", "📙", "📕", "🎯", "🚀", "⚡", "🔬", "🧮", "🖥️", "🤖", "🎓"];
-const getEmoji = (id) => PLAYLIST_EMOJIS[id.charCodeAt(id.length - 1) % PLAYLIST_EMOJIS.length];
-
 function PlaylistsPage() {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +53,7 @@ function PlaylistsPage() {
       });
       setName("");
       await fetchPlaylists();
-      toast.success("Playlist created! 🎉");
+      toast.success("Playlist created!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to create playlist");
@@ -67,9 +63,9 @@ function PlaylistsPage() {
   };
 
   const renamePlaylist = async (playlistId) => {
-    const newName = renameMap[playlistId]?.trim();
+    const newName = (renameMap[playlistId] || "").trim();
     if (!newName) {
-      toast.error("Please enter a name");
+      toast.error("Playlist name cannot be empty");
       return;
     }
     try {
@@ -91,14 +87,14 @@ function PlaylistsPage() {
   };
 
   const deletePlaylist = async (playlistId) => {
-    if (!window.confirm("Delete this playlist? This cannot be undone.")) return;
+    if (!window.confirm("Are you sure you want to delete this playlist?")) return;
     try {
       await fetch(`${API_URL}/api/playlists/${playlistId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchPlaylists();
-      toast.success("Playlist deleted");
+      toast.success("Playlist deleted!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to delete playlist");
@@ -107,19 +103,22 @@ function PlaylistsPage() {
 
   const removeVideo = async (playlistId, videoId) => {
     try {
-      await fetch(`${API_URL}/api/playlists/${playlistId}/video/${videoId}`, {
+      await fetch(`${API_URL}/api/playlists/${playlistId}/videos/${videoId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       await fetchPlaylists();
-      toast.success("Video removed");
+      toast.success("Video removed from playlist");
     } catch (err) {
       console.error(err);
       toast.error("Failed to remove video");
     }
   };
 
-  useEffect(() => { fetchPlaylists(); }, []);
+  useEffect(() => {
+    if (token) fetchPlaylists();
+    else setLoading(false);
+  }, [token]);
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
@@ -127,7 +126,7 @@ function PlaylistsPage() {
 
       {/* ── Header ── */}
       <div className="page-header">
-        <h2>📁 My Playlists</h2>
+        <h2>My Playlists</h2>
         <span className="page-count">{playlists.length} {playlists.length === 1 ? "playlist" : "playlists"}</span>
       </div>
 
@@ -142,7 +141,7 @@ function PlaylistsPage() {
           maxLength={60}
         />
         <button type="submit" className="create-playlist-btn" disabled={creating}>
-          {creating ? "Creating…" : "+ Create Playlist"}
+          {creating ? "Creating…" : "Create Playlist"}
         </button>
       </form>
 
@@ -157,7 +156,6 @@ function PlaylistsPage() {
       {/* ── Empty state ── */}
       {!loading && playlists.length === 0 && (
         <div className="empty-state">
-          <div className="empty-state-icon">📁</div>
           <h3>No playlists yet</h3>
           <p>Create your first playlist to organise the videos you love learning from.</p>
         </div>
@@ -170,7 +168,6 @@ function PlaylistsPage() {
             const isExpanded = expandedId === playlist._id;
             const isRenaming = renamingId === playlist._id;
             const cover = playlist.videos?.[0]?.thumbnail;
-            const emoji = getEmoji(playlist._id);
 
             return (
               <div key={playlist._id} className="playlist-card">
@@ -180,7 +177,7 @@ function PlaylistsPage() {
                   {cover ? (
                     <img src={getProxiedThumbnail(cover)} alt={playlist.name} className="playlist-cover-img" />
                   ) : (
-                    <div className="playlist-cover-placeholder">{emoji}</div>
+                    <div className="playlist-cover-placeholder">PL</div>
                   )}
                   <div className="playlist-cover-badge">
                     {playlist.videos?.length || 0} videos
@@ -226,13 +223,13 @@ function PlaylistsPage() {
                         setRenameMap((prev) => ({ ...prev, [playlist._id]: playlist.name }));
                       }}
                     >
-                      ✏️ Rename
+                      Rename
                     </button>
                     <button
                       className="pl-btn pl-btn-expand"
                       onClick={() => setExpandedId(isExpanded ? null : playlist._id)}
                     >
-                      {isExpanded ? "▲ Hide" : "▼ Videos"}
+                      {isExpanded ? "Hide" : "Videos"}
                     </button>
                     <button
                       className="pl-btn pl-btn-delete"

@@ -42,14 +42,13 @@ function HistoryPage() {
     <div style={{ padding: "24px 20px" }}>
       {/* Header */}
       <div className="page-header">
-        <h2>🕒 Watch History</h2>
+        <h2>Watch History</h2>
         <span className="page-count">{videos.length} watched</span>
       </div>
 
       {/* Empty state */}
       {videos.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🕒</div>
           <h3>No watch history yet</h3>
           <p>Videos you watch will automatically appear here so you can pick up right where you left off.</p>
           <Link to="/" className="empty-state-btn">Start Watching</Link>

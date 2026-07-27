@@ -71,10 +71,9 @@ function PlaylistDetailPage() {
   if (!playlist) {
     return (
       <div className="empty-state" style={{ margin: "40px 20px" }}>
-        <div className="empty-state-icon">🔍</div>
         <h3>Playlist not found</h3>
         <p>This playlist may have been deleted.</p>
-        <Link to="/playlists" className="empty-state-btn">← Back to Playlists</Link>
+        <Link to="/playlists" className="empty-state-btn">Back to Playlists</Link>
       </div>
     );
   }
@@ -119,13 +118,15 @@ function PlaylistDetailPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "44px",
+            fontSize: "24px",
+            fontWeight: "700",
+            color: "var(--subtle-text)",
           }}
         >
           {cover ? (
             <img src={getProxiedThumbnail(cover)} alt={playlist.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            "📁"
+            "PL"
           )}
         </div>
 
@@ -161,7 +162,7 @@ function PlaylistDetailPage() {
               e.currentTarget.style.borderColor = "rgba(255,60,60,.25)";
             }}
           >
-            🗑 Delete Playlist
+            Delete Playlist
           </button>
         </div>
       </div>
@@ -169,7 +170,6 @@ function PlaylistDetailPage() {
       {/* ── Video list ── */}
       {!playlist.videos || playlist.videos.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-state-icon">🎬</div>
           <h3>No videos yet</h3>
           <p>Add videos from the homepage or while watching any educational video.</p>
           <Link to="/" className="empty-state-btn">Browse Videos</Link>

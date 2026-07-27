@@ -36,7 +36,7 @@ function LearningProgress() {
         marginBottom: "30px",
       }}
     >
-      <h2>📈 Learning Progress</h2>
+      <h2>Learning Progress</h2>
 
       <p>
         You've watched{" "}
