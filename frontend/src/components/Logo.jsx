@@ -20,45 +20,38 @@ function Logo({ className = "", size = "normal" }) {
         viewBox="0 0 40 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0, filter: "drop-shadow(0 2px 10px rgba(255, 0, 0, 0.45))" }}
+        style={{ flexShrink: 0, filter: "drop-shadow(0 2px 8px rgba(255, 0, 0, 0.4))" }}
       >
         <defs>
-          <linearGradient id="stShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ff2a2a" />
-            <stop offset="60%" stopColor="#e60000" />
-            <stop offset="100%" stopColor="#990000" />
-          </linearGradient>
-          <linearGradient id="stCapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#ffe6e6" />
+          <linearGradient id="stRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#ff3333" />
+            <stop offset="100%" stopColor="#cc0000" />
           </linearGradient>
         </defs>
 
-        {/* Outer Shield Frame */}
-        <path
-          d="M20 2.5L35 10.5V28.5L20 37.5L5 28.5V10.5L20 2.5Z"
-          fill="url(#stShieldGrad)"
-        />
-
         {/* Academic Mortarboard Cap Top Diamond */}
         <polygon
-          points="20,8 30,13.5 20,19 10,13.5"
-          fill="url(#stCapGrad)"
+          points="20,6 35,13.5 20,21 5,13.5"
+          fill="url(#stRedGrad)"
         />
 
-        {/* Cap Tassel Line */}
+        {/* Cap Base Band */}
         <path
-          d="M30 13.5V19.5"
-          stroke="#ffffff"
-          strokeWidth="1.75"
+          d="M11 17.5V24C11 26.5 15 28.5 20 28.5C25 28.5 29 26.5 29 24V17.5"
+          stroke="url(#stRedGrad)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          fill="none"
+        />
+
+        {/* Cap Tassel */}
+        <path
+          d="M32 15V22.5"
+          stroke="url(#stRedGrad)"
+          strokeWidth="2"
           strokeLinecap="round"
         />
-
-        {/* Inner Play Triangle */}
-        <polygon
-          points="16.5,21 26.5,26.5 16.5,32"
-          fill="#ffffff"
-        />
+        <circle cx="32" cy="23.5" r="1.5" fill="#ff3333" />
       </svg>
 
       {/* Brand Typography */}
