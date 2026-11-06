@@ -77,7 +77,12 @@ function VideoCard({ video }) {
         toast.success("Video Saved!");
       } else {
         const data = await response.json();
-        toast.error(data.message || "Failed to save video");
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          toast.error("Session expired. Please login again.");
+        } else {
+          toast.error(data.message || "Failed to save video");
+        }
       }
     } catch (error) {
       console.error(error);
@@ -135,7 +140,12 @@ function VideoCard({ video }) {
         setShowDropdown(false);
       } else {
         const data = await response.json();
-        toast.error(data.message || "Failed to add video");
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          toast.error("Session expired. Please login again.");
+        } else {
+          toast.error(data.message || "Failed to add video");
+        }
       }
     } catch (error) {
       console.error(error);

@@ -20,6 +20,12 @@ const protect = async (req, res, next) => {
         "-password"
       );
 
+      if (!req.user) {
+        return res.status(401).json({
+          message: "User not found. Please login again.",
+        });
+      }
+
       next();
     } else {
       res.status(401).json({
@@ -27,9 +33,15 @@ const protect = async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.status(401).json({
-      message: "Token failed",
-    });
+    if (error.name === "TokenExpiredError") {
+      res.status(401).json({
+        message: "Token expired. Please login again.",
+      });
+    } else {
+      res.status(401).json({
+        message: "Token failed. Please login again.",
+      });
+    }
   }
 };
 
